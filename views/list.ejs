@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+    <table>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>날짜</th>
+            <th>조회</th>
+        </tr>
+        <% for(var i = 0; i < data.length; i++){ %>
+            <tr>
+                <td><%=max - i%></td>
+                <td><a href="/members/post/<%=data[i].num%>"><%=data[i].title%></a></td>
+                <td><%=data[i].name%></td>
+                <td><%=data[i].regdate%></td>
+                <td><%=data[i].hit%></td>
+            </tr>
+        <% } %>
+    </table>
+    <div style="width:46em; text-align:center; padding-top:2px;">
+        <%if(page > pageSize){ %>
+            [<a style="text-decoration: none" href = "/members/list/1">◀◀</a>]
+            [<a style="text-decoration: none" href = "/members/list/<%=startPage - 1%>">◀</a>]
+        <%}else{%>
+            [<span style="color:gray">◀◀</span>]
+            [<span style="color:gray">◀</span>]
+        <%}%>
+        &nbsp;&nbsp;
+        <%for(var i = startPage; i <= endPage; i++){%>
+            <%if(i == page){%>
+                [<%=i%>]
+            <%}else{%>
+                [<a href="/members/<%=i%>"><%=i%></a>]
+            <%}%>
+        <%}%>
+        &nbsp;&nbsp;
+        <%if(page > pageSize){ %>
+            [<a style="text-decoration: none" href = "/members/list/<%=endPage + 1%>">▶▶</a>]
+            [<a style="text-decoration: none" href = "/members/list/<%=totalPage%>">▶</a>]
+        <%}else{%>
+            [<span style="color:gray">▶</span>]
+            [<span style="color:gray">▶▶</span>]
+        <%}%>
+    </div>
+</body>
+</html>

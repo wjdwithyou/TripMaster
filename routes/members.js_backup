@@ -1,0 +1,16 @@
+var express = require('express');
+var router = express.Router();
+
+/* GET users listing */
+router.get('/join', function(req, res, next){//members/join이 요청될때 처리
+	//res.send('members/join입니다.');
+	res.render('join', {title:'회원가입'});
+});
+
+router.post('/join', function(req, res, next){
+	console.log('req.body', req.body);
+	//res.json(req.body);
+	res.send('가입이 완료되었습니다.');
+});
+
+module.exports = router;

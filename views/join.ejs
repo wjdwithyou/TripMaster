@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title><%=title %></title>
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+		<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+		<script>
+			$(function(){
+				$("#btnjoin").click(function(){
+					if ($("#id").val()==""){
+						alert("아이디를 꼭 입력하세요");
+						$("#id").focus();
+						return;
+					}
+					if ($("#passwd").val()==""){
+						alert("비밀번호를 꼭 입력하세요");
+						$("#passwd").focus();
+						return;
+					}
+					if ($("#passwd2").val()==""){
+						alert("비밀번호확인란을 꼭 입력하세요");
+						$("#passwd2").focus();
+						return;
+					}
+					if($("#name").val()==""){
+						alert("이름을 꼭 입력하세요");
+						$("#name").focus();
+						return;
+					}
+					if ($("#email").val()==""){
+						alert("이메일을 꼭 입력하세요");
+						$("#email").focus();
+						return;
+					}
+					if ($("#gender").val()==""){
+						alert("성별을 꼭 입력하세요");
+						$("#gender").focus();
+						return;
+					}
+					if ($("#country").val()==""){
+						alert("국적을 꼭 입력하세요");
+						$("#country").focus();
+						return;
+					}
+					if ($("birth").val()==""){
+						alert("생년월일을 꼭 입력하세요");
+						$("#birth").focus();
+						return;
+					}
+					
+					if (isNaN($("#birth").val())){
+						alert("생년월일을 숫자로만 입력하세요");
+						$("#birth").val("");
+						$("#birth").focus();
+						return;
+					}
+					if ($("#passwd").val() !==$("#passwd2").val()){
+						alert("비밀번호가 일치하지 않습니다.");
+						$("#passwd").focus();
+						return;
+					}
+					if ($("#email").val().indexOf('@') < 0){
+						alert("형식에 맞지 않는 이메일입니다.");
+						$("#passwd").focus();
+						return;
+					}
+					if (($("#birth").val().charAt(0) != '1' && $("#birth").val().charAt(0) != '2') || ($("#birth").val().charAt(4) != '0' && $("#birth").val().charAt(4) != '1') || ($("#birth").val().charAt(6) < '0' || $("#birth").val().charAt(6) > '3')){
+						alert("형식에 맞지 않는 생년월일입니다.");
+						$("#birth").val("");
+						$("#birth").focus();
+						return;
+					}
+
+					$("#joinform").submit();
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<h1><%=title %></h1>
+		<form id="joinform" action="/members/join" method="post">
+			<table width="500" border="1">
+				<tr>
+					<th width="100">아이디</th>
+					<td><input type="text" name="id" id="id" size="12" maxlength="12"></td>
+				</tr>
+				<tr>
+					<th>비밀번호</th>
+					<td><input type="password" name="passwd" id="passwd" size="12" maxlength="12"></td>
+				</tr>
+				<tr>
+					<th>비밀번호 확인</th>
+					<td><input type="password" name="passwd2" id="passwd2" size="12" maxlength="12"></td>
+				</tr>
+				<tr>
+					<th>이름</th>
+					<td><input type="text" name="name" id="name" size="12" maxlength="12"></td>
+				</tr>
+				<tr>
+					<th>이메일</th>
+					<td><input type="text" name="email" id="email" size="30" maxlength="50"></td>
+				</tr>
+				<tr>
+					<th>성별</th>
+					<td>
+						<input type="radio" name="gender" id="gender1" value="남" checked="checked">남
+						<input type="radio" name="gender" id="gender2" value="여" checked="checked">여
+					</td>
+				</tr>
+				<tr>
+					<th>국적</th>
+					<td>
+						<select name="country" id="country">
+							<option value="대한민국">대한민국</option>
+							<option value="미국">미국</option>
+							<option value="일본">일본</option>
+							<option value="중국">중국</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>생년월일</th>
+					<td><input type="text" name="birth" id="birth" size="8" maxlength="8">*YYYYMMDD</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="button" id="btnjoin" value="가입">
+						<input type="reset" value="취소">
+					</td>
+				</tr>
+			</table>
+		</form>
+		<a href="/">홈페이지로 이동</a>
+	</body>
+</html>
