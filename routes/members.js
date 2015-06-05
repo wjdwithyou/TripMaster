@@ -17,7 +17,6 @@ router.get('/',function(req, res){
 });
 
 router.get('/join', function(req, res, next){//members/join이 요청될때 처리
-	//res.send('members/join입니다.');
 	res.render('join', {title:'회원가입'});
 });
 
@@ -31,14 +30,24 @@ router.get('/logout', function(req, res){
 });
 
 router.get('/write',function(req, res){
-	res.render('write',{title:'글쓰기'})
+	if (req.session.user_id)
+		res.render('write',{title:'글쓰기'})
+	else
+		res.redirect('/');
 });
 
 router.get('/list',function(req, res){
-	res.redirect('list/1');
+	if (req.session.user_id)
+		res.redirect('list/1');
+	else
+		res.redirect('/');
 });
 
 router.get('/list/:page',function(req, res){
+	if (!(req.session.user_id)){
+		res.redirect('/');
+		return;
+	}
 	var page = req.params.page;
 	page = parseInt(page, 10);
 	var size = 10;
@@ -77,6 +86,10 @@ router.get('/list/:page',function(req, res){
 
 //수정된 부분!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 router.get('/post/:page',function(req, res){
+	if (!(req.session.user_id)){
+		res.redirect('/');
+		return;
+	}
 	var page = req.params.page;
 	page = parseInt(page, 10);
 	pool.getConnection(function(err, conn){
