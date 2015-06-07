@@ -1,6 +1,9 @@
 body {
+  background-color: lightgreen;
+  font-family: "한컴 바겐세일 B";
+  font-size: 14px;
   padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  /*font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;*/
 }
 
 a {
