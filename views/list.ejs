@@ -16,7 +16,7 @@
         <% for(var i = 0; i < data.length; i++){ %>
             <tr>
                 <td><%=max - i%></td>
-                <td><a href="/members/post/<%=data[i].num%>"><%=data[i].title%></a></td>
+                <td id="entity_title"><a href="/members/post/<%=data[i].num%>"><%=data[i].title%></a></td>
                 <td><%=data[i].name%></td>
                 <td><%=data[i].regdate%></td>
                 <td><%=data[i].hit%></td>
