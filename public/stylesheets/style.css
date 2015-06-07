@@ -6,6 +6,14 @@ body {
   /*font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;*/
 }
 
+td {
+  text-align: center
+}
+
+#entity_title {
+  text-align: left
+}
+
 a {
   color: #00B7FF;
 }
