@@ -5,23 +5,34 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <body>
-    <table align="center" border="1" cellspacing="1" cellpadding="5">
+    <table>
         <tr>
-            <th>번호</th>
-            <th>제목</th>
-            <th>작성자</th>
-            <th>날짜</th>
-            <th>조회</th>
+            <td id="statistics">
+                총 게시물: <%=data.length%>건&nbsp;&nbsp;&nbsp;PAGE <%=page%>/445<!--전체 페이지 수-->
+            </td>
         </tr>
-        <% for(var i = 0; i < data.length; i++){ %>
-            <tr>
-                <td><%=max - i%></td>
-                <td id="entity_title"><a href="/members/post/<%=data[i].num%>"><%=data[i].title%></a></td>
-                <td><%=data[i].name%></td>
-                <td><%=data[i].regdate%></td>
-                <td><%=data[i].hit%></td>
-            </tr>
-        <% } %>
+        <tr>
+            <td>            
+                <table align="center" border="1" cellspacing="1" cellpadding="5">
+                    <tr>
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>날짜</th>
+                        <th>조회</th>
+                    </tr>
+                    <% for(var i = 0; i < data.length; i++){ %>
+                        <tr>
+                            <td><%=max - i%></td>
+                            <td id="entity_title"><a href="/members/post/<%=data[i].num%>"><%=data[i].title%></a></td>
+                            <td><%=data[i].name%></td>
+                            <td><%=data[i].regdate%></td>
+                            <td><%=data[i].hit%></td>
+                        </tr>
+                    <% } %>
+                </table>
+            </td>
+        </tr>
     </table>
     <div style="width:46em; text-align:center; padding-top:2px;">
         <%if(page > pageSize){ %>

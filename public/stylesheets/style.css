@@ -7,11 +7,15 @@ body {
 }
 
 td {
-  text-align: center
+  text-align: center;
+}
+
+#statistics {
+  text-align: right;
 }
 
 #entity_title {
-  text-align: left
+  text-align: left;
 }
 
 a {
