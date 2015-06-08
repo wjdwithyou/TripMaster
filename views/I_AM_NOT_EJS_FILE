@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	</head>
+	<frameset frameborder="no" rows="100,*">
+		<frame name="f_top", scrolling="no" src="top.html" noresize>
+		<frame name="f_body", src="body.html" noresize>
+	</frameset>
+</html>
