@@ -5,7 +5,7 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <body>
-    <table>
+    <table align="center" border="1" cellspacing="1" cellpadding="5">
         <tr>
             <th>번호</th>
             <th>제목</th>
@@ -16,7 +16,7 @@
         <% for(var i = 0; i < data.length; i++){ %>
             <tr>
                 <td><%=max - i%></td>
-                <td><a href="/members/post/<%=data[i].num%>"><%=data[i].title%></a></td>
+                <td id="entity_title"><a href="/members/post/<%=data[i].num%>"><%=data[i].title%></a></td>
                 <td><%=data[i].name%></td>
                 <td><%=data[i].regdate%></td>
                 <td><%=data[i].hit%></td>
