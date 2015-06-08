@@ -23,7 +23,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({secret:'secret key', key:'fundoong', cookie:{maxAge:60*1000}}));
+app.use(session({
+	secret:"random key value", cookie:{maxAge:600*1000}}));
+/*	secret:"random key value",
+	resave: false,
+	saveUninitialized: true,
+	cookie: {secure:true}
+}));*/
 
 app.use('/', routes);
 app.use('/users', users);

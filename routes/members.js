@@ -6,7 +6,8 @@ var pool = mysql.createPool({
 	host	:'localhost',
 	user	:'root',
 	password:'5dnjfekf!',
-	database:'tripmaster'
+	database:'tripmaster',
+	connectionLimit:20
 });
 
 router.get('/',function(req, res){
@@ -15,6 +16,7 @@ router.get('/',function(req, res){
 	else
 		res.redirect('/');
 });
+
 
 router.get('/join', function(req, res, next){//members/join이 요청될때 처리
 	res.render('join', {title:'회원가입'});
@@ -55,7 +57,11 @@ router.get('/list/:page',function(req, res){
 	pool.getConnection(function(err,conn){
 		if(err) console.log('err',err);
 		conn.query('select count(*) cnt from board',[],function(err, rows){
-			if(err) console.log('err',err);
+			if(err){
+				console.log('err',err);
+				conn.release();
+				throw err;
+			}
 			var cnt = rows[0].cnt;
 			var totalPage = Math.ceil(cnt / size);
 			var pageSize = 10;
@@ -67,6 +73,11 @@ router.get('/list/:page',function(req, res){
 			var max = cnt - ((page - 1)*size);
 			conn.query("select num, name, title, DATE_FORMAT(regdate, '%y-%m-%d %h:%i:%s') regdate, hit from board order by num desc limit ?,?",
 			[begin,size],function(err, rows){
+					if(err){
+						console.log('err',err);
+						conn.release();
+						throw err;
+					}
 					var datas = {
 						title : '게시판',
 						data : rows,
@@ -93,8 +104,17 @@ router.get('/post/:page',function(req, res){
 	var page = req.params.page;
 	page = parseInt(page, 10);
 	pool.getConnection(function(err, conn){
-		if(err) console.log('err',err);
+		if(err){
+			console.log('err',err);
+			conn.release();
+			throw err;
+		}
 		conn.query("select name, title, content from board where num = ?",[page],function(err, rows){
+			if(err){
+				console.log('err',err);
+				conn.release();
+				throw err;
+			}
 			res.render('post', {
 				name : rows[0].name,
 				title : rows[0].title,
@@ -119,8 +139,7 @@ router.post('/join', function(req, res, next){
 		if(err){
 			console.log('err',err);
 			res.render('processing', {title:'회원가입 처리중입니다', content:'회원가입 처리중 에러가 발생했습니다.', hr:'/'});
-			//res.send('회원가입 처리 중 에러 발생');
-			//res.json(err);
+			conn.release();
 		}
 		else{
 			console.log('conn',conn);
@@ -172,6 +191,7 @@ router.post('/login', function(req, res, next){
 				//res.json({"result":"fail"});//모바일 서버 실패시
 			}
 		});
+		conn.release();
 	});
 });
 
@@ -189,7 +209,11 @@ router.post('/write',function(req, res){
 		if(err) console.error('err',err);
 		var sql = 'insert into board(pw, name, title, content, regdate, hit, good) values(?,?,?,?,now(),0,0)';
 		conn.query(sql, [pw, name, title, content], function(err, row){
-			if(err) console.error('err',err);
+			if(err){
+				console.error('err',err);
+				conn.release();
+				throw err;
+			}
 			console.log('row',row);
 			if(row.affectedRows === 1){
 				res.render('processing', {title:'게시글을 작성하는 중입니다.', content:'게시글이 작성되었습니다.', hr:'/members'});
