@@ -6,9 +6,13 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
-var routes = require('./routes/index');
+//사진 업로드
+//var multer = require('multer');
+
+var index = require('./routes/index');
 var users = require('./routes/users');
 var members = require('./routes/members');//added code for Login part
+
 
 var app = express();
 
@@ -23,15 +27,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({
-	secret:"random key value", cookie:{maxAge:600*1000}}));
-/*	secret:"random key value",
-	resave: false,
-	saveUninitialized: true,
-	cookie: {secure:true}
-}));*/
 
-app.use('/', routes);
+app.use(session({
+	secret:"random secret value",
+	cookie:{ maxAge:10*60*1000, httpOnly:true},
+	//cookie:{ path:'/', expires:false, secure:true, httpOnly:true },
+	resave: false,
+	rolling: true,
+	saveUninitialized: true
+}));
+//app.use(multer({dest: './uploads'}));
+
+app.use('/', index);
 app.use('/users', users);
 app.use('/members', members);//added code for Login part
 
