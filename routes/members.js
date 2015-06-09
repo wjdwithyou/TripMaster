@@ -86,7 +86,8 @@ router.get('/list/:page',function(req, res){
 						startPage : startPage,
 						endPage : endPage,
 						totalPage : totalPage,
-						max : max
+						max : max,
+						cnt : cnt
 					};
 					res.render('list',datas);
 					conn.release();
