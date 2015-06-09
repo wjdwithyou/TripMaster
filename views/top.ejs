@@ -6,23 +6,25 @@
     <link rel='stylesheet' href="/stylesheets/style.css"/>
     
     <script language="javascript">
+    /*
       function initLogin(){
-        nil.style.visibility="hidden";
+        //nil.style.visibility="hidden";
         login.style.visibility="hidden";
         logout.style.visibility="hidden";
       }
       
       function onSession(){
-        nil.style.visibility="hidden";
+        //nil.style.visibility="hidden";
         login.style.visibility="hidden";
         logout.style.visibility="visible";
       }
       
       function notSession(){
-        nil.style.visibility="hidden";
+        //nil.style.visibility="hidden";
         login.style.visibility="visible";
         logout.style.visibility="hidden";
       }
+    */
     </script>
   </head>
   <body onLoad()="initLogin()">
@@ -33,15 +35,18 @@
           <table>
             <tr>
               <td>
-                <div id="nil" style="visibility:hidden;">
+                <!--div id="nil" style="visibility:hidden;">
                   &nbsp;
-                </div>
-                <div id="login" style="visibility:hidden;">
+                </div-->
+                <% if (rsuid === false){ %>
+                <div id="login"><!--style="visibility:hidden;"-->
                   <a href="members/login" target="f_body">Login</a>
                 </div>
-                <div id="logout" style="visibility:hidden;">
+                <% } else{ %>
+                <div id="logout"><!--style="visibility:hidden;"-->
                   <a href="members/logout" target="f_body">Logout</a>
                 </div>
+                <% } %>
               </td>
               <td><a href="members/join" target="f_body">Join</a></td>
             </tr>
