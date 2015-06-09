@@ -18,7 +18,7 @@ td {
   text-align: left;
 }
 
-.board_top_line {
+.board_top_line, .board_bot_line {
   background-color: #999999;
   height: 3px;
 }
