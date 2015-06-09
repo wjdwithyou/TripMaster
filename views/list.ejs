@@ -14,7 +14,7 @@
         <tr>
             <td>
                 <div class="board_top_line"></div>
-                <table align="center" border="0" cellspacing="1" cellpadding="5">
+                <table align="center" border="0">
                     <tr>
                         <th>No</th>
                         <th>Subject</th>
@@ -23,6 +23,9 @@
                         <th>Hits</th>
                     </tr>
                     <% for(var i = 0; i < data.length; i++){ %>
+                        <tr>
+                            <td class="board_split_line" colspan="5">&nbsp;</td>
+                        </tr>
                         <tr class="board_content_line">
                             <td><%=max - i%></td>
                             <td id="entity_title"><a href="/members/post/<%=data[i].num%>"><%=data[i].title%></a></td>
@@ -30,11 +33,9 @@
                             <td><%=data[i].regdate%></td>
                             <td><%=data[i].hit%></td>
                         </tr>
-                        <tr>
-                            <td class="board_split_line" colspan="5">&nbsp;</td>
-                        </tr>
                     <% } %>
                 </table>
+                <div class="board_bot_line"></div>
             </td>
         </tr>
     </table>
