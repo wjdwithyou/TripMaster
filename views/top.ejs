@@ -1,15 +1,60 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>TripMaster</title>
-
-		<link rel='stylesheet' href="/stylesheets/style.css"/>
-
-		<script language="javascript">
-
-		</script>
-	</head>
-	<body>
+  <head>
+    <title>TripMaster</title>
+    
+    <link rel='stylesheet' href="/stylesheets/style.css"/>
+    
+    <script language="javascript">
+      function initLogin(){
+        nil.style.visibility="hidden";
+        login.style.visibility="hidden";
+        logout.style.visibility="hidden";
+      }
+      
+      function onSession(){
+        nil.style.visibility="hidden";
+        login.style.visibility="hidden";
+        logout.style.visibility="visible";
+      }
+      
+      function notSession(){
+        nil.style.visibility="hidden";
+        login.style.visibility="visible";
+        logout.style.visibility="hidden";
+      }
+    </script>
+  </head>
+  <body onLoad()="initLogin()">
+    <table><!-- top contents -->
+      <tr>
+        <td>&nbsp;</td>
+        <td>
+          <table>
+            <tr>
+              <td>
+                <div id="nil" style="visibility:hidden;">
+                  &nbsp;
+                </div>
+                <div id="login" style="visibility:hidden;">
+                  <a href="members/login" target="f_body">Login</a>
+                </div>
+                <div id="logout" style="visibility:hidden;">
+                  <a href="members/logout" target="f_body">Logout</a>
+                </div>
+              </td>
+              <td><a href="members/join" target="f_body">Join</a></td>
+            </tr>
+          </table>
+        </td>
+        <!--td></td-->
+      </tr>
+      <tr>
+        <td colspan="2">&nbsp;</td>
+      </tr>
+    </table>
+  </body>
+	<!--body>
 		<form action="/members/login" method="post">
 				<table align="center">
 					<tr>
@@ -22,5 +67,5 @@
 					</tr>
 				</table>
 		</form>
-	</body>
+	</body-->
 </html>
