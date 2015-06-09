@@ -2,12 +2,10 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="/stylesheets/style.css"/>
   </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %>!</p>
-	<p>로그인 하시려면 </p><a href="/members/login">여기 클릭</a>
-	<p>회원가입하시려면 </p><a href="/members/join">여기 클릭</a>
-  </body>
+  <frameset frameborder="no" rows="100,*">
+    <frame name="f_top" scrolling="no" src="top.ejs" noresize>
+    <frame name="f_body" src="body.ejs" noresize>
+  </frameset>
 </html>
