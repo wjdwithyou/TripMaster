@@ -8,26 +8,30 @@
     <table>
         <tr>
             <td id="statistics">
-                총 게시물: <%=data.length%>건&nbsp;&nbsp;&nbsp;PAGE <%=page%>/445<!--전체 페이지 수-->
+                총 게시물: NULL<!--<%=data.length%>가 아니라 다른게 필요하다 근데 난 뭔지 모름-->건&nbsp;&nbsp;&nbsp;PAGE <%=page%>/NULL<!--전체 페이지 수-->
             </td>
         </tr>
         <tr>
-            <td>            
-                <table align="center" border="1" cellspacing="1" cellpadding="5">
+            <td>
+                <div class="board_top_line"></div>
+                <table align="center" border="0" cellspacing="1" cellpadding="5">
                     <tr>
-                        <th>번호</th>
-                        <th>제목</th>
-                        <th>작성자</th>
-                        <th>날짜</th>
-                        <th>조회</th>
+                        <th>No</th>
+                        <th>Subject</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Hits</th>
                     </tr>
                     <% for(var i = 0; i < data.length; i++){ %>
-                        <tr>
+                        <tr class="board_content_line">
                             <td><%=max - i%></td>
                             <td id="entity_title"><a href="/members/post/<%=data[i].num%>"><%=data[i].title%></a></td>
                             <td><%=data[i].name%></td>
                             <td><%=data[i].regdate%></td>
                             <td><%=data[i].hit%></td>
+                        </tr>
+                        <tr>
+                            <td class="board_split_line" colspan="5">&nbsp;</td>
                         </tr>
                     <% } %>
                 </table>

@@ -1,5 +1,5 @@
 body {
-  background-color: lightgreen;
+  background-color: blanchedalmond; /*ffebcd일걸? 아마도..*/
   font-family: "한컴 바겐세일 B";
   font-size: 14px;
   padding: 50px;
@@ -16,6 +16,20 @@ td {
 
 #entity_title {
   text-align: left;
+}
+
+.board_top_line {
+  background-color: #999999;
+  height: 3px;
+}
+
+.board_content_line {
+  padding: 3px 20px 3px 20px;
+}
+
+.board_split_line {
+  background-color: #CCCCCC;
+  line-height: 1px;
 }
 
 a {
