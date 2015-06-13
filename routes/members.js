@@ -186,14 +186,15 @@ router.post('/login', function(req, res, next){
 				//res.send('로그인 성공');
 				req.session.user_id = req.body.id;
 				//res.redirect('/members'); // origin
-			}else{
+			}//else{
 				//res.render('processing', {title:'로그인 처리중입니다', content:'회원정보가 없습니다.', hr:'/'}); // origin
 				//res.send('회원정보가 없습니다.');
 				//res.json({"result":"fail"});//모바일 서버 실패시
-			}
+			//}
 			
-			var rsuid = (req.session.user_id)? true: false; // modified
-			req.render("index", {rsuid: rsuid}); // modified
+			//var rsuid = (req.session.user_id)? true: false; // modified
+			//req.render("index", {rsuid: rsuid}); // modified
+			res.render("index", {title:"Trip Master"}); // modified
 		});
 		conn.release();
 	});

@@ -6,13 +6,13 @@
     <link rel='stylesheet' href="/stylesheets/style.css"/>
     
     <script language="javascript">
-    /*
+    
       function initLogin(){
         //nil.style.visibility="hidden";
-        login.style.visibility="hidden";
-        logout.style.visibility="hidden";
+        //login.style.visibility="hidden";
+        //logout.style.visibility="hidden";
       }
-      
+    /*  
       function onSession(){
         //nil.style.visibility="hidden";
         login.style.visibility="hidden";
@@ -38,15 +38,15 @@
                 <!--div id="nil" style="visibility:hidden;">
                   &nbsp;
                 </div-->
-                <% if (rsuid === false){ %>
+                <% if (bUserLogin == false){ %>
                 <div id="login"><!--style="visibility:hidden;"-->
                   <a href="members/login" target="f_body">Login</a>
                 </div>
-                <% } else{ %>
+                <!--<% } else{ %>-->
                 <div id="logout"><!--style="visibility:hidden;"-->
                   <a href="members/logout" target="f_body">Logout</a>
                 </div>
-                <% } %>
+                <!--<% } %>-->
               </td>
               <td><a href="members/join" target="f_body">Join</a></td>
             </tr>
