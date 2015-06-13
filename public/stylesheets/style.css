@@ -10,6 +10,15 @@ td {
   text-align: center;
 }
 
+a {
+  color: #00CCFF;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #FF3300;
+}
+
 #statistics, #write {
   text-align: right;
 }
@@ -34,8 +43,4 @@ td {
 .board_split_line {
   background-color: #CCCCCC;
   line-height: 1px;
-}
-
-a {
-  color: #00B7FF;
 }
