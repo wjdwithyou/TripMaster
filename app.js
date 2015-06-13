@@ -30,13 +30,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
 	secret:"random secret value",
-	cookie:{ maxAge:10*60*1000, httpOnly:true},
+	cookie:{ maxAge:10*60*1000, httpOnly:true},//Cookie Expires 10 minutes.
 	//cookie:{ path:'/', expires:false, secure:true, httpOnly:true },
 	resave: false,
 	rolling: true,
 	saveUninitialized: true
 }));
 //app.use(multer({dest: './uploads'}));
+
+app.get('/*', function(req, res, next){
+	res.header('Cache-Control', 
+		'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+	next();	
+});
 
 app.use('/', index);
 app.use('/users', users);
