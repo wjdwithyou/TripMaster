@@ -6,7 +6,10 @@
     <link rel='stylesheet' href="/stylesheets/style.css"/>
     
     <script language="javascript">
-    
+	  if (window.location == window.parent.location){
+	  	//accessed directly by browser
+	  	location.href = "http://52.68.212.122/"
+	  }
       function initLogin(){
         //nil.style.visibility="hidden";
         //login.style.visibility="hidden";
