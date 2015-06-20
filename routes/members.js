@@ -71,7 +71,7 @@ router.get('/list/:page',function(req, res){
 				endPage = totalPage;
 			}
 			var max = cnt - ((page - 1)*size);
-			conn.query("select num, name, title, DATE_FORMAT(regdate, '%y-%m-%d %h:%i:%s') regdate, hit from board order by num desc limit ?,?",
+			conn.query("select num, name, title, DATE_FORMAT(regdate, '%y-%m-%d %H:%i:%s') regdate, hit from board order by num desc limit ?,?",
 			[begin,size],function(err, rows){
 					if(err){
 						console.log('err',err);
