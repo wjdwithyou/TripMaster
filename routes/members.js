@@ -10,6 +10,45 @@ var pool = mysql.createPool({
 	connectionLimit:20
 });
 
+function isNum(charCode){ return (charCode >= 48 && charCode <= 57); }
+function isEng(charCode){ return (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122); }
+function isSpe(charCode){
+	return (charCode >= 33 && charCode <= 47) || (charCode >= 58 && charCode <= 64) ||
+		(charCode >= 91 && charCode <= 96) || (charCode >= 123 && charCode <= 126);
+}
+function isStrNumEng(str){
+	var len = str.length;
+	var ch;
+	for (var i = 0; i < len; i++){
+		ch = str.charCodeAt(i);
+		if (!isNum(ch) && !isEng(ch))
+			return false;
+	}
+	return true;
+}
+
+function isStrNum(str){
+	var len = str.length;
+	var ch;
+	for (var i = 0; i < len; i++){
+		ch = str.charCodeAt(i);
+		if (!isNum(ch))
+			return false;
+	}
+	return true;
+}
+
+function isStrNumEngSpe(str){
+	var len = str.length;
+	var ch;
+	for (var i = 0; i < len; i++){
+		ch = str.charCodeAt(i);
+		if (!isNum(ch) && !isEng(ch) && !isSpe(ch))
+			return false;
+	}
+	return true;
+}
+
 router.get('/',function(req, res){
 	if (req.session.user_id)
 		res.render('main', {title:'Trip Master'});
@@ -131,10 +170,14 @@ router.post('/join', function(req, res, next){
 	var id = req.body.id;
 	var passwd = req.body.passwd;
 	var name = req.body.name;
-	var email = req.body.email;
 	var gender = req.body.gender;
-	var country = req.body.country;
+	//var country = req.body.country;
 	var birth = req.body.birth;
+
+	if (!isStrNumEng(id) || !isStrNumEngSpe(passwd) || !isStrNum(birth)){
+		res.render('procesing', {title:'회원가입 처리중입니다.', content:'잘못된 입력값입니다.', hr:'/'});
+		return;
+	}
 
 	pool.getConnection(function(err,conn){
 		if(err){
@@ -144,8 +187,8 @@ router.post('/join', function(req, res, next){
 		}
 		else{
 			console.log('conn',conn);
-			var sql = "insert into user values(?,?,?,?,?,?,?)";
-			var data = [id, passwd, name, email, gender, country, birth];
+			var sql = "insert into user_info values(?,?,?,?,?)";
+			var data = [id, passwd, name, gender, birth];
 			var query = conn.query(sql, data);
 			query.on('error', function(err){
 				console.log('err', err);
@@ -174,7 +217,7 @@ router.post('/join', function(req, res, next){
 router.post('/login', function(req, res, next){
 	console.log('req.body', req.body);
 	pool.getConnection(function(err, conn){
-		var query=conn.query('select count(*) from user where id=? and passwd=?', [req.body.id,req.body.passwd]);
+		var query=conn.query('select count(*) from user_info where id=? and passwd=?', [req.body.id,req.body.passwd]);
 		query.on('error', function(err){
 			console.log('err', err);
 			//res.send('로그인 처리중 에러 발생');
