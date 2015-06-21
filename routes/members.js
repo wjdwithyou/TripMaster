@@ -10,6 +10,7 @@ var pool = mysql.createPool({
 	connectionLimit:20
 });
 
+function isValidLength(str, l, r){ return (str.length >= l && str.length <= r); }
 function isNum(charCode){ return (charCode >= 48 && charCode <= 57); }
 function isEng(charCode){ return (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122); }
 function isSpe(charCode){
@@ -174,8 +175,8 @@ router.post('/join', function(req, res, next){
 	//var country = req.body.country;
 	var birth = req.body.birth;
 
-	if (!isStrNumEng(id) || !isStrNumEngSpe(passwd) || !isStrNum(birth)){
-		res.render('procesing', {title:'회원가입 처리중입니다.', content:'잘못된 입력값입니다.', hr:'/'});
+	if (!isStrNumEng(id) || !isStrNumEngSpe(passwd) || !isStrNum(birth) || !isValidLength(id, 7, 15) || !isValidLength(passwd, 7, 15) || !isValidLength(birth, 8, 8)){
+		res.render('processing', {title:'회원가입 처리중입니다.', content:'잘못된 입력값입니다.', hr:'/'});
 		return;
 	}
 
@@ -228,16 +229,16 @@ router.post('/login', function(req, res, next){
 			if (rows['count(*)'] == 1){
 				//res.send('로그인 성공');
 				req.session.user_id = req.body.id;
+				res.render("index", {title:"Trip Master"}); // modified
 				//res.redirect('/members'); // origin
-			}//else{
-				//res.render('processing', {title:'로그인 처리중입니다', content:'회원정보가 없습니다.', hr:'/'}); // origin
+			}else{
+				res.render('processing', {title:'로그인 처리중입니다', content:'회원정보가 없습니다.', hr:'/'}); // origin
 				//res.send('회원정보가 없습니다.');
 				//res.json({"result":"fail"});//모바일 서버 실패시
-			//}
+			}
 			
 			//var rsuid = (req.session.user_id)? true: false; // modified
 			//req.render("index", {rsuid: rsuid}); // modified
-			res.render("index", {title:"Trip Master"}); // modified
 		});
 		conn.release();
 	});
