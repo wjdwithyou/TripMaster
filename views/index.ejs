@@ -4,8 +4,13 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css"/>
   </head>
-  <frameset frameborder="no" rows="100,*">
-    <frame name="f_top" scrolling="no" src="/top" noresize>
-    <frame name="f_body" src="/body" noresize>
+  <frameset frameborder="no" rows="120,*,30">
+    <frame name="f_top" scrolling="no" src="/top" noresize/>
+    <frameset id="middle" frameborder="no" cols="30,*,30">
+      <frame src="left.ejs" name="left" scrolling="no" noresize/>
+      <frame src="/body" name="f_body" scrolling="no" noresize/>
+      <frame src="right.ejs" name="right" scrolling="no" noresize/>
+    </frameset>
+    <frame name="f_bottom" src="bottom.ejs" scrolling="no" noresize/>
   </frameset>
 </html>

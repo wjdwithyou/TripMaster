@@ -1,18 +1,27 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<script type="text/javascript" src="resize.ejs"></script>
 		<script type="text/javascript">
 		  if (window.location == window.parent.location){
 			//accessed directly by browser
 			location.href = "http://52.68.212.122/"
 		  }
 		</script>
+		<script language="javascript">
+			var fd = 1; // center
+		</script>
 		<title>TripMaster</title>
 
 		<link rel='stylesheet' href="/stylesheets/style.css"/>
 	</head>
-	<body>
-		Hello World!
-		<!-- 추가 예정 -->
+	<body bgcolor="magenta" onLoad="FrameResize()">
+		<div id="show_div">
+			<h2>Show Center!</h2>
+			<p>Hello World!</p>
+		</div>
+		<div id="hidden_div" style="display:none">
+			<a href="javascript:FrameResize()"><img src="btn.gif"/></a>
+		</div>
 	</body>
 </html>
