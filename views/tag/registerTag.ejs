@@ -118,6 +118,22 @@
 
 					$("#joinform").submit();
 				});
+				$("#btnAddParentTag").click(function(){
+					$("#tblParentTagList").append("<tr><td><input type='checkbox' name='chkDelParentTag'/><input type='text' size=30 maxlength=30 name='taglist'/><input type='button' value='확인' onclick='alert();'></td></tr>");
+				});
+				$("#btnDelParentTag").click(function(){
+					var i = $("input[name=chkDelParentTag]:checked").each(function(){
+						$(this).parent().remove();
+					});
+				});
+				$("#btnAddChildTag").click(function(){
+					$("#tblChildTagList").append("<tr><td><input type='checkbox' name='chkDelChildTag'/><input type='text' size=30 maxlength=30 name='taglist'/><input type='button' value='확인' onclick='alert();'></td></tr>");
+				});
+				$("#btnDelChildTag").click(function(){
+					var i = $("input[name=chkDelChildTag]:checked").each(function(){
+						$(this).parent().remove();
+					});
+				});
 			});
 		</script>
 	</head>
@@ -126,44 +142,32 @@
 		<form id="joinform" action="/members/join" method="post">
 			<table width="500" border="1">
 				<tr>
-					<th width="100">아이디</th>
-					<td><input type="text" name="id" id="id" size="15" maxlength="15">(영대소문자 숫자 합쳐서 7~15글자)</td>
+					<th width="100">태그 명</th>
+					<td><input type="text" name="txtTagName" id="txtTagName" size="30" maxlength="30">(영대소문자 숫자 특수문자 합쳐서 ~30글자)</td>
 				</tr>
 				<tr>
-					<th>비밀번호</th>
-					<td><input type="password" name="passwd" id="passwd" size="15" maxlength="15">(영대소문자 숫자 특수문자 합쳐서 7~15글자)</td>
+					<th>태그 설명</th>
+					<td><input type="text" name="txtDescription" id="txtDescription" size="100" maxlength="100"></td>
 				</tr>
 				<tr>
-					<th>비밀번호 확인</th>
-					<td><input type="password" name="passwd2" id="passwd2" size="15" maxlength="15"></td>
-				</tr>
-				<tr>
-					<th>이름</th>
-					<td><input type="text" name="name" id="name" size="10" maxlength="10">(최대 10글자)</td>
-				</tr>
-				<tr>
-					<th>성별</th>
+					<th>상위 태그</th>
 					<td>
-						<input type="radio" name="gender" id="gender1" value="남" checked="checked">남
-						<input type="radio" name="gender" id="gender2" value="여" checked="checked">여
+						<table id="tblParentTagList">
+							<tr>
+								<td><input type="button" id="btnAddParentTag" value="태그 추가"><input type="button" id="btnDelParentTag" value="태그 삭제"></td>
+							</tr>
+						</table>
 					</td>
 				</tr>
-				<!--
 				<tr>
-					<th>국적</th>
+					<th>하위 태그</th>
 					<td>
-						<select name="country" id="country">
-							<option value="대한민국">대한민국</option>
-							<option value="미국">미국</option>
-							<option value="일본">일본</option>
-							<option value="중국">중국</option>
-						</select>
+						<table id="tblChildTagList">
+							<tr>
+								<td><input type="button" id="btnAddChildTag" value="태그 추가"><input type="button" id="btnDelChildTag" value="태그 삭제"></td>
+							</tr>
+						</table>
 					</td>
-				</tr>
-				-->
-				<tr>
-					<th>생년월일</th>
-					<td><input type="text" name="birth" id="birth" size="8" maxlength="8">*YYYYMMDD</td>
 				</tr>
 				<tr>
 					<td colspan="2">

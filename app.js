@@ -10,8 +10,9 @@ var session = require('express-session');
 //var multer = require('multer');
 
 var index = require('./routes/index');
+var main = require('./routes/main');
 var users = require('./routes/users');
-var members = require('./routes/members');//added code for Login part
+var account = require('./routes/account');
 
 
 var app = express();
@@ -39,14 +40,14 @@ app.use(session({
 //app.use(multer({dest: './uploads'}));
 
 app.get('/*', function(req, res, next){
-	res.header('Cache-Control', 
-		'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+	res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 	next();	
 });
 
 app.use('/', index);
+app.use('/main', main);
+app.use('/account', account);
 app.use('/users', users);
-app.use('/members', members);//added code for Login part
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

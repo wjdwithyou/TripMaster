@@ -57,7 +57,6 @@ router.get('/',function(req, res){
 		res.redirect('/');
 });
 
-
 router.get('/join', function(req, res, next){//members/join이 요청될때 처리
 	res.render('join', {title:'회원가입'});
 });

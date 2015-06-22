@@ -6,15 +6,10 @@
     <link rel='stylesheet' href="/stylesheets/style.css"/>
     
     <script language="javascript">
-	  if (window.location == window.parent.location){
-	  	//accessed directly by browser
+	  /*if (window.location == window.parent.location){
+	  	//prevent from accessing directly by browser
 	  	location.href = "http://52.68.212.122/"
-	  }
-      function initLogin(){
-        //nil.style.visibility="hidden";
-        //login.style.visibility="hidden";
-        //logout.style.visibility="hidden";
-      }
+	  }*/
     /*  
       function onSession(){
         //nil.style.visibility="hidden";
@@ -30,7 +25,8 @@
     */
     </script>
   </head>
-  <body onLoad()="initLogin()">
+  <body>
+  	[top part]<br>
     <table><!-- top contents -->
       <tr>
         <td>&nbsp;</td>
@@ -43,15 +39,15 @@
                 </div-->
                 <% if (bUserLogin == false){ %>
                 <div id="login"><!--style="visibility:hidden;"-->
-                  <a href="members/login" target="f_body">Login</a>
+                  <a href="account/login">Log in</a>
                 </div>
                 <!--<% } else{ %>-->
                 <div id="logout"><!--style="visibility:hidden;"-->
-                  <a href="members/logout" target="f_body">Logout</a>
+                  <a href="account/logout">Log out</a>
                 </div>
                 <!--<% } %>-->
               </td>
-              <td><a href="members/join" target="f_body">Join</a></td>
+              <td><a href="account/signup">Sign up</a></td>
             </tr>
           </table>
         </td>
