@@ -10,6 +10,12 @@ td {
   text-align: center;
 }
 
+.left td {
+  /*  왼쪽 정렬을 좋아하는 ㅇㅎㅅ을 위해 만듬
+      table에다 class="left"하면 된다        */
+  text-align: left;
+}
+
 a {
   color: #00CCFF;
   text-decoration: none;
