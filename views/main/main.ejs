@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-</head>
-<body>
-<% include top %>
-<% include body %>
-</body>
+    <link rel="stylesheet" href="/stylesheets/style.css"/>
+  </head>
+  <frameset frameborder="no" rows="120,*,30">
+    <frame name="f_top" scrolling="no" src="/main/top" noresize/>
+    <frameset id="middle" frameborder="no" cols="30,*,30">
+      <frame src="/main/left" name="left" scrolling="no" noresize/>
+      <frame src="/main/body" name="f_body" scrolling="no" noresize/>
+      <frame src="/main/right" name="right" scrolling="no" noresize/>
+    </frameset>
+    <frame name="f_bottom" src="main/bottom" scrolling="no" noresize/>
+  </frameset>
+<!--Ejs에서의 프레임 사용법? --> 
+<!--<% include top %>-->
+<!--<% include body %>-->
+
 </html>
