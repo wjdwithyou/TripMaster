@@ -1,0 +1,88 @@
+﻿#main {
+	position : absolute;
+	left : 25%;
+	width : 50%;
+	height : 95%;
+	background : lightgreen;
+}
+
+#main_userbar {
+	position : absolute;
+	left : 0%;
+	top : 0%;
+	width : 90%;
+	height : 10%;
+	left : 0%;
+	background : rgb(200, 255, 255);
+}
+
+#main_tabs {
+	position : absolute;
+	left : 90%;
+	top : 0%;
+	width : 10%;
+	height : 100%;
+	float : right;
+	background : rgb(255, 200, 255);
+}
+
+#main_contents {
+	position : absolute;
+	left : 0%;
+	top : 10%;
+	width : 90%;
+	height : 90%;
+	background : rgb(255, 255, 255);
+}
+
+#journal_open {
+	position : absolute;
+	left : 95%;
+	top : 45%;
+	width : 5%;
+	height : 10%;
+	z-index : 999;
+}
+
+#journal {
+	position : absolute;
+	left : 50%;
+	width : 50%;
+	height : 95%;
+	background : lightblue;
+}
+
+#journal_title {
+	position : absolute;
+	left : 10%;
+	top : 0%;
+	width : 90%;
+	height : 10%;
+	background : rgb(200,200,255);
+}
+
+#journal_tools {
+	position : absolute;
+	left : 0%;
+	top : 0%;
+	width : 10%;
+	height : 100%;
+	background : rgb(200,255,200);
+}
+
+#journal_contents {
+	position : absolute;
+	left : 10%;
+	top : 10%;
+	width : 90%;
+	height : 90%;
+	background : rgb(255,200,200);
+}
+
+#journal_tools_close {
+	position : absolute;
+	left : 25%;
+	top : 45%;
+	width : 50%;
+	height : 10%;
+}
