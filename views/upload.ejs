@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title><%=title %></title>
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+	</head>
+	<body>
+	<h1><%=title %></h1>
+		<form action="/upload" method="post" enctype="multipart/form-data">
+			<table width="400" border="1">
+				<tr>
+					<th>제목</th>
+					<td><input type="text" id="title" size="20" maxlength="20"></td>
+				</tr>
+				<tr>
+					<th>파일 경로</th>
+					<td><input type="file" id="inputFile" name="inputFile" size="20" maxlength="20"></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="submit" value="업로드">
+						<input type="reset" value="취소">
+					</td>
+				</tr>
+			</table>
+		</form>
+		<a href="/">홈페이지로 이동</a>
+	</body>
+</html>
