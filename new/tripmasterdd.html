@@ -4,6 +4,34 @@
 		<meta charset = "utf-8">
 		<title>Tripmaster</title>
 		<link href = "style.css" rel = "stylesheet" type = "text/css"/>
+		<script language = "javascript">
+		var tab = 0;
+		function ChangeTab(n){
+			if (tab == n);
+			else{
+				tab = n;
+				switch(n){
+				case 0:
+					mainContents.style.background = "white";
+					break;
+				case 1:
+					mainContents.style.background = "red";
+					break;
+				case 2:
+					mainContents.style.background = "green";
+					break;
+				case 3:
+					mainContents.style.background = "blue";
+					break;
+				case 4:
+					mainContents.style.background = "yellow";
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		</script>
 	</head>
 	<body>
 		<div id = "mainFrame">
@@ -14,14 +42,14 @@
 						<p>Logout</p>
 					</div>
 					<nav id = "mainTabs">
-						<div id = "mainTab"><p>main</p></div>
-						<div id = "searchTab"><p>search</p></div>
-						<div id = "communityTab"><p>community</p></div>
-						<div id = "tripTab"><p>trip</p></div>
-						<div id = "someTab"><p>모름</p></div>
+						<div id = "mainTab"><a href = "javascript:ChangeTab(0)">main</a></div>
+						<div id = "searchTab"><a href = "javascript:ChangeTab(1)">search</a></div>
+						<div id = "communityTab"><a href = "javascript:ChangeTab(2)">community</a></div>
+						<div id = "tripTab"><a href = "javascript:ChangeTab(3)">trip</a></div>
+						<div id = "someTab"><a href = "javascript:ChangeTab(4)">모름</a></div>
 					</nav>
 				</header>
-				<content>
+				<content id = "mainContents">
 					<p>aa</p>
 				</content>
 			</div>
