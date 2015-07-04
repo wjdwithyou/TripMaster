@@ -1,0 +1,43 @@
+﻿content {
+	position : absolute;
+	
+	top : 50%;
+	left : 30%;
+	
+	width : 40%;
+	height : 40%;
+}
+
+#user_id {
+	position : absolute;
+	
+	top : 10%;
+	left : 10%;
+	
+	width : 80%;
+	height : 10%;
+}
+
+#user_password {
+	position : absolute;
+	
+	top : 30%;
+	left : 10%;
+	
+	width : 80%;
+	height : 10%;
+}
+
+#signup {
+	position : absolute;
+	
+	top : 50%;
+	left : 10%;
+}
+
+#login {
+	position : absolute;
+	
+	top : 70%;
+	left : 10%;
+}

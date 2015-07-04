@@ -1,19 +1,23 @@
-<!DOCTYPE html>
+ï»¿<!doctype html>
 <html>
-  <head>
-    <title><%= title %></title>
-	<script src = "/socket.io/socket.io.js"></script>
-	<script src = "/js/jquery-2.1.4.min.js"></script>
-	<script language = "javascript">
-		var socket = io();
-		
-		function send(){
-			socket.emit('message');
-			return false;
-		}
-	</script>
-  </head>
-  <body>
-		<a href = "javascript:send()">ok?</a>
-  </body>
+	<head>
+		<meta charset = "utf-8">
+		<title>Trip master</title>
+		<link href = "/stylesheets/login.css" rel = "stylesheet" type = "text/css"/>
+		<script src = "/socket.io/socket.io.js"></script>
+		<script src = "/js/jquery-2.1.4.min.js"></script>
+		<script language = "javascript">
+		</script>
+	</head>
+	<body>
+		<header>
+			<img src = "image/logo.png"/>
+		</header>
+		<content>
+			<input type = "text" id = "user_id" value = "id">
+			<input type = "password" id = "user_password" value = "password">
+			<a href = "javascript:signup()" id = "signup">È¸¿ø°¡ÀÔ</a>
+			<button id = "login">·Î±×ÀÎ</button>
+		</content>
+	</body>
 </html>
