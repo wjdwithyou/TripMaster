@@ -10,6 +10,9 @@
 		socket.on('disconnect', function(){
 			console.log('user disconnected');
 		});
+		socket.on('message', function(){
+			console.log('ok? clicked!');
+		});
 	});
 	
 	return io;
