@@ -17,6 +17,9 @@
 // socket.leave(방의 이름[, function(err){}]) -> 클라이언트를 방에서 퇴출.
 // 활용 ->  io.sockets.in(방의 이름).emit() -> 현재 방에 있는 클라이언트들에게 메시지를 보냄.
 
+var fs = require('fs');
+var ejs = require('ejs');
+
 var socket = function (server){
 	var io = require('socket.io')(server);
 	
@@ -26,6 +29,19 @@ var socket = function (server){
 	
 	io.sockets.on('connection', function(socket){
 		console.log('a user connected');
+		
+		socket.on('LoginButtonClicked', function (data){
+			console.log('a user id : ', data.id);
+			console.log('a user password : ', data.password);
+		});
+		
+		socket.on('SignupClicked', function(){
+			console.log('signup clicked!!');
+			fs.readFile(__dirname + '/signup.ejs', 'utf8', function(err, data){
+				var html = ejs.render(data);
+				socket.emit('SignupPage', html);
+			});
+		});
 		
 		socket.on('disconnect', function(){
 			console.log('a user disconnected');

@@ -7,17 +7,34 @@
 		<script src = "/socket.io/socket.io.js"></script>
 		<script src = "/js/jquery-2.1.4.min.js"></script>
 		<script language = "javascript">
+			var socket = io();
+			
+			function login(){
+				var id = $("#user_id").val();
+				var password = $("#user_password").val();
+				
+				socket.emit('LoginButtonClicked', {id : id, password : password});
+			}
+			
+			function signup(){
+				socket.emit('SignupClicked');
+			}
+			
+			socket.on('SignupPage', function(data){
+				$("body").append(data);
+			});
+			
 		</script>
 	</head>
 	<body>
 		<header>
 			<img src = "image/logo.png"/>
 		</header>
-		<content>
-			<input type = "text" id = "user_id" value = "id">
-			<input type = "password" id = "user_password" value = "password">
-			<a href = "javascript:signup()" id = "signup">È¸¿ø°¡ÀÔ</a>
-			<button id = "login">·Î±×ÀÎ</button>
-		</content>
+		<div id = "content">
+			<input type = "text" id = "user_id" value = "id"><br>
+			<input type = "password" id = "user_password" value = "password"><br>
+			<a href = "javascript:signup()" id = "signup">íšŒì›ê°€ì…</a><br>
+			<input type = "button" id = "login" onclick = "login()" value = "ë¡œê·¸ì¸"/>
+		</div>
 	</body>
 </html>
