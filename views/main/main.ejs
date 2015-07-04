@@ -3,6 +3,11 @@
   <head>
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css"/>
+	<script src = "/socket.io/socket.io.js"></script>
+	<script src = "/js/jquery-2.1.4.min.js"></script>
+	<script>
+		var socket = io();
+	</script>
   </head>
   <frameset frameborder="no" rows="120,*,30">
     <frame name="f_top" scrolling="no" src="/main/top" noresize/>
