@@ -30,6 +30,15 @@ var socket = function (server){
 	io.sockets.on('connection', function(socket){
 		console.log('a user connected');
 		
+		socket.on('RequestContentsHTML', function (data){
+			console.log("receive");
+			fs.readFile(__dirname + data.dir, 'utf8', function (err, ejsdata){
+				var html = ejs.render(ejsdata);
+				socket.emit('ReceiveContentsHTML', html);
+			})
+		});
+		
+		/*
 		socket.on('LoginButtonClicked', function (data){
 			console.log('a user id : ', data.id);
 			console.log('a user password : ', data.password);
@@ -41,7 +50,7 @@ var socket = function (server){
 				var html = ejs.render(data);
 				socket.emit('SignupPage', html);
 			});
-		});
+		});*/
 		
 		socket.on('disconnect', function(){
 			console.log('a user disconnected');

@@ -7,17 +7,34 @@
 		<script src = "/socket.io/socket.io.js"></script>
 		<script src = "/js/jquery-2.1.4.min.js"></script>
 		<script language = "javascript">
+			var socket = io();
+			
 			function resize() {
 				var container = document.getElementById('container');
 				container.style.width = window.innerWidth - 200 + 'px';
 			}
 			
-			window.onload = function() {
-				resize();
-				window.addEventListener('resize', resize);
+			function get_contents_html(dir) {
+				socket.emit('RequestContentsHTML', {dir: dir});
 			}
 			
+			socket.on('ReceiveContentsHTML', function (data){
+				$("#contents").html(data);
+			});
 			
+			var tab = '/contents/home.ejs';
+			function change_contents(dir) {
+				if (dir != tab) {
+					get_contents_html(dir);
+					tab = dir;
+				}
+			}
+			
+			window.onload = function() {
+				resize();
+				get_contents_html(tab);
+				window.addEventListener('resize', resize);
+			}
 		</script>
 	</head>
 	<body>
@@ -27,10 +44,10 @@
 			</header>
 			<nav>
 				<ul>
-					<li><a href = "#"><b>Home</b></a></li>
-					<li><a href = "#"><b>Spot Search</b></a></li>
-					<li><a href = "#"><b>Community</b></a></li>
-					<li><a href = "#"><b>Lets Trip</b></a></li>
+					<li><a href = "javascript:change_contents('/contents/home.ejs')"><b>Home</b></a></li>
+					<li><a href = "javascript:change_contents('/contents/spotsearch.ejs')"><b>Spot Search</b></a></li>
+					<li><a href = "javascript:change_contents('/contents/community.ejs')"><b>Community</b></a></li>
+					<li><a href = "javascript:change_contents('/contents/letstrip.ejs')"><b>Lets Trip</b></a></li>
 				</ul>
 			</nav>
 			<section id = "contents">
