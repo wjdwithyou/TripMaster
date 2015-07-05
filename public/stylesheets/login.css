@@ -1,0 +1,86 @@
+﻿body {
+	background-color : rgb(243, 222, 178);
+}
+
+img {
+	width : 400px;
+	position : absolute;
+	
+	left : 50%;
+	top : 10%;
+	
+	margin-left : -200px;
+}
+
+#content {
+	width : 200px;
+	height : 220px;
+	
+	position : absolute;
+	
+	left : 50%;
+	top : 50%;
+	
+	
+	margin-left : -100px;
+	
+	background-color : white;
+	box-shadow : 0px 0px 5px 0px #000;
+}
+
+#user_id {
+	position : absolute;
+	
+	top : 20px;
+	left : 20px;
+	
+	height : 20px;
+	width : 160px;
+}
+
+#user_password {
+	position : absolute;
+	
+	top : 60px;
+	left : 20px;
+	
+	height : 20px;
+	width : 160px;
+}
+
+#signup {
+	position : absolute;
+	
+	top : 90px;
+	left : 20px;
+	
+	text-align : center;
+	
+	height : 20px;
+	width : 160px;
+}
+
+#login {
+	position : absolute;
+	
+	top : 180px;
+	left : 20px;
+	
+	height : 20px;
+	width : 160px;
+}
+
+#signupPage {
+	width : 500px;
+	height : 500px;
+	
+	position : absolute;
+	
+	left : 50%;
+	top : 10%;
+	
+	margin-left : -250px;
+	
+	background-color : white;
+	box-shadow : 0px 0px 5px 0px #000;
+}

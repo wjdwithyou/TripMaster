@@ -1,19 +1,40 @@
-<!DOCTYPE html>
+﻿<!doctype html>
 <html>
-  <head>
-    <title><%= title %></title>
-	<script src = "/socket.io/socket.io.js"></script>
-	<script src = "/js/jquery-2.1.4.min.js"></script>
-	<script language = "javascript">
-		var socket = io();
-		
-		function send(){
-			socket.emit('message');
-			return false;
-		}
-	</script>
-  </head>
-  <body>
-		<a href = "javascript:send()">ok?</a>
-  </body>
+	<head>
+		<meta charset = "utf-8">
+		<title>Trip master</title>
+		<link href = "/stylesheets/login.css" rel = "stylesheet" type = "text/css"/>
+		<script src = "/socket.io/socket.io.js"></script>
+		<script src = "/js/jquery-2.1.4.min.js"></script>
+		<script language = "javascript">
+			var socket = io();
+			
+			function login(){
+				var id = $("#user_id").val();
+				var password = $("#user_password").val();
+				
+				socket.emit('LoginButtonClicked', {id : id, password : password});
+			}
+			
+			function signup(){
+				socket.emit('SignupClicked');
+			}
+			
+			socket.on('SignupPage', function(data){
+				$("body").append(data);
+			});
+			
+		</script>
+	</head>
+	<body>
+		<header>
+			<img src = "image/logo.png"/>
+		</header>
+		<div id = "content">
+			<input type = "text" id = "user_id" value = "id"><br>
+			<input type = "password" id = "user_password" value = "password"><br>
+			<a href = "javascript:signup()" id = "signup">회원가입</a><br>
+			<input type = "button" id = "login" onclick = "login()" value = "로그인"/>
+		</div>
+	</body>
 </html>
