@@ -4,8 +4,13 @@
 		<meta charset="utf-8">
 		<title><%=title %></title>
 		<link rel='stylesheet' href='/stylesheets/style.css' />
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+		<script src="/socket.io/socket.io.js"></script>
 		<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+		<script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js'></script>
 		<script>
+			var socket = null;
+			var curTagList = null;
 			function isValidLength(str, l, r){ return (str.length >= l && str.length <= r); }
 			function isNum(charCode){ return (charCode >= 48 && charCode <= 57); }
 			function isEng(charCode){ return (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122); }
@@ -116,11 +121,18 @@
 						return;
 					}
 
+					if ($("#isValidId").val() != 'true'){
+						alert("중복된 아이디입니다.");
+						$("#id").focus();
+						return;
+					}
+
 					$("#joinform").submit();
 				});
 				$("#btnAddTag").click(function(){
 					//$("#tblTagList").append("<tr><td><input type='checkbox' name='chkDelTag'/><input type='text' size=30 maxlength=30 name='taglist'/><input type='button' value='확인' onclick='alert();'></td></tr>");
-					$("#tblTagList").append("<tr><td><input type='checkbox' name='chkDelTag'/><select name='taglist'><option>abcde</option><option>ee</option></select><input type='button' value='확인' onclick='alert();'></td></tr>");
+					$("#tblTagList").append("<tr><td><input type='checkbox' name='chkDelTag'/><input type='text' size=30 maxlength=30 name='taglist'/></td></tr>");
+					updateTagList();
 				});
 				$("#btnDelTag").click(function(){
 					var i = $("input[name=chkDelTag]:checked").each(function(){
@@ -128,6 +140,44 @@
 					});
 				});
 			});
+
+			function socketConnect(){
+				if (socket)
+					socket.connect();
+				else
+					socket = io();
+			}
+
+			function updateTagList(){
+				socketConnect();
+				socket.on('updateTagList', function( result ){
+					$("input[name=taglist]").each(function(){
+						$(this).autocomplete({
+							source: result.list
+						});
+					});
+					socket.disconnect();
+				});
+				socket.emit('updateTagList');
+			}
+
+			function validIdCheck(){
+				socketConnect();
+
+				socket.on('isValidId', function( result ){
+					if (result.valid){
+						$("#isValidId").val("true");
+						$("#id").css("background-color", "#DDFFDD");
+					}
+					else{
+						$("#isValidId").val("false");
+						$("#id").css("background-color", "#FEE8E9");
+					}
+					socket.disconnect();
+				});
+
+				socket.emit('isValidId', $("#id").val());
+			}
 		</script>
 	</head>
 	<body>
@@ -136,7 +186,11 @@
 			<table class="left" width="500" border="1">
 				<tr>
 					<th width="100">아이디</th>
-					<td><input type="text" name="id" id="id" size="15" maxlength="15">(영대소문자 숫자 합쳐서 7~15글자)</td>
+					<td>
+						<input type="text" name="id" id="id" size="15" maxlength="15" onblur="javascript:validIdCheck();">(영대소문자 숫자 합쳐서 7~15글자)
+						<input type="hidden" id="isValidId" value="false">
+						<label id="idChkRes"></label>
+					</td>
 				</tr>
 				<tr>
 					<th>비밀번호</th>

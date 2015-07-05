@@ -75,7 +75,11 @@ router.post('/signup', function(req, res, next){
 	var gender = req.body.gender;
 	//var country = req.body.country;
 	var birth = req.body.birth;
+	var tagList = req.body.taglist;
+	if (tagList.length == undefined)
+		tagList = [req.body.taglist];
 
+	console.log(id + '가 회원가입을 시도합니다.');
 	if (!isStrNumEng(id) || !isStrNumEngSpe(passwd) || !isStrNum(birth) || !isValidLength(id, 7, 15) || !isValidLength(passwd, 7, 15) || !isValidLength(birth, 8, 8)){
 		res.render('processing', {title:'회원가입 처리중입니다.', content:'잘못된 입력값입니다.', hr:'/main'});
 		return;
@@ -89,29 +93,47 @@ router.post('/signup', function(req, res, next){
 		}
 		else{
 			console.log('conn',conn);
-			var sql = "insert into user_info values(?,?,?,?,?)";
-			var data = [id, passwd, name, gender, birth];
-			var query = conn.query(sql, data);
-			query.on('error', function(err){
-				console.log('err', err);
-				//res.json(err);
-				res.render('processing', {title:'회원가입 처리중입니다', content:'이미 존재하는 id입니다.', hr:'/main'});
-				//res.render('index', {title:'홈페이지'});
-				//res.send('회원가입 처리 중 에러 발생');
+			conn.query("insert into user_info values(?,?,?,?,?)", [id, passwd, name, gender, birth], function(err, rows, field){
+				if (err){
+					console.log('err', err);
+					res.render('processing', {title:'회원가입 처리중입니다', content:'이미 존재하는 id입니다.', hr:'/main'});
+				}
+				else{
+					console.log(id + '회원가입만 일단 완료');
+					for (var i = 0; i < tagList.length; i++){
+						if (tagList[i] == '') continue; 
+						console.log(tagList[i] + '처리 시작');
+						(function(tag){
+							conn.query("select count(*) from tag_info where name=?", [tag], function(err, rows, field){
+								if (err){
+									console.log('err', err);
+									res.render('processing', {title:'회원가입 처리중입니다', content:'tag등록중에 오류가 발생했습니다.', hr:'/main'});
+								}
+								console.log(tag + ' tag 중복 체크');
+
+								conn.query("insert into tag_info values(?,?)", [tag, ''], function(err, rows, field){
+									if (err)
+										console.log(tag + '는 이미 존재하는 태그입니다');
+									else
+										console.log(tag + 'tag_info에 추가 완료');
+
+									conn.query("insert into user_interests values(?,?)", [id, tag], function(err, rows, field){
+										if (err){
+											console.log('err', err);
+											res.render('processing', {title:'회원가입 처리중입니다', content:'태그 입력중 오류가 발생했습니다.', hr:'/main'});
+										}
+										else
+											console.log(id + '에서 ' + tag + '를 취향태그로 등록하였습니다.');
+									});
+								});
+							});
+						})(tagList[i]);
+					}
+					console.log(id + '가 회원가입을 끝마쳤습니다.');
+					res.render('processing', {title:'회원가입 처리중입니다', content:'회원가입이 완료되었습니다.', hr:'/main'});
+				}
+				conn.release();
 			});
-			query.on('result', function(row){
-				console.log('row', row);
-				//res.send('회원가입이 완료되었습니다.');
-				res.render('processing', {title:'회원가입 처리중입니다', content:'회원가입이 완료되었습니다.', hr:'/main'});
-				//res.render('index', {title:'홈페이지'});
-			});
-			query.on('end', function(result){
-				console.log('OK');
-				//res.json(req.body);
-			});
-			conn.release();
-			//res.json(req.body);
-			//res.send('회원가입이 완료되었습니다.');
 		}
 	});
 });
