@@ -1,0 +1,13 @@
+﻿<a href = "javascript:spotsearch_open(<%=spot_id%>)" class = "spotsearch_spot_button">
+	<div class = "spotsearch_spot">
+		<p class = "spotsearch_spot_id"><%=spot_id%></p>
+		<p class = "spotsearch_spot_name"><%=spot_name%></p>
+		<div class = "spotsearch_spot_rating">
+		<%for(var i = 0; i < 5; i++){%>
+			<img src = <%=spot_rating[i]%>></img>
+		<%}%>
+		</div>
+		<a href = "javascript:spotsearch_add(<%=spot_id%>)" class = "spotsearch_spot_add"><img src = "/image/add button1.png"></img></a>
+		<p class = "spotsearch_spot_description"><%=spot_description%></p>
+	</div>
+</a>

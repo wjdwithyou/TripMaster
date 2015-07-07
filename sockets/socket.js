@@ -19,6 +19,84 @@
 
 var fs = require('fs');
 var ejs = require('ejs');
+var mysql = require('mysql');
+
+var pool = mysql.createPool({
+	host	:'localhost',
+	user	:'root',
+	password:'2014005041',
+	database:'tripmaster',
+	connectionLimit:20
+});
+
+function load_spotsearch(pool, socket, fs, ejs, pagenum){
+	pool.getConnection(function(err, conn){
+		if(err){
+			console.log('err : ', err);
+			conn.release();
+			throw err;
+		}
+		
+		conn.query("select * from spot limit ? , 10" , 10*(pagenum - 1), function(err, rows){
+			if(err){
+				console.log('err : ', err);
+				conn.release();
+				throw err;
+			}
+			
+			var html = "";
+			
+			fs.readFile(__dirname + '/contents/spotsearch_spot.ejs', 'utf8', function (err, ejsdata){
+				
+				var rating = new Array();
+				for(var i = 0; i < rows.length; i++)
+				{
+					for(var j = 0; j < 5; j++)
+					{
+						if(j < rows[i].rating)
+							rating[4 - j] = "/image/coloredstar.png";
+						else
+							rating[4 - j] = "/image/emptystar.png";
+					}
+				
+					html = html + ejs.render(ejsdata,
+					{
+						spot_id : 0,
+						spot_name : rows[i].name,
+						spot_rating : rating,
+						spot_description : rows[i].description
+					});
+				}
+			});
+			
+			fs.readFile(__dirname + '/contents/spotsearch_index.ejs', 'utf8', function (err, ejsdata){		
+				conn.query('select count(*) cnt from spot', [], function(err, rows){
+					if(err){
+						console.log('err',err);
+						conn.release();
+						throw err;
+					}
+				
+					var whole_pagenum = Math.ceil(rows[0].cnt / 10);
+					
+					html = html + ejs.render(ejsdata,
+					{
+						current_pagenum : pagenum,
+						whole_pagenum : whole_pagenum
+					});
+					
+					socket.emit('ReSpotsearchSearch',
+					{
+						html : html,
+						current_pagenum : pagenum,
+						whole_pagenum : whole_pagenum
+					});
+					conn.release();
+				});
+			});
+		});
+	});
+}
 
 var socket = function (server){
 	var io = require('socket.io')(server);
@@ -35,22 +113,16 @@ var socket = function (server){
 			fs.readFile(__dirname + data.dir, 'utf8', function (err, ejsdata){
 				var html = ejs.render(ejsdata);
 				socket.emit('ReceiveContentsHTML', html);
-			})
-		});
-		
-		/*
-		socket.on('LoginButtonClicked', function (data){
-			console.log('a user id : ', data.id);
-			console.log('a user password : ', data.password);
-		});
-		
-		socket.on('SignupClicked', function(){
-			console.log('signup clicked!!');
-			fs.readFile(__dirname + '/signup.ejs', 'utf8', function(err, data){
-				var html = ejs.render(data);
-				socket.emit('SignupPage', html);
 			});
-		});*/
+		});
+		
+		socket.on('SpotsearchSearch', function(spot_name){
+			load_spotsearch(pool, socket, fs, ejs, 1);
+		});
+		
+		socket.on('SpotsearchPageChange', function(spot_list_page){
+			load_spotsearch(pool, socket, fs, ejs, spot_list_page);
+		});
 		
 		socket.on('disconnect', function(){
 			console.log('a user disconnected');
