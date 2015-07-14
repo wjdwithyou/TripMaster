@@ -108,20 +108,116 @@ var socket = function (server){
 	io.sockets.on('connection', function(socket){
 		console.log('a user connected');
 		
-		socket.on('RequestContentsHTML', function (data){
-			console.log("receive");
+		// contents
+		// data
+		//	.dir			ejs 파일 위치
+		socket.on('Contents', function (data){
+			console.log("Contents receive");
 			fs.readFile(__dirname + data.dir, 'utf8', function (err, ejsdata){
 				var html = ejs.render(ejsdata);
-				socket.emit('ReceiveContentsHTML', html);
+				socket.emit('Contents', html);
 			});
 		});
 		
+		socket.on('Sidebar', function (data){
+			console.log("Sidebar receive", data.dir);
+			fs.readFile(__dirname + data.dir, 'utf8', function (err, ejsdata){
+				var html = ejs.render(ejsdata);
+				socket.emit('Sidebar', html);
+				console.log('Sidebar response', html);
+			});
+		});
+		
+		// popup
+		// data
+		//	.dir			ejs 파일 위치
+		// .type		ejs 파일 종류
+		// .param		ejs 파일 렌더링 시 필요한 정보들
+		socket.on('Popup', function (data){
+			if(data.type == 'signup')
+				fs.readFile(__dirname + data.dir, 'utf8', function (err, ejsdata){
+					var html = ejs.render(ejsdata);
+					socket.emit('Popup', html);
+				});
+			//type 에 따른 분류를 여기서합니다.
+		});
+		
+		// spotsearch
 		socket.on('SpotsearchSearch', function(spot_name){
 			load_spotsearch(pool, socket, fs, ejs, 1);
 		});
 		
 		socket.on('SpotsearchPageChange', function(spot_list_page){
 			load_spotsearch(pool, socket, fs, ejs, spot_list_page);
+		});
+		
+		//login
+		socket.on('Login',function(data){
+			console.log('message : Login');
+			pool.getConnection(function(err, conn){
+				var query = conn.query('select count(*) from user where id=?, passwd=?',[data.id, data.password]);
+				query.on('error', function(err){
+					console.log('err', err);
+					socket.emit('socketError');
+				});
+				query.on('result', function(rows){
+					console.log('rows', rows);
+					if (rows['count(*)'] == 0){
+						socket.emit('Login', false);
+					}
+					else socket.emit('Login', true);
+				});
+				conn.release();
+			});
+		});
+		
+		// signup
+		socket.on('SignupRequest',function(data){
+			pool.getConnection(function(err, conn){
+				var query = conn.query('insert into user (?,?,?,?,?)',[data.id, data.password, data.name, data.gender, data.birth]);
+				query.on('error', function(err){
+					console.log('err', err);
+					socket.emit('socketError');
+				});
+				socket.emit('SignupRequest');
+				conn.release();
+			});
+		});
+		
+		socket.on('isValidId', function(id){
+			pool.getConnection(function(err, conn){
+				var query = conn.query('select count(*) from user_info where id=?', [id]);
+				query.on('error', function(err){
+					console.log('err', err);
+					socket.emit('socketError');
+				});
+				query.on('result', function(rows){
+					console.log('rows', rows);
+					if (rows['count(*)'] == 0){
+						socket.emit('isValidId', {valid : true});
+					}
+					else socket.emit('isValidId', {valid: false});
+				});
+				conn.release();
+			});
+		});	
+
+		socket.on('updateTagList', function(){
+			pool.getConnection(function(err, conn){
+				var query = conn.query('select name from tag_info', function(err, rows, field){
+					if (err){
+						console.log('err', err);
+						socket.emit('socketError');
+					}
+					var reslist = [];
+					console.log(rows);
+					for (var i in rows){
+						reslist.push(rows[i].name);
+					}
+					socket.emit('updateTagList', {list : reslist});
+				});
+				conn.release();
+			});
 		});
 		
 		socket.on('disconnect', function(){

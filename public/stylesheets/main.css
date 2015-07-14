@@ -88,3 +88,15 @@ footer {
 	background-color : gray;
 	box-shadow : 0px 0px 10px 0px #000;
 }
+
+#popup {
+	position : fixed;
+	left : 0px;
+	top : 0px;
+	background-color : rgba(0,0,0,0.2);
+	overflow : auto;
+}
+
+#popup div {
+	margin : 50px auto;
+}

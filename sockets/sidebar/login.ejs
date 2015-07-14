@@ -1,0 +1,35 @@
+﻿<script type="text/javascript">
+	function login(){
+		popdown();
+		
+		var id = $("#user_id").val();
+		var password = $("user_password").val();
+		socketConnect();
+		socket.on('Login', function(data){
+			if(data){
+				console.log("로그인 성공");
+			}else{
+				alert("아이디 혹은 비밀번호를 잘못 입력하셨습니다.");
+			}
+			socket.disconnect();
+		});
+		socket.emit('Login', {id : id, password : password});
+	}
+	
+	function signup(){
+		 popup({
+			dir : '/sidebar/signup.ejs',
+			type : 'signup'
+			param : {}
+		 });
+	}
+</script>
+<div id = "login">
+	<p id = "login_title">로그인</p>
+	<div>
+		<input type = "text" id = "user_id" placeholder = "id">
+		<input type = "password" id = "user_password" placeholder = "password">
+	</div>
+	<a href = "javascript:signup()" id = "login_signup">계정이 없으시다고요?</a>
+	<a href = "javascript:login()" id = "login_loginbutton"><img src = "/image/loginbutton.png" /></a>
+</div>

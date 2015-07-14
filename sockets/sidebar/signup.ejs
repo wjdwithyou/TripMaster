@@ -1,0 +1,238 @@
+﻿<script type = "text/javascript">
+	var gender = "none";
+	function isValidLength(str, l, r){ return (str.length >= l && str.length <= r); }
+	function isNum(charCode){ return (charCode >= 48 && charCode <= 57); }
+	function isEng(charCode){ return (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122); }
+	function isSpe(charCode){
+		return (charCode >= 33 && charCode <= 47) || (charCode >= 58 && charCode <= 64) ||
+			(charCode >= 91 && charCode <= 96) || (charCode >= 123 && charCode <= 126);
+	}
+	function isStrNumEngSpe(str){
+		var len = str.length;
+		var ch;
+		for (var i = 0; i < len; i++){
+			ch = str.charCodeAt(i);
+			if (!isNum(ch) && !isEng(ch) && !isSpe(ch))
+				return false;
+		}
+		return true;
+	}
+	function isStrNumEng(str){
+		var len = str.length;
+		var ch;
+		for (var i = 0; i < len; i++){
+			ch = str.charCodeAt(i);
+			if (!isNum(ch) && !isEng(ch))
+				return false;
+		}
+		return true;
+	}
+	function isStrNum(str){
+		var len = str.length;
+		var ch;
+		for (var i = 0; i < len; i++){
+			ch = str.charCodeAt(i);
+			if (!isNum(ch))
+				return false;
+		}
+		return true;
+	}
+	
+	$(function(){
+		$("#signup_man").click(function(){
+			gender = "man";
+			var button = document.getElementById('signup_man');
+			button.style.color = "rgb(253, 103, 135)";
+			button.style.border = "1px solid rgb(253, 103, 135)";
+			button = document.getElementById('signup_woman');
+			button.style.color = "rgb(169,169,169)";
+			button.style.border = "1px solid lightgray";
+		});
+		
+		$("#signup_woman").click(function(){
+			gender = "woman";
+			var button = document.getElementById('signup_man');
+			button.style.color = "rgb(169,169,169)";
+			button.style.border = "1px solid lightgray";
+			button = document.getElementById('signup_woman');
+			button.style.color = "rgb(253, 103, 135)";
+			button.style.border = "1px solid rgb(253, 103, 135)";
+		});
+	
+		$("#signup_addtag").click(function(){
+			$("#signup_tag").append("<div><input type='checkbox' name='chkDelTag' class = 'signup_interesting'/><input type='text' maxlength='30' name = 'taglist' placeholder = '당신의 관심분야는?'/></div>");
+			updateTagList();
+		});
+		
+		$("#signup_deltag").click(function(){
+			var i = $("input[name=chkDelTag]:checked").each(function(){
+				$(this).parent().remove();
+			});
+		});
+	});
+	
+	function signup_submit(){
+		if ($("#id").val()==""){
+			alert("아이디를 꼭 입력하세요");
+			$("#id").focus();
+			return;
+		}
+		if ($("#passwd").val()==""){
+			alert("비밀번호를 꼭 입력하세요");
+			$("#passwd").focus();
+			return;
+		}
+		if ($("#passwd2").val()==""){
+			alert("비밀번호확인란을 꼭 입력하세요");
+			$("#passwd2").focus();
+			return;
+		}
+		if($("#name").val()==""){
+			alert("이름을 꼭 입력하세요");
+			$("#name").focus();
+			return;
+		}
+		if (gender=="none"){
+			alert("성별을 꼭 입력하세요");
+			$("#gender").focus();
+			return;
+		}
+		if ($("#birth").val()==""){
+			alert("생년월일을 꼭 입력하세요");
+			$("#birth").focus();
+			return;
+		}
+		if (isNaN($("#birth").val())){
+			alert("생년월일을 숫자로만 입력하세요");
+			$("#birth").val("");
+			$("#birth").focus();
+			return;
+		}
+		if ($("#passwd").val() !== $("#passwd2").val()){
+			alert("비밀번호가 일치하지 않습니다.");
+			$("#passwd").focus();
+			return;
+		}
+		if (($("#birth").val().charAt(0) != '1' && $("#birth").val().charAt(0) != '2') ||
+			($("#birth").val().charAt(4) != '0' && $("#birth").val().charAt(4) != '1') ||
+			($("#birth").val().charAt(6) < '0' || $("#birth").val().charAt(6) > '3') || 
+			!isStrNum($("#birth").val()) || !isValidLength($("#birth").val(), 8,8)){
+			alert("형식에 맞지 않는 생년월일입니다.");
+			$("#birth").val("");
+			$("#birth").focus();
+			return;
+		}
+
+		if (!isStrNumEng($("#id").val()) || !isValidLength($("#id").val(), 7,15)){
+			alert("형식에 맞지 않는 아이디입니다.");
+			$("#id").val("");
+			$("#id").focus();
+			return;
+		}
+
+		if (!isStrNumEngSpe($("#passwd").val()) || !isValidLength($("#passwd").val(), 7, 15)){
+			alert("형식에 맞지 않는 비밀번호입니다.");
+			$("#passwd").val("");
+			$("#passwd").focus();
+			return;
+		}
+		
+		//validIdCheck();
+		if ($("#isValidId").val() != 'true'){
+			alert("중복된 아이디입니다.");
+			$("#id").focus();
+			return;
+		}
+		
+		var id = $("#id").val();
+		var password = $("#passwd").val();
+		var name = $("#name").val();
+		var birth = $("#birth").val();
+		
+		socketConnect();
+		socket.on('SignupRequest', function (){
+			socket.disconnect();
+		});
+		socket.emit('SignupRequest', {
+			id : id,
+			password : password,
+			gender : gender,
+			name : name,
+			birth : birth
+		});
+	}
+
+	function updateTagList(){
+		socketConnect();
+		socket.on('updateTagList', function( result ){
+			$("input[name=taglist]").each(function(){
+				$(this).autocomplete({
+					source: result.list
+				});
+			});
+			socket.disconnect();
+		});
+		socket.emit('updateTagList');
+	}
+
+	function validIdCheck(){
+		socketConnect();
+
+		socket.on('isValidId', function( result ){
+			if (result.valid){
+				$("#isValidId").val("true");
+			}
+			else{
+				$("#isValidId").val("false");
+			}
+			socket.disconnect();
+		});
+
+		socket.emit('isValidId', $("#id").val());
+	}
+</script>
+<div id = "signup_header">
+	<p>회원가입</p>
+	<a href = "javascript:popdown()">취소</a>
+</div>
+<div id = "signup">
+	<div id = "signup_user">
+		<div>
+			<!--p>아이디</p-->
+			<input type = "text" name="id" id="id" maxlength="15" placeholder = "아이디">
+			<input type="hidden" id="isValidId" value="false">
+		</div>
+		<div>
+			<input type = "password" name="passwd" id="passwd" maxlength="15" placeholder = "비밀번호">
+		</div>
+		<div class = "final">
+			<input type = "password" name="passwd2" id="passwd2" maxlength="15" placeholder = "비밀번호 재확인">
+		</div>
+	</div>
+	<div id = "signup_personal">
+		<div>
+			<input type = "text" name="name" id="name" size="10" placeholder = "이름">
+		</div>
+		<div>
+			<p id = "gender">성별</p>
+			<input type = "button" value = "남성" id = "signup_man">
+			<input type = "button" value = "여성" id = "signup_woman">
+		</div>
+		<div>
+			<input type = "text" name="birth" id="birth" size="8" maxlength="8" placeholder = "생년월일    YYYYMMDD">
+		</div>
+	</div>
+	<div id = "signup_tag">
+		<div>
+			<p>관심분야</p>
+			<input type = "button" value = "관심분야 추가" id = "signup_addtag">
+			<input type = "button" value = "관심분야 제거" id = "signup_deltag">
+		</div>
+		
+	</div>
+	<a href = "javascript:signup_submit()">
+		<div>
+			<p>가입하기</p>
+		</div>
+	</a>
+</div>

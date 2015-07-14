@@ -1,41 +1,65 @@
 ﻿<div id = "spotsearch">
 	<script>
-		var socket = io();
 		var current_pagenum = 0;
 		var whole_pagenum = 0;
 		
+		
+		
 		function spotsearch_search(){
+			socketConnect();
 			var temp = $("#spotsearch_searchbar").value;
 			socket.emit('SpotsearchSearch', temp);
+			socket.on('ReSpotsearchSearch', function (data){
+				$("#spotsearch_body").html(data.html);				//html 받아옴.
+				current_pagenum = data.current_pagenum;		//현재 보는 페이지 받아옴.
+				whole_pagenum = data.whole_pagenum;			//총 페이지 수.
+				socket.disconnect();
+			});
 			console.log("aaaa");
 		}
 		
 		function spotsearch_left(){
-			if( current_pagenum > 1 )
+			if( current_pagenum > 1 ){
+				socketConnect();
 				socket.emit('SpotsearchPageChange', --current_pagenum);
+				socket.on('ReSpotsearchSearch', function (data){
+					$("#spotsearch_body").html(data.html);				//html 받아옴.
+					current_pagenum = data.current_pagenum;		//현재 보는 페이지 받아옴.
+					whole_pagenum = data.whole_pagenum;			//총 페이지 수.
+					socket.disconnect();
+				});
+			}
 		}
 		
 		function spotsearch_right(){
-			if( current_pagenum < whole_pagenum )
+			if( current_pagenum < whole_pagenum ){
+				socketConnect();
 				socket.emit('SpotsearchPageChange', ++current_pagenum);
+				socket.on('ReSpotsearchSearch', function (data){
+					$("#spotsearch_body").html(data.html);				//html 받아옴.
+					current_pagenum = data.current_pagenum;		//현재 보는 페이지 받아옴.
+					whole_pagenum = data.whole_pagenum;			//총 페이지 수.
+					socket.disconnect();
+				});
+			}
 		}
 		
 		function spotsearch_index_search(){
 			var temp = $("spotsearch_index_pagesearchbar").value;
-			if(isNumber(temp))
-			{
+			if(isNumber(temp)){
 				temp = parseInt(temp);
-				if( 1 <= temp || temp <= whole_pagenum )
+				if( 1 <= temp || temp <= whole_pagenum ){
+					socketConnect();
 					socket.emit('SpotsearchPageChange', temp);
+					socket.on('ReSpotsearchSearch', function (data){
+						$("#spotsearch_body").html(data.html);				//html 받아옴.
+						current_pagenum = data.current_pagenum;		//현재 보는 페이지 받아옴.
+						whole_pagenum = data.whole_pagenum;			//총 페이지 수.
+						socket.disconnect();
+					});
+				}
 			}
 		}
-		
-		socket.on('ReSpotsearchSearch', function (data){
-			$("#spotsearch_body").html(data.html);				//html 받아옴.
-			current_pagenum = data.current_pagenum;		//현재 보는 페이지 받아옴.
-			whole_pagenum = data.whole_pagenum;			//총 페이지 수.
-		});
-		
 		//추가할 기능 function spotsearch_open(spot_id){}
 		//추가할 기능 function spotsearch_add(spot_id){}
 	</script>

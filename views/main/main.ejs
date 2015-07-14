@@ -5,23 +5,47 @@
 		<title>Tripmaster</title>
 		<link href =  "/stylesheets/main.css" rel = "stylesheet" type = "text/css"/>
 		<link href =  "/stylesheets/spotsearch.css" rel = "stylesheet" type = "text/css"/>
+		<link href =  "/stylesheets/loginsignup.css" rel = "stylesheet" type = "text/css"/>
 		<script src = "/socket.io/socket.io.js"></script>
 		<script src = "/js/jquery-2.1.4.min.js"></script>
 		<script language = "javascript">
-			var socket = io();
+			var socket = null;
+			var popup_shown = false;
 			
-			function resize() {
-				var container = document.getElementById('container');
-				container.style.width = window.innerWidth - 200 + 'px';
+			function socketConnect(){
+				if (socket)
+					socket.connect();
+				else
+					socket = io();
+			}
+			
+			function popup(html_info){ 
+				if(!popup_shown){
+					popup_shown = !popup_shown; resize();
+				}
+				socketConnect();
+				socket.on('Popup', function(html){
+					$("#popup").html(html);
+					socket.disconnect();
+				});
+				socket.emit('Popup', html_info);
+			}
+			
+			function popdown(){
+				if(popup_shown){
+					popup_shown = !popup_shown; resize();
+				}
+				$("#popup").html(' ');
 			}
 			
 			function get_contents_html(dir) {
-				socket.emit('RequestContentsHTML', {dir: dir});
+				socketConnect();
+				socket.on('Contents', function (data){
+					$("#contents").html(data);
+					socket.disconnect();
+				});
+				socket.emit('Contents', {dir : dir});
 			}
-			
-			socket.on('ReceiveContentsHTML', function (data){
-				$("#contents").html(data);
-			});
 			
 			var tab = '/contents/home.ejs';
 			function change_contents(dir) {
@@ -31,9 +55,34 @@
 				}
 			}
 			
+			function get_sidebar_html(dir) {
+				socketConnect();
+				socket.on('Sidebar', function (data){
+					$("#userbar").html(data);
+					socket.disconnect();
+					console.log('sidebar : socketDisconnect()');
+				});
+				socket.emit('Sidebar', {dir : dir});
+			}
+			
+			function resize() {
+				var container = document.getElementById('container');
+				container.style.width = window.innerWidth - 200 + 'px';
+				
+				var popup = document.getElementById('popup');
+				if(popup_shown){
+					popup.style.width = window.innerWidth - 200 + 'px';
+					popup.style.height = window.innerHeight + 'px';
+				}else{
+					popup.style.width = 0;
+					popup.style.height = 0;
+				}
+			}
+			
 			window.onload = function() {
 				resize();
 				get_contents_html(tab);
+				get_sidebar_html('/sidebar/login.ejs');
 				window.addEventListener('resize', resize);
 			}
 		</script>
@@ -57,9 +106,11 @@
 			<footer>
 			</footer>
 		</div>
+		<div id = "popup">
+			<!-- 이 내부에 팝업 html 이 들어온다. 항상 div 태그가 맨 위에 있어야한다. -->
+		</div>
 		<aside id = "userbar">
 			<!-- 이 내부에 html 이 들어온다. -->
 		</aside>
-		</div>
 	</body>
 </html>
