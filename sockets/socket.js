@@ -112,7 +112,7 @@ var socket = function (server){
 		// data
 		//	.dir			ejs 파일 위치
 		socket.on('Contents', function (data){
-			console.log("Contents receive");
+			console.log("Contents receive", data.dir);
 			fs.readFile(__dirname + data.dir, 'utf8', function (err, ejsdata){
 				var html = ejs.render(ejsdata);
 				socket.emit('Contents', html);
@@ -124,7 +124,6 @@ var socket = function (server){
 			fs.readFile(__dirname + data.dir, 'utf8', function (err, ejsdata){
 				var html = ejs.render(ejsdata);
 				socket.emit('Sidebar', html);
-				console.log('Sidebar response', html);
 			});
 		});
 		

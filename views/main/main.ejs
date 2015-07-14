@@ -10,13 +10,43 @@
 		<script src = "/js/jquery-2.1.4.min.js"></script>
 		<script language = "javascript">
 			var socket = null;
+			var socketCnt = 0;
 			var popup_shown = false;
 			
 			function socketConnect(){
-				if (socket)
-					socket.connect();
-				else
-					socket = io();
+				socketCnt++;
+				//alert('connect => ' + socketCnt);
+				if (socketCnt == 1){
+					if (socket)
+						socket.connect();
+					else{
+						socket = io();
+						socketInit();
+					}
+				}
+			}
+
+			function socketDisconnect(){
+				socketCnt--;
+				//alert('disconnect => ' + socketCnt);
+				if (!socketCnt)
+					socket.disconnect();
+			}
+
+			function socketBind(page, target){
+				(function(pg, tg){
+					socket.on(pg, function(html){
+						//socket.removeListener(page, arguments.callee);
+						$(tg).html(html);
+						socketDisconnect();
+					});
+				})(page, target);
+			}
+
+			function socketInit(){
+				socketBind('Popup', "#popup");
+				socketBind('Contents', "#contents");
+				socketBind('Sidebar', "#userbar");
 			}
 			
 			function popup(html_info){ 
@@ -24,10 +54,6 @@
 					popup_shown = !popup_shown; resize();
 				}
 				socketConnect();
-				socket.on('Popup', function(html){
-					$("#popup").html(html);
-					socket.disconnect();
-				});
 				socket.emit('Popup', html_info);
 			}
 			
@@ -40,10 +66,6 @@
 			
 			function get_contents_html(dir) {
 				socketConnect();
-				socket.on('Contents', function (data){
-					$("#contents").html(data);
-					socket.disconnect();
-				});
 				socket.emit('Contents', {dir : dir});
 			}
 			
@@ -57,11 +79,6 @@
 			
 			function get_sidebar_html(dir) {
 				socketConnect();
-				socket.on('Sidebar', function (data){
-					$("#userbar").html(data);
-					socket.disconnect();
-					console.log('sidebar : socketDisconnect()');
-				});
 				socket.emit('Sidebar', {dir : dir});
 			}
 			
