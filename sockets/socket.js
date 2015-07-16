@@ -24,7 +24,7 @@ var mysql = require('mysql');
 var pool = mysql.createPool({
 	host	:'localhost',
 	user	:'root',
-	password:'2014005041',
+	password:'ryghkseoj7!4',
 	database:'tripmaster',
 	connectionLimit:20
 });
@@ -98,6 +98,78 @@ function load_spotsearch(pool, socket, fs, ejs, pagenum){
 	});
 }
 
+function load_postsearch(pool, socket, fs, ejs, pagenum){
+	pool.getConnection(function(err, conn){
+		if(err){
+			console.log('err: ', err);
+			conn.release();
+			throw err;
+		}
+		
+		conn.query('select * from post order by no desc', function(err, rows){
+		//conn.query("select * from post limit ? , 10" , 10*(pagenum - 1), function(err, rows){
+			if(err){
+				console.log('err: ', err);
+				conn.release();
+				throw err;
+			}
+			
+			var html = "";
+
+			fs.readFile(__dirname + '/contents/community_title.ejs', 'utf8', function(err, ejsdata){
+				html = html + ejs.render(ejsdata,
+				{
+					post_no: "No",
+					post_subject: "Subject",
+					post_name: "Name",
+					post_date: "Date",
+					post_hits: "Hits",
+				});
+			});
+			
+			fs.readFile(__dirname + '/contents/community_post.ejs', 'utf8', function(err, ejsdata){
+				for(var i = 0; i < rows.length; ++i){
+					html = html + ejs.render(ejsdata,
+					{
+						post_no: rows[i].no,
+						post_subject: rows[i].title,
+						post_name: rows[i].name,
+						post_date: rows[i].regdate,
+						post_hits: rows[i].hit
+					});
+				}
+			});
+			
+			fs.readFile(__dirname + '/contents/community_index.ejs', 'utf8', function (err, ejsdata){		
+				conn.query('select count(*) cnt from post', [], function(err, rows){
+					if(err){
+						console.log('err', err);
+						conn.release();
+						throw err;
+					}
+				
+					var whole_pagenum = Math.ceil(rows[0].cnt / 10);
+					
+					html = html + ejs.render(ejsdata,
+					{
+						current_pagenum : pagenum,
+						whole_pagenum : whole_pagenum
+					});
+					
+					socket.emit('ReCommunitySearch',
+					{
+						html : html,
+						current_pagenum : pagenum,
+						whole_pagenum : whole_pagenum
+					});
+
+					conn.release();
+				});
+			});
+		});
+	});
+}
+
 var socket = function (server){
 	var io = require('socket.io')(server);
 	
@@ -141,6 +213,37 @@ var socket = function (server){
 					var html = ejs.render(ejsdata);
 					socket.emit('Popup', html);
 				});
+
+			if (data.type == 'open_post'){
+				pool.getConnection(function(err, conn){
+					if (err){
+						console.log('err: ', err);
+						conn.release();
+						throw err;
+					}
+					
+					fs.readFile(__dirname + data.dir, 'utf8', function(err, ejsdata){
+						conn.query("select name, title, content from post where no = ?", [data.param.n], function(err, rows){
+							if (err){
+								console.log('err: ', err);
+								conn.release();
+								throw err;
+							}
+							
+							var html = ejs.render(ejsdata,
+							{
+								name: rows[0].name,
+								title: rows[0].title,
+								content: rows[0].content
+							});
+							
+							socket.emit('Popup', html);
+
+							conn.release();
+						});
+					});
+				});
+			}
 			//type 에 따른 분류를 여기서합니다.
 		});
 		
@@ -151,6 +254,11 @@ var socket = function (server){
 		
 		socket.on('SpotsearchPageChange', function(spot_list_page){
 			load_spotsearch(pool, socket, fs, ejs, spot_list_page);
+		});
+
+		// community
+		socket.on('CommunitySearch', function(T){
+			load_postsearch(pool, socket, fs, ejs, 1);
 		});
 		
 		//login 

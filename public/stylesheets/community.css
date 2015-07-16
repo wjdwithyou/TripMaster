@@ -1,0 +1,156 @@
+#community {
+	margin-top : 0px;
+	position : relative;
+	left : 30%;
+	width : 500px;
+	margin-left : -250px;
+	padding : 10px;
+}
+
+div.community_title {
+	margin-top : 10px;
+	margin-left : 10px;
+	height : 40px;
+	width : 720px;
+	background : coral;
+	border-radius : 10px;
+	box-shadow : 0px 0px 15px -5px #000;
+}
+
+div.community_post {
+	margin-top : 10px;
+	margin-left : 10px;
+	height : 40px;
+	width : 720px;
+	background : white;
+	border-radius : 10px;
+	box-shadow : 0px 0px 15px -5px #000;
+}
+
+div.community_post_no {
+	position : relative;
+	top : 10px;
+	left : 10px;
+	width: 40px;
+	font-size : 15px;
+	margin : 0px;
+}
+
+div.community_post_subject {
+	position : relative;
+	top : -10px;
+	left : 50px;
+	width: 300px;
+	font-size : 15px;
+}
+
+div.community_post_name {
+	position : relative;
+	top : -30px;
+	left : 350px;
+	width: 100px;
+	font-size : 15px;
+	margin : 0px;
+}
+
+div.community_post_date {
+	position : relative;
+	top : -50px;
+	left : 450px;
+	width: 150px;
+	font-size : 15px;
+	margin : 0px;
+}
+
+div.community_post_hits {
+	position : relative;
+	top : -70px;
+	left : 600px;
+	width: 100px;
+	font-size : 15px;
+	margin : 0px;
+	margin-botton: 10px;
+}
+
+#community_index {
+	margin : 10px auto;
+	height : 50px;
+	width : 280px;
+	background : white;
+	border-radius : 10px;
+	box-shadow : 0px 0px 15px -5px #000;
+}
+
+#community_index input {
+	position : relative;
+	top : 5px;
+	left : 20px;
+	width : 50px;
+	border-style : none;
+	text-align : right;
+	font-size : 20px;
+	color : rgb(253, 103, 135);
+}
+
+#community_index p {
+	position : relative;
+	top : 3px;
+	left : 20px;
+	display : inline;
+}
+
+#community_index img {
+	width : 25px;
+	height : 25px;
+}
+
+#community_index_left {
+	position : relative;
+	top : 10px;
+	left : 10px;
+}
+
+#community_index_right {
+	position : relative;
+	top : 10px;
+	margin-left : 55px;
+}
+
+#community_index_search {
+	position : relative;
+	top : 10px;
+	margin-left : 20px;
+}
+
+#community_footer {
+	height : 30px;
+	width : 400px;
+	margin : 0px auto;
+	background : white;
+	border-radius : 10px;
+	padding-top : 30px;
+	box-shadow : 0px 0px 15px -5px #000;
+}
+
+#community_searchbar {
+	margin-left : 80px;
+	position : relative;
+	top : -20px;
+	width : 200px;
+	height : 25px;
+	text-align : center;
+}
+
+#community_footer a {
+	position : relative;
+	left : auto;
+	top : -15px;
+	width : 25px;
+	height : 25px;
+	margin-left : 10px;
+}
+
+#community_footer img {
+	width : 25px;
+	height : 25px;
+}

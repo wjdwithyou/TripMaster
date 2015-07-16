@@ -1,0 +1,80 @@
+#post_header {
+	width : 1010px;
+	height : 100px;
+	background-color : gray;
+	border-top-style : solid;
+	border-top-width : 10px;
+	border-top-color : rgb(253, 103, 135);
+	margin : 0px;
+	padding : 0px;
+}
+
+#post_name {
+	position: relative;
+	left: 10px;
+	top: 10px;
+	color: white;
+	font-size: 15px;
+	font-weight: bold;
+	display: inline;
+	margin: 0px 0px 0px 0px;
+	padding: 0px;
+}
+
+#post_title {
+	position : relative;
+	left : 10px;
+	top : 50px;
+	color : white;
+	font-size : 20px;
+	font-weight : bold;
+	display : inline;
+	margin : 0px 0px 0px 0px;
+	padding : 0px;
+}
+
+#post_pdown {
+	position : relative;
+	left : 935px;
+	top : 10px;
+	color : white;
+	font-size : 15px;
+	font-weight : bold;
+	text-decoration : none;
+}
+
+#post {
+	position : relative;
+	top : -50px;
+	width : 1000px;
+	height : auto;
+	background-color : rgb(240,240,240);
+	border-style : solid;
+	border-width : 5px;
+	border-color : gray;
+	padding : 0px;
+	margin : 0px;
+}
+
+#post_content {
+	border-style : solid;
+	border-width : 1px;
+	border-color : rgb(210,210,210);
+	margin : 20px;
+	width : 960px;
+	height : 480px;
+	padding : 0px;
+	background-color : white;
+}
+
+#post_content > p {
+	position : relative;
+	top : 11px;
+	left : 10px;
+	display : inline;
+	color : rgb(169,169,169);
+	font-weight : bold;
+	font-family : "¸¼Àº °íµñ", "µ¸¿ò", "±¼¸²";
+	font-size : 15px;
+	margin : 0px;
+}

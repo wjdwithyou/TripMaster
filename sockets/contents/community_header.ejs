@@ -1,0 +1,58 @@
+<div id="community">
+	<script>
+		community_search(); // on_load
+		popdown();
+
+		var socket = io();
+		var current_pagenum = 0;
+		var whole_pagenum = 0;
+		
+		function community_search(){
+			socketConnect();
+			
+			var temp = $("#community_searchbar").value;
+			
+			socket.emit('CommunitySearch', temp);
+		}
+
+		// left, right
+
+		function open_post(n){
+			popup({
+				dir: '/contents/post.ejs',
+				type: 'open_post',
+				param: {n: n}
+			});
+		}
+
+		socket.on('ReCommunitySearch', function(data){
+			$("#community_body").html(data.html);	// data.html
+			current_pagenum = data.current_pagenum;
+			whole_pagenum = data.whole_pagenum;
+		});
+	</script>
+	<div id="community_header">
+		<!--input id="community_searchbar" type="text"/>
+		<a href="javascript:community_search()"><img src="/image/search button1.png"></img></a-->
+	</div>
+	<div id="community_body">
+	</div>
+	<div id="community_footer">
+		<input id="community_searchbar" type="text"/>
+		<a href="javascript:community_search()"><img src="/image/search button1.png"></img></a>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
