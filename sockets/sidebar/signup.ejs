@@ -1,5 +1,6 @@
 ﻿<script type = "text/javascript">
 	var gender = "none";
+	var temp_id = "";
 	function isValidLength(str, l, r){ return (str.length >= l && str.length <= r); }
 	function isNum(charCode){ return (charCode >= 48 && charCode <= 57); }
 	function isEng(charCode){ return (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122); }
@@ -39,6 +40,23 @@
 	}
 	
 	$(function(){
+		$("#signup_isValid").click(function(){
+			console.log("aa");
+			temp_id = $("#id").val();
+			if(temp_id == ""){
+				alert("아이디를 꼭 입력하세요");
+				$("#id").focus();
+				return;
+			}
+			if (!isStrNumEng($("#id").val()) || !isValidLength($("#id").val(), 7,15)){
+				alert("형식에 맞지 않는 아이디입니다.");
+				$("#id").val("");
+				$("#id").focus();
+				return;
+			}
+			validIdCheck();
+		});
+	
 		$("#signup_man").click(function(){
 			gender = "man";
 			var button = document.getElementById('signup_man');
@@ -68,6 +86,11 @@
 			var i = $("input[name=chkDelTag]:checked").each(function(){
 				$(this).parent().remove();
 			});
+		});
+		
+		$("#signupButton").click(function(){
+			console.log("ssss");
+			signup_submit();
 		});
 	});
 	
@@ -123,13 +146,6 @@
 			return;
 		}
 
-		if (!isStrNumEng($("#id").val()) || !isValidLength($("#id").val(), 7,15)){
-			alert("형식에 맞지 않는 아이디입니다.");
-			$("#id").val("");
-			$("#id").focus();
-			return;
-		}
-
 		if (!isStrNumEngSpe($("#passwd").val()) || !isValidLength($("#passwd").val(), 7, 15)){
 			alert("형식에 맞지 않는 비밀번호입니다.");
 			$("#passwd").val("");
@@ -137,10 +153,11 @@
 			return;
 		}
 		
-		//validIdCheck();
-		if ($("#isValidId").val() != 'true'){
-			alert("중복된 아이디입니다.");
+		//중복 체크를 안했거나, 중복 체크 후 아이디를 바꿨을 경우
+		if(temp_id == "" || temp_id != $("#id").val()){
+			alert("중복 확인을 해주세요.");
 			$("#id").focus();
+			temp_id = "";
 			return;
 		}
 		
@@ -151,7 +168,8 @@
 		
 		socketConnect();
 		socket.on('SignupRequest', function (){
-			socket.disconnect();
+			console.log("사인업");
+			socketDisconnect();
 		});
 		socket.emit('SignupRequest', {
 			id : id,
@@ -160,6 +178,7 @@
 			name : name,
 			birth : birth
 		});
+		popdown();
 	}
 
 	function updateTagList(){
@@ -170,7 +189,7 @@
 					source: result.list
 				});
 			});
-			socket.disconnect();
+			socketDisconnect();
 		});
 		socket.emit('updateTagList');
 	}
@@ -179,13 +198,13 @@
 		socketConnect();
 
 		socket.on('isValidId', function( result ){
-			if (result.valid){
-				$("#isValidId").val("true");
-			}
+			if (result.valid)
+				alert("사용 가능한 아이디 입니다.");
 			else{
-				$("#isValidId").val("false");
+				alert("중복된 아이디 입니다.");
+				temp_id = "";
 			}
-			socket.disconnect();
+			socketDisconnect();
 		});
 
 		socket.emit('isValidId', $("#id").val());
@@ -196,11 +215,12 @@
 	<a href = "javascript:popdown()">취소</a>
 </div>
 <div id = "signup">
+	
 	<div id = "signup_user">
 		<div>
 			<!--p>아이디</p-->
 			<input type = "text" name="id" id="id" maxlength="15" placeholder = "아이디">
-			<input type="hidden" id="isValidId" value="false">
+			<input type = "button" value = "중복확인" id = "signup_isValid">
 		</div>
 		<div>
 			<input type = "password" name="passwd" id="passwd" maxlength="15" placeholder = "비밀번호">
@@ -228,11 +248,6 @@
 			<input type = "button" value = "관심분야 추가" id = "signup_addtag">
 			<input type = "button" value = "관심분야 제거" id = "signup_deltag">
 		</div>
-		
 	</div>
-	<a href = "javascript:signup_submit()">
-		<div>
-			<p>가입하기</p>
-		</div>
-	</a>
+	<input type = "button" value = "가입하기" id = "signupButton">
 </div>

@@ -119,6 +119,9 @@ var socket = function (server){
 			});
 		});
 		
+		// sidebar
+		// data
+		//	.dir			ejs 파일 위치
 		socket.on('Sidebar', function (data){
 			console.log("Sidebar receive", data.dir);
 			fs.readFile(__dirname + data.dir, 'utf8', function (err, ejsdata){
@@ -150,11 +153,11 @@ var socket = function (server){
 			load_spotsearch(pool, socket, fs, ejs, spot_list_page);
 		});
 		
-		//login
+		//login 
 		socket.on('Login',function(data){
 			console.log('message : Login');
 			pool.getConnection(function(err, conn){
-				var query = conn.query('select count(*) from user where id=?, passwd=?',[data.id, data.password]);
+				var query = conn.query('select count(*) from user_info where id=? and passwd=?',[data.id, data.password]);
 				query.on('error', function(err){
 					console.log('err', err);
 					socket.emit('socketError');
@@ -172,8 +175,9 @@ var socket = function (server){
 		
 		// signup
 		socket.on('SignupRequest',function(data){
+			console.log("받기는 했니?");
 			pool.getConnection(function(err, conn){
-				var query = conn.query('insert into user (?,?,?,?,?)',[data.id, data.password, data.name, data.gender, data.birth]);
+				var query = conn.query('insert into user_info values(?,?,?,?,?)',[data.id, data.password, data.name, data.gender, data.birth]);
 				query.on('error', function(err){
 					console.log('err', err);
 					socket.emit('socketError');

@@ -97,6 +97,6 @@ footer {
 	overflow : auto;
 }
 
-#popup div {
+#popup > div {
 	margin : 50px auto;
 }

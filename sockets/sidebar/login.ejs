@@ -1,33 +1,24 @@
-﻿<script type="text/javascript">
-	/*
-	function login(){
-		alert('w');
-		popdown();
+﻿<div id = "login">
+	<script language = "javascript">
+		function login(){
+			alert('w');
+			popdown();
+			
+			var id = $("#user_id").val();
+			var password = $("user_password").val();
+			socketConnect();
+			
+			socket.emit('Login', {id : id, password : password});
+		}
 		
-		var id = $("#user_id").val();
-		var password = $("user_password").val();
-		socketConnect();
-		socket.on('Login', function(data){
-			if(data){
-				console.log("로그인 성공");
-			}else{
-				alert("아이디 혹은 비밀번호를 잘못 입력하셨습니다.");
-			}
-			socketDisconnect();
-		});
-		socket.emit('Login', {id : id, password : password});
-	}
-	
-	function signup(){
-		 popup({
-			dir : '/sidebar/signup.ejs',
-			type : 'signup'
-			param : {}
-		 });
-	}
-	*/
-</script>
-<div id = "login">
+		function signup(){
+			 popup({
+				dir : '/sidebar/signup.ejs',
+				type : 'signup',
+				param : {}
+			 });
+		}
+	</script>
 	<p id = "login_title">로그인</p>
 	<div>
 		<input type = "text" id = "user_id" placeholder = "id">
