@@ -261,6 +261,10 @@ var socket = function (server){
 			load_postsearch(pool, socket, fs, ejs, 1);
 		});
 		
+		socket.on('CommunityPageChange', function(post_list_page){
+			load_postsearch(pool, socket, fs, ejs, post_list_page);
+		});
+		
 		//login 
 		socket.on('Login',function(data){
 			console.log('message : Login');

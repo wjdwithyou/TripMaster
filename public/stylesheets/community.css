@@ -154,3 +154,53 @@ div.community_post_hits {
 	width : 25px;
 	height : 25px;
 }
+
+#community_index {
+	margin : 10px auto;
+	height : 50px;
+	width : 280px;
+	background : white;
+	border-radius : 10px;
+	box-shadow : 0px 0px 15px -5px #000;
+}
+
+#community_index input {
+	position : relative;
+	top : 5px;
+	left : 20px;
+	width : 50px;
+	border-style : none;
+	text-align : right;
+	font-size : 20px;
+	color : rgb(253, 103, 135);
+}
+
+#community_index p {
+	position : relative;
+	top : 3px;
+	left : 20px;
+	display : inline;
+}
+
+#community_index img {
+	width : 25px;
+	height : 25px;
+}
+
+#community_index_left {
+	position : relative;
+	top : 10px;
+	left : 10px;
+}
+
+#community_index_right {
+	position : relative;
+	top : 10px;
+	margin-left : 55px;
+}
+
+#community_index_search {
+	position : relative;
+	top : 10px;
+	margin-left : 20px;
+}

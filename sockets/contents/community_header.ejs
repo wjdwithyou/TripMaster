@@ -1,7 +1,7 @@
-<div id="community">
+﻿<div id="community">
 	<script>
 		community_search(); // on_load
-		popdown();
+		//popdown();
 
 		var socket = io();
 		var current_pagenum = 0;
@@ -15,7 +15,38 @@
 			socket.emit('CommunitySearch', temp);
 		}
 
-		// left, right
+		function community_left(){
+			if( current_pagenum > 1 ){
+				socketConnect();
+				socket.emit('CommunityPageChange', --current_pagenum);
+			}
+		}
+		
+		function community_right(){
+			if (current_pagenum < whole_pagenum){
+				socketConnect();
+				
+				socket.emit('CommunityPageChange', ++current_pagenum);
+			}
+		}
+		
+		function community_index_search(){
+			var temp = $("community_index_pagesearchbar").value;
+			
+			if (isNumber(temp)){
+				temp = parseInt(temp);
+				
+				if (1 <= temp || temp <= whole_pagenum){
+					socketConnect();
+					
+					socket.emit('CommunityPageChange', temp);
+				}
+			}
+		}
+
+		function write_post(){
+			alert("캡틴님, 스마트에디터를 만들어주세요!");
+		}
 
 		function open_post(n){
 			popup({
@@ -32,14 +63,13 @@
 		});
 	</script>
 	<div id="community_header">
-		<!--input id="community_searchbar" type="text"/>
-		<a href="javascript:community_search()"><img src="/image/search button1.png"></img></a-->
 	</div>
 	<div id="community_body">
 	</div>
 	<div id="community_footer">
 		<input id="community_searchbar" type="text"/>
-		<a href="javascript:community_search()"><img src="/image/search button1.png"></img></a>
+		<a href="javascript:community_search()"><img src="/image/search button1.png"/></a>
+		<a href="javascript:write_post()"><img src="/image/write button1.png"/></a>
 	</div>
 </div>
 
