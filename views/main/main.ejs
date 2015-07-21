@@ -6,12 +6,14 @@
 		<link href =  "/stylesheets/main.css" rel = "stylesheet" type = "text/css"/>
 		<link href =  "/stylesheets/spotsearch.css" rel = "stylesheet" type = "text/css"/>
 		<link href =  "/stylesheets/loginsignup.css" rel = "stylesheet" type = "text/css"/>
+		<script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js'></script>
 		<script src = "/socket.io/socket.io.js"></script>
 		<script src = "/js/jquery-2.1.4.min.js"></script>
 		<script language = "javascript">
 			var socket = null;
 			var socketCnt = 0;
 			var popup_shown = false;
+			var logined_id = "";
 			
 			function socketConnect(){
 				socketCnt++;
@@ -59,7 +61,8 @@
 				
 				socket.on('Login', function(data){
 					if(data){
-						console.log("로그인 성공");
+						logined_id = $("#user_id").val();
+						get_contents_html('/sidebar/toolbar.ejs');
 					}else{
 						alert("아이디 혹은 비밀번호를 잘못 입력하셨습니다.");
 					}

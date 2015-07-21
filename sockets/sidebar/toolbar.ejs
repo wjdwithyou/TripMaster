@@ -1,0 +1,33 @@
+﻿<script language = "javascript">
+	function logout(){
+		console.log("logout");
+	}
+	$(function(){
+		$("#toolbar_tab_storage").click(function(){
+			socketConnect();
+			socket.on('ToolbarStorage', function (data){
+				$("toolbar_contents").html(data);
+				socketDisconnect();
+			});
+			socket.emit('ToolbarStorage', logined_id); // 로그인 성공했을때, 사용자의 아이디를 저장해야한다.
+		});
+		
+		$("#toolbar_tab_post").click(function(){
+		});
+		
+		$("#toolbar_tab_schedule").click(function(){
+		});
+	});
+</script>
+<div id = "toolbar_header">
+	<p>peloct</p>
+	<a href = "javascript:logout()">logout</a>
+</div>
+<div id = "toolbar_tab">
+	<input type="button" id = "toolbar_tab_storage">
+	<input type="button" id = "toolbar_tab_post">
+	<input type="button" id = "toolbar_tab_schedule">
+</div>
+<div id = "toolbar_contents">
+	<!--여기에 들어간다-->
+</div>

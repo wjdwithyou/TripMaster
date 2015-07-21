@@ -35,8 +35,18 @@
 				}
 			}
 		}
-		//추가할 기능 function spotsearch_open(spot_id){}
-		//추가할 기능 function spotsearch_add(spot_id){}
+		
+		function spotsearch_add(spot_id){
+			socketConnect();
+			socket.on('StorageAdd', function(data){
+				if(!data)
+					alert('최대 100개까지만 저장할 수 있습니다.').
+				socketDisconnect();
+			});
+			socket.emit('StorageAdd', {id : logined_id , kind : 'spot', object_id : spot_id});
+		}
+		
+		//추가할 기능 function spotsearch_open(spot_id){
 	</script>
 	<div id = "spotsearch_header">
 		<input id = "spotsearch_searchbar" type = "text" value = "여행지 검색">

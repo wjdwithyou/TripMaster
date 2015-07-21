@@ -223,6 +223,18 @@ var socket = function (server){
 			});
 		});
 		
+		socket.on('StorageAdd', function(data){
+			pool.getConnection(function(err, conn){
+				var query = conn.query('select storage from user_storage where id = ?', [data.id]);
+				query.on('error', function(err){
+					console.log('err', err);
+					socket.emit('socketError');
+				});
+				query.on('result', function(rows){
+				});
+			});
+		});
+		
 		socket.on('disconnect', function(){
 			console.log('a user disconnected');
 		});
