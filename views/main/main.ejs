@@ -1,154 +1,129 @@
-﻿<!doctype html>
+﻿<!DOCTYPE html>
 <html>
 	<head>
-		<meta charset = "utf-8">
+		<meta charset="utf-8">
 		<title>Tripmaster</title>
-		<link href =  "/stylesheets/main.css" rel = "stylesheet" type = "text/css"/>
-		<link href =  "/stylesheets/spotsearch.css" rel = "stylesheet" type = "text/css"/>
-		<link href =  "/stylesheets/loginsignup.css" rel = "stylesheet" type = "text/css"/>
-		<script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js'></script>
-		<script src = "/socket.io/socket.io.js"></script>
-		<script src = "/js/jquery-2.1.4.min.js"></script>
-		<script language = "javascript">
+		
+		
+		<link rel="stylesheet" href="/css/font-awesome.min.css">
+		<link rel="stylesheet" href="/css/index.css">
+		
+		
+		<script src="/js/jquery-2.1.4.min.js"></script>
+		<script src="/js/jquery-ui.js"></script>
+		<script type="text/javascript" src="/js/tinymce/tinymce.min.js"></script>
+		
+		
+		<script type="text/javascript"
+			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBHyZl0ohPiUgJ-F7QgtLMMJeib5KEMCMA">
+		</script>
+	
+	
+		<script type="text/javascript">
+			//각종 전역변수를 선언하는 곳입니다.
+			
+			// about_socket.js 에서 사용하는 변수
 			var socket = null;
 			var socketCnt = 0;
-			var popup_shown = false;
-			var logined_id = "";
 			
-			function socketConnect(){
-				socketCnt++;
-				//alert('connect => ' + socketCnt);
-				if (socketCnt == 1){
-					if (socket){
-						console.log("커넥트 했어양!")
-						socket.connect();
-					}
-					else{
-						socket = io();
-						socketInit();
-					}
-				}
-			}
-
-			function socketDisconnect(){
-				socketCnt--;
-				//alert('disconnect => ' + socketCnt);
-				if (!socketCnt)
-					socket.disconnect();
-			}
-
-			function socketBind(page, target){
-				(function(pg, tg){
-					socket.on(pg, function(html){
-						//socket.removeListener(page, arguments.callee);
-						$(tg).html(html);
-						socketDisconnect();
-					});
-				})(page, target);
-			}
-
-			function socketInit(){
-				socketBind('Popup', "#popup");
-				socketBind('Contents', "#contents");
-				socketBind('Sidebar', "#userbar");
-				
-				socket.on('ReSpotsearchSearch', function (data){
-					$("#spotsearch_body").html(data.html);				//html 받아옴.
-					current_pagenum = data.current_pagenum;		//현재 보는 페이지 받아옴.
-					whole_pagenum = data.whole_pagenum;			//총 페이지 수.
-					 socketDisconnect();
-				});
-				
-				socket.on('Login', function(data){
-					if(data){
-						logined_id = $("#user_id").val();
-						get_contents_html('/sidebar/toolbar.ejs');
-					}else{
-						alert("아이디 혹은 비밀번호를 잘못 입력하셨습니다.");
-					}
-					socketDisconnect();
-				});
-			}
+			// index.js 에서 사용하는 변수.
+			var header_width = 40;						// 헤더의 두께 // 제목, 로그인, 유저 닉네임이 뜨는 공간
+			var nav_width = 40;							// 왼쪽 바의 두께 // 탭
 			
-			function popup(html_info){ 
-				if(!popup_shown){
-					popup_shown = !popup_shown; resize();
-				}
-				socketConnect();
-				socket.emit('Popup', html_info);
-			}
+			var opened_slide = 'none';				// 현재 열린 슬라이드의 종류
+			var opened_slide_num = 0;				// 한 종류의 슬라이드에서 슬라이드가 추가적으로 더 열리는 경우
+			var slide_speed = 200;						// 슬라이드가 펴지는 속도( 작을 수록 빨라진다. )
 			
-			function popdown(){
-				if(popup_shown){
-					popup_shown = !popup_shown; resize();
-				}
-				$("#popup").html(' ');
-			}
+			var postroom_header_width = 40;	// postroom 메뉴의 header 태그의 두께
+			var postroom_write_width = 60;		// postroom write 버튼의 두께
+			var post_submit_width = 60;				// post submit 버튼의 두께
 			
-			function get_contents_html(dir) {
-				socketConnect();
-				socket.emit('Contents', {dir : dir});
-			}
+			var post_editor_config = {mode:"specific_textareas",editor_selector:"none",plugins: ["advlist autolink lists link image",],toolbar: "undo redo link image",menubar: false};
+																	// 생성될 에디터의 정보
+			var opened_editor_class = "none"			// 생성되어 있는 에디터의 정보. 에디터의 동적 생성을 위해 있는 변수.
 			
-			var tab = '/contents/home.ejs';
-			function change_contents(dir) {
-				if (dir != tab) {
-					get_contents_html(dir);
-					tab = dir;
-				}
-			}
-			
-			function get_sidebar_html(dir) {
-				socketConnect();
-				socket.emit('Sidebar', {dir : dir});
-			}
-			
-			function resize() {
-				var container = document.getElementById('container');
-				container.style.width = window.innerWidth - 200 + 'px';
-				
-				var popup = document.getElementById('popup');
-				if(popup_shown){
-					popup.style.width = window.innerWidth - 200 + 'px';
-					popup.style.height = window.innerHeight + 'px';
-				}else{
-					popup.style.width = 0;
-					popup.style.height = 0;
-				}
-			}
-			
-			window.onload = function() {
-				resize();
-				get_contents_html(tab);
-				get_sidebar_html('/sidebar/login.ejs');
-				window.addEventListener('resize', resize);
-			}
 		</script>
+		<script type="text/javascript" src="/js/about_socket.js"></script>
+		<script type="text/javascript" src="/js/index.js"></script>
+		
 	</head>
-	<body>
-		<div id = "container">
-			<header>
-				<img src = "/image/tripmaster logo.png"></img>
-			</header>
-			<nav>
-				<ul>
-					<li><a href = "javascript:change_contents('/contents/home.ejs')"><b>Home</b></a></li>
-					<li><a href = "javascript:change_contents('/contents/spotsearch_header.ejs')"><b>Spot Search</b></a></li>
-					<li><a href = "javascript:change_contents('/contents/community.ejs')"><b>Community</b></a></li>
-					<li><a href = "javascript:change_contents('/contents/letstrip.ejs')"><b>Lets Trip</b></a></li>
-				</ul>
+	<!-- ToggleSlide 가 제대로 작동하기 위해선 slide 가 될 div 의 id 가 "slide숫자" 꼴이어야한다. -->
+	<body style="padding:0px; margin:0px;">
+		<header style="width:100%; height:40px; background-color:#151515;">
+			<p style="display:inline-block; float:left; color:#FFF; margin:5px 0px 0px 5px;"><b>Tripmaster</b></p>
+			<div style="display:inline-block; float:right;">
+				<input type="text" placeholder="id">
+				<input type="password" placeholder="password">
+				<a style="color:#FFF;">login</a>
+			</div>
+		</header>
+		<section class="main-frame">
+			<nav class="navbar">
+				<a class="navbar-nav" href="javascript:ChangeTab('spotsearch',1)">
+					<div id="spotsearch-button" onMouseOver="NavNavOver(id)" onMouseOut="NavNavOut(id)">
+						<i style="margin-left:10px;" class="fa fa-map-marker fa-2x"></i>
+					</div>
+				</a>
+				<a class="navbar-nav" href="javascript:ChangeTab('community',1)">
+					<div id="community-button" onMouseOver="NavNavOver(id)" onMouseOut="NavNavOut(id)">
+						<i style="margin-left:7px;" class="fa fa-pencil fa-2x"></i>
+					</div>
+				</a>
+				<a class="navbar-nav" href="javascript:ChangeTab('recommendation',1)">
+					<div id="recommendation-button" onMouseOver="NavNavOver(id)" onMouseOut="NavNavOut(id)">
+						<i style="margin-left:7px;" class="fa fa-plane fa-2x"></i>
+					</div>
+				</a>
 			</nav>
-			<section id = "contents">
-				<!-- 이 내부에 html 이 들어온다. -->
-			</section>
-			<footer>
-			</footer>
-		</div>
-		<div id = "popup">
-			<!-- 이 내부에 팝업 html 이 들어온다. 항상 div 태그가 맨 위에 있어야한다. -->
-		</div>
-		<aside id = "userbar">
-			<!-- 이 내부에 html 이 들어온다. -->
-		</aside>
+			<div id="slide1">
+				<header id="postroom-header">
+					<a href="#" style="background-color:transparent; color:#727272;"><i class="fa fa-home"></i></a>
+					<i style="color:#727272;" class="fa fa-search"></i>
+					<input type="text" style="border:none;" placeholder="user code search" onkeypress="if( event.keyCode==13 ){PostRoomSearch();}">
+				</header>
+				<div id="postroom-content">
+					<div class="postroom-content-post">
+						
+					</div>
+					<div class="postroom-content-post">
+						<p>이잡소리 저잡소리 이런잡소리 저런잡소리 그리고 또 이 잡소리와 함께 저 잡소리</p>
+					</div>
+					<div class="postroom-content-post">
+						<p>이잡소리 저잡소리 이런잡소리 저런잡소리 그리고 또 이 잡소리와 함께 저 잡소리</p>
+					</div>
+					<div class="postroom-content-post">
+						<p>이잡소리 저잡소리 이런잡소리 저런잡소리 그리고 또 이 잡소리와 함께 저 잡소리</p>
+					</div>
+					<div class="postroom-content-post">
+						<p>이잡소리 저잡소리 이런잡소리 저런잡소리 그리고 또 이 잡소리와 함께 저 잡소리</p>
+					</div>
+					<div class="postroom-content-post">
+						<p>이잡소리 저잡소리 이런잡소리 저런잡소리 그리고 또 이 잡소리와 함께 저 잡소리</p>
+					</div>
+					<div class="postroom-content-post">
+						<p>이잡소리 저잡소리 이런잡소리 저런잡소리 그리고 또 이 잡소리와 함께 저 잡소리</p>
+						<p>이잡소리 저잡소리 이런잡소리 저런잡소리 그리고 또 이 잡소리와 함께 저 잡소리</p>
+					</div>
+				</div>
+				<a href="javascript:ToggleSlide('community', 2)" style="text-decoration:none">
+					<div id="postroom-write" style="width:230px; height:40px; margin:10px; background-color:#0099dd;">
+						<p style="color:#FFF; margin:0px; text-align:center;"><strong>Write Post</strong></p>
+					</div>
+				</a>
+			</div>
+			<div id="slide2">
+				<textarea class="post-editor" name="content" style="width:100%;"></textarea>
+				<a href="#" style="text-decoration:none">
+					<div id="post-submit" style="width:230px; height:40px; margin:10px; background-color:#0099dd;">
+						<p style="color:#FFF; margin:0px; text-align:center;"><strong>OK</strong></p>
+					</div>
+				</a>
+			</div>
+			<div id="main-content">
+				<div id="map-canvas"></div>
+			</div>
+			<!--div id="ssss" style="position:fixed; top:0px; left:0px;">
+							<textarea name="content" style="width:100%;"></textarea></div-->
+		<section>
 	</body>
 </html>
