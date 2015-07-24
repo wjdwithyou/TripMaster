@@ -29,4 +29,7 @@ function socketInit(){
 	socket.on('SignupRequest', function (){
 		callback_SignupRequest();
 	});
+	socket.on('login', function(data){
+		callback_login( data );
+	});
 }
