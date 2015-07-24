@@ -1,4 +1,5 @@
 ﻿window.onload = function() {
+	$("#header-div2").hide();
 	$("#signup-background").hide();
 	$( "#slide1" ).hide();
 	$( "#slide2" ).hide();

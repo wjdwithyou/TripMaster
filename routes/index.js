@@ -6,7 +6,7 @@ router.get('/', function(req, res, next) {
 	res.redirect('/main');
 });
 
-router.get('/googlemap, function(req, res, next){
+router.get('/googlemap', function(req, res, next){
 	res.render('googlemap', {title:'hello googlemap'});
 });
 

@@ -24,7 +24,7 @@ var mysql = require('mysql');
 var pool = mysql.createPool({
 	host	:'localhost',
 	user	:'root',
-	password:'2014005041',
+	password:'ryghkseoj7!4',
 	database:'tripmaster',
 	connectionLimit:20
 });
@@ -124,19 +124,27 @@ var socket = function (server){
 					if (rows['count(*)'] == 0){
 						socket.emit('login', {success:false, user_id:'', user_key:''});
 					}else {
-						/* 유저 키를 형성한다. */
-						var user_key = "";
-						for(var i = 0; i < 6; i++){
-							user_key = user_key + (Math.floor(Math.random() * 10000) + 1);
-						}
-						conn.query('update user_info set temp_key = ? where id = ?',[user_key,data.id]);
-						socket.emit('login', {success:true, user_id:data.id, user_key:user_key});
+						var html = "";
+
+						fs.readFile(__dirname + '/header/header-div2.ejs', 'utf8', function (err, ejsdata){
+							html = html + ejs.render(ejsdata, {user_id: data.id});
+							
+							/* 유저 키를 형성한다. */
+							var user_key = "";
+							for(var i = 0; i < 6; i++){
+								user_key = user_key + (Math.floor(Math.random() * 10000) + 1);
+							}
+							conn.query('update user_info set temp_key = ? where id = ?',[user_key,data.id]);
+							
+							socket.emit('login', {success:true, user_id:data.id, user_key:user_key, html:html});
+						});
 					}
 				});
+				
 				conn.release();
 			});
 		});
-		
+
 		socket.on('SignupRequest',function(data){
 			console.log("받기는 했니?");
 			pool.getConnection(function(err, conn){
