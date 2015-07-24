@@ -109,7 +109,6 @@ $(function(){
 	});
 	
 	$("#signupButton").click(function(){
-		console.log("ssss");
 		signup_submit();
 	});
 });
@@ -196,7 +195,6 @@ function signup_submit(){
 	});
 }
 function callback_SignupRequest() {
-	alert('회원가입이 완료되었습니다.');
 	$("#signup-id").val("");
 	$("#signup-passwd").val("");
 	$("#signup-passwd2").val("")
