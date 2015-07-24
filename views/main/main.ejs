@@ -7,20 +7,26 @@
 		
 		<link rel="stylesheet" href="/css/font-awesome.min.css">
 		<link rel="stylesheet" href="/css/index.css">
-		
+		<link rel="stylesheet" href="/css/signup.css">
 		
 		<script src="/js/jquery-2.1.4.min.js"></script>
 		<script src="/js/jquery-ui.js"></script>
 		<script type="text/javascript" src="/js/tinymce/tinymce.min.js"></script>
-		
+		<script src = "/socket.io/socket.io.js"></script>
 		
 		<script type="text/javascript"
 			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBHyZl0ohPiUgJ-F7QgtLMMJeib5KEMCMA">
 		</script>
 	
-	
+		<script type="text/javascript" src="/js/about_socket.js"></script>
 		<script type="text/javascript">
 			//각종 전역변수를 선언하는 곳입니다.
+			
+			//모든 js 에서 사용하는 변수				// 초기화, 삭제는 login.js 에서 관리된다.
+																	// key 와 code 가 서로 매치할때만 사용가능. 일치 하지 않으면 로그아웃 된다. (해킹 방지)
+			user_id = "";										// 로그인하면 초기화 된다. 로그아웃 시 사라짐.
+			user_key = "";									// 로그인하면 초기화 된다. 로그아웃 시 사라짐. 비밀번호와는 다르다.
+																	// 로그인할 때, 유저별로 랜덤 키를 받아온다.
 			
 			// about_socket.js 에서 사용하는 변수
 			var socket = null;
@@ -43,8 +49,10 @@
 			var opened_editor_class = "none"			// 생성되어 있는 에디터의 정보. 에디터의 동적 생성을 위해 있는 변수.
 			
 		</script>
-		<script type="text/javascript" src="/js/about_socket.js"></script>
+		<script type="text/javascript" src="/js/login.js"></script>
+		<script type="text/javascript" src="/js/signup.js"></script>
 		<script type="text/javascript" src="/js/index.js"></script>
+		
 		
 	</head>
 	<!-- ToggleSlide 가 제대로 작동하기 위해선 slide 가 될 div 의 id 가 "slide숫자" 꼴이어야한다. -->
@@ -52,9 +60,10 @@
 		<header style="width:100%; height:40px; background-color:#151515;">
 			<p style="display:inline-block; float:left; color:#FFF; margin:5px 0px 0px 5px;"><b>Tripmaster</b></p>
 			<div style="display:inline-block; float:right;">
-				<input type="text" placeholder="id">
-				<input type="password" placeholder="password">
-				<a style="color:#FFF;">login</a>
+				<input id="login-id" type="text" placeholder="id">
+				<input id="login-password" type="password" placeholder="password">
+				<a href="javascript:login();" style="color:#FFF;">login</a>
+				<a href="javascript:signup();" style="color:#FFF;">get started</a>
 			</div>
 		</header>
 		<section class="main-frame">
@@ -76,54 +85,61 @@
 				</a>
 			</nav>
 			<div id="slide1">
-				<header id="postroom-header">
-					<a href="#" style="background-color:transparent; color:#727272;"><i class="fa fa-home"></i></a>
-					<i style="color:#727272;" class="fa fa-search"></i>
-					<input type="text" style="border:none;" placeholder="user code search" onkeypress="if( event.keyCode==13 ){PostRoomSearch();}">
-				</header>
-				<div id="postroom-content">
-					<div class="postroom-content-post">
-						
-					</div>
-					<div class="postroom-content-post">
-						<p>이잡소리 저잡소리 이런잡소리 저런잡소리 그리고 또 이 잡소리와 함께 저 잡소리</p>
-					</div>
-					<div class="postroom-content-post">
-						<p>이잡소리 저잡소리 이런잡소리 저런잡소리 그리고 또 이 잡소리와 함께 저 잡소리</p>
-					</div>
-					<div class="postroom-content-post">
-						<p>이잡소리 저잡소리 이런잡소리 저런잡소리 그리고 또 이 잡소리와 함께 저 잡소리</p>
-					</div>
-					<div class="postroom-content-post">
-						<p>이잡소리 저잡소리 이런잡소리 저런잡소리 그리고 또 이 잡소리와 함께 저 잡소리</p>
-					</div>
-					<div class="postroom-content-post">
-						<p>이잡소리 저잡소리 이런잡소리 저런잡소리 그리고 또 이 잡소리와 함께 저 잡소리</p>
-					</div>
-					<div class="postroom-content-post">
-						<p>이잡소리 저잡소리 이런잡소리 저런잡소리 그리고 또 이 잡소리와 함께 저 잡소리</p>
-						<p>이잡소리 저잡소리 이런잡소리 저런잡소리 그리고 또 이 잡소리와 함께 저 잡소리</p>
-					</div>
-				</div>
-				<a href="javascript:ToggleSlide('community', 2)" style="text-decoration:none">
-					<div id="postroom-write" style="width:230px; height:40px; margin:10px; background-color:#0099dd;">
-						<p style="color:#FFF; margin:0px; text-align:center;"><strong>Write Post</strong></p>
-					</div>
-				</a>
 			</div>
 			<div id="slide2">
-				<textarea class="post-editor" name="content" style="width:100%;"></textarea>
-				<a href="#" style="text-decoration:none">
-					<div id="post-submit" style="width:230px; height:40px; margin:10px; background-color:#0099dd;">
-						<p style="color:#FFF; margin:0px; text-align:center;"><strong>OK</strong></p>
-					</div>
-				</a>
 			</div>
 			<div id="main-content">
 				<div id="map-canvas"></div>
 			</div>
-			<!--div id="ssss" style="position:fixed; top:0px; left:0px;">
-							<textarea name="content" style="width:100%;"></textarea></div-->
+			
+			
+			<img id="logincover" src="/image/logincover.jpg" style="position:fixed; left:0px; width:100%;">
+			
+			
+			<div id = "signup-background" style="position:fixed; left:0px; top:0px; width:100%; height:100%; overflow:auto; background-color:rgba(0,0,0,0.7);">
+				<div id = "signup-frame" style="position:absolute; left:50%; top:50px; margin-left : -250px;">
+					<div id = "signup-header">
+						<p>회원가입</p>
+						<a href = "javascript:signup_cancel()">취소</a>
+					</div>
+					<div id = "signup">
+						<div id = "signup-user">
+							<div>
+								<!--p>아이디</p-->
+								<input type = "text" name="id" id="signup-id" maxlength="15" placeholder = "아이디">
+								<input type = "button" value = "중복확인" id = "signup-isValid">
+							</div>
+							<div>
+								<input type = "password" name="passwd" id="signup-passwd" maxlength="15" placeholder = "비밀번호">
+							</div>
+							<div class = "final">
+								<input type = "password" name="passwd2" id="signup-passwd2" maxlength="15" placeholder = "비밀번호 재확인">
+							</div>
+						</div>
+						<div id = "signup-personal">
+							<div>
+								<input type = "text" name="name" id="signup-name" size="10" placeholder = "이름">
+							</div>
+							<div>
+								<p id = "signup-gender">성별</p>
+								<input type = "button" value = "남성" id = "signup-man">
+								<input type = "button" value = "여성" id = "signup-woman">
+							</div>
+							<div>
+								<input type = "text" name="birth" id="signup-birth" size="8" maxlength="8" placeholder = "생년월일    YYYYMMDD">
+							</div>
+						</div>
+						<div id = "signup-tag">
+							<div>
+								<p>관심분야</p>
+								<input type = "button" value = "관심분야 추가" id = "signup-addtag">
+								<input type = "button" value = "관심분야 제거" id = "signup-deltag">
+							</div>
+						</div>
+						<input type = "button" value = "가입하기" id = "signupButton">
+					</div>
+				</div>
+			</div>
 		<section>
 	</body>
 </html>

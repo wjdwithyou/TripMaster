@@ -1,0 +1,205 @@
+﻿#signup-header {
+	width : 510px;
+	height : 50px;
+	background-color : gray;
+	border-top-style : solid;
+	border-top-width : 10px;
+	border-top-color : #0099dd;
+	margin : 0px;
+	padding : 0px;
+}
+
+#signup-header p {
+	position : relative;
+	left : 225px;
+	top : 10px;
+	color : white;
+	font-size : 20px;
+	font-weight : bold;
+	display : inline;
+	margin : 0px 0px 0px 0px;
+	padding : 0px;
+}
+
+#signup-header a {
+	position : relative;
+	left : 370px;
+	top : 10px;
+	color : white;
+	font-size : 15px;
+	font-weight : bold;
+	text-decoration : none;
+}
+
+#signup {
+	position : relative;
+	top : 0px;
+	width : 500px;
+	height : auto;
+	background-color : rgb(240,240,240);
+	border-style : solid;
+	border-width : 5px;
+	border-color : gray;
+	padding : 0px;
+	margin : 0px 0px 50px 0px;
+}
+
+#signup > div {
+	border-style : solid;
+	border-width : 1px;
+	border-color : rgb(210,210,210);
+	margin : 20px;
+	width : 460px;
+	height : auto;
+	padding : 0px;
+	background-color : white;
+}
+
+#signup > div > div {
+	height : 50px;
+	border-bottom-style : solid;
+	border-bottom-width : 1px;
+	border-bottom-color : rgb(230,230,230);
+}
+
+#signup > div > div:last-child {
+	height : 50px;
+	border-bottom-style : none;
+}
+
+#signup > div > div > p {
+	position : relative;
+	top : 11px;
+	left : 10px;
+	display : inline;
+	color : rgb(169,169,169);
+	font-weight : bold;
+	font-family : "맑은 고딕", "돋움", "굴림";
+	font-size : 15px;
+	margin : 0px;
+}
+
+/*인풋 안 플레이스 홀드, 인풋*/
+#signup > div > div > input::-webkit-input-placeholder
+{
+	color : rgb(169,169,169);
+	font-weight : bold;
+	font-family : "맑은 고딕", "돋움", "굴림";
+	font-size : 15px;
+}
+textarea:-moz-placeholder, input:-moz-placeholder
+{
+	color : rgb(169,169,169);
+	font-weight : bold;
+	font-family : "맑은 고딕", "돋움", "굴림";
+	font-size : 15px;
+}
+:-ms-input-placeholder 
+{
+	color : rgb(169,169,169);
+	font-weight : bold;
+	font-family : "맑은 고딕", "돋움", "굴림";
+	font-size : 15px;
+}
+
+#signup > div > div > input[type = "text"] {
+	position : relative;
+	top : 8px;
+	left : 10px;
+	height : 30px;
+	width : 300px;
+	background-color : rgba(0,0,0,0);
+	border-style : none;
+	font-family : "맑은 고딕", "돋움", "굴림";
+	font-size : 15px;
+}
+
+#signup > div > div > input[type = "password"] {
+	position : relative;
+	top : 8px;
+	left : 10px;
+	height : 30px;
+	width : 300px;
+	background-color : rgba(0,0,0,0);
+	border-style : none;
+	font-family : "맑은 고딕", "돋움", "굴림";
+	font-size : 15px;
+}
+
+/* 남, 녀, 취향 추가, 제거 */
+#signup > div > div > input[type = "button"] {
+	margin : 0px;
+	border-style : solid;
+	border-width : 1px;
+	background-color : rgba(0,0,0,0);
+	font-weight : bold;
+	font-family : "맑은 고딕", "돋움", "굴림";
+	font-size : 15px;
+}
+
+#signup-man {
+	position : relative;
+	left : 270px;
+	top : 10px;
+	width : 70px;
+	height : 30px;
+	color : rgb(169,169,169);
+}
+
+#signup-woman {
+	position : relative;
+	left : 270px;
+	top : 10px;
+	width : 70px;
+	height : 30px;
+	color : rgb(169,169,169);
+}
+
+#signup-addtag {
+	position : relative;
+	left : 140px;
+	top : 10px;
+	width : 120px;
+	height : 30px;
+	color : rgb(169,169,169);
+}
+
+#signup-deltag {
+	position : relative;
+	left : 140px;
+	top : 10px;
+	width : 120px;
+	height : 30px;
+	color : rgb(169,169,169);
+}
+
+/* 취향 */
+input.signup_interesting {
+	position : relative;
+	top : 10px;
+	left : 10px;
+}
+
+/*완료 버튼*/
+#signup > input[type = "button"] {
+border-style : solid;
+	border-width : 1px;
+	border-color : #0099dd;
+	margin : 0px 20px 20px 20px;
+	width : 460px;
+	height : 50px;
+	padding : 0px;
+	background-color : #0099dd;
+	text-align : center;
+	color : white;
+	font-weight : bold;
+}
+
+#signup-isValid {
+	position : relative;
+	left : 45px;
+	top : 10px;
+	width : 100px;
+	height : 30px;
+	color : rgb(169,169,169);
+}

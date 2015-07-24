@@ -18,3 +18,15 @@ function socketDisconnect(){
 	if (!socketCnt)
 		socket.disconnect();
 }
+
+function socketInit(){
+	socket.on('isValidId', function( data ){
+		callback_isValidId( data );
+	});
+	socket.on('updateTagList', function( data ){
+		callback_updateTagList( data );
+	});
+	socket.on('SignupRequest', function (){
+		callback_SignupRequest();
+	});
+}
