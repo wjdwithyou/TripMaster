@@ -1,11 +1,13 @@
 ﻿window.onload = function() {
-	resize();
-	window.addEventListener('resize', resize);
-	
-	
+	$("#signup-background").hide();
 	$( "#slide1" ).hide();
 	$( "#slide2" ).hide();
 	/* 추가적인 slide 가 필요해진다면 #slide3 를 넣어준다. */
+	
+	
+	resize();
+	window.addEventListener('resize', resize);
+	
 	
 	
 	var mapOptions = {
@@ -37,6 +39,9 @@ function resize() {
 	$('#postroom-content').css('height', parseInt($('#slide1').css('height').replace('/[^-\d\.]/g', '')) - postroom_header_width - postroom_write_width + 'px');
 	$('textarea.post-editor').css('height', parseInt($('#slide2').css('height').replace('/[^-\d\.]/g', '')) - post_submit_width - 75 + 'px');		// 75 : 에디터 바의 두께
 	//$('main-canvas').css('width', window.innerWidth - nav_width + 'px');필요없는듯하다.
+	
+	$('#logincover').css('height', $('section.main-frame').css('height'));
+	$('#logincover').css('top', header_width + 'px');
 }
 
 function ChangeTab(data, num){
@@ -44,7 +49,7 @@ function ChangeTab(data, num){
 	ChangeTabColor(data);				// 탭 색 변화
 	ToggleSlide(data, num);				// 슬라이드 움직임
 	if(isTabChanged){
-		ChangeSlide(data);					// 슬라이드 내용 변화 ( 슬라이드의 종류가 변할때에만 작동 )
+		//ChangeSlide(data);					// 슬라이드 내용 변화 ( 슬라이드의 종류가 변할때에만 작동 )
 	}
 }
 
@@ -149,6 +154,7 @@ function ChangeSlide(data){
 				$('#slide2').html(data.slide2);
 				socketDisconnect();
 			});
+			//유저 코드를 보내줘야된다. 이곳에서 로그인한 유저의 유저 코드를 보내줘야된다.
 			socket.emit('init-slide-community');
 			break;
 		case 'recommendation' :
