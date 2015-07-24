@@ -109,7 +109,6 @@ $(function(){
 	});
 	
 	$("#signupButton").click(function(){
-		console.log("ssss");
 		signup_submit();
 	});
 });
@@ -135,7 +134,7 @@ function signup_submit(){
 		$("#signup-name").focus();
 		return;
 	}
-	if (gender=="none"){
+	if (gender == "none"){
 		alert("성별을 꼭 입력하세요");
 		$("#signup-gender").focus();
 		return;
@@ -209,6 +208,7 @@ function callback_SignupRequest() {
 	button.style.color = "rgb(169,169,169)";
 	button.style.border = "1px solid lightgray";
 	socketDisconnect();
+	alert('회원가입이 완료되었습니다.');
 }
 
 function updateTagList(){

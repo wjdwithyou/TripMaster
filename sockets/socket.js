@@ -24,7 +24,7 @@ var mysql = require('mysql');
 var pool = mysql.createPool({
 	host	:'localhost',
 	user	:'root',
-	password:'ryghkseoj7!4',
+	password:'이거맨날바꾸기귀찮으다',
 	database:'tripmaster',
 	connectionLimit:20
 });
