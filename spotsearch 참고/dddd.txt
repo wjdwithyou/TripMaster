@@ -1,0 +1,2 @@
+tinyMCE.execCommand('mceAddEditor', false, $("#post-editor").attr('id'));
+tinyMCE.execCommand('mceRemoveEditor', false, $("#post-editor").attr('id'));

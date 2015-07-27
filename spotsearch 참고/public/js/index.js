@@ -1,14 +1,11 @@
 ﻿window.onload = function() {
-	$("#header-div2").hide();
-	$("#signup-background").hide();
-	$( "#slide1" ).hide();
-	$( "#slide2" ).hide();
-	/* 추가적인 slide 가 필요해진다면 #slide3 를 넣어준다. */
-	
-	
 	resize();
 	window.addEventListener('resize', resize);
 	
+	
+	$( "#slide1" ).hide();
+	$( "#slide2" ).hide();
+	/* 추가적인 slide 가 필요해진다면 #slide3 를 넣어준다. */
 	
 	
 	var mapOptions = {
@@ -38,12 +35,9 @@ function resize() {
 	
 	/* 추가적인 slide 가 필요해진다면 #slide3 를 넣어준다. */
 	
-	$('#postroom-content').css('height', parseInt($('#slide1').css('height').replace('/[^-\d\.]/g', '')) - postroom_header_width - postroom_write_width + 'px');
+	$('#postroom-content').css('height', parseInt($('#slide1').css('height').replace('/[^-\d\.]/g', '')) - postroom_header_width + 'px');
 	$('textarea.post-editor').css('height', parseInt($('#slide2').css('height').replace('/[^-\d\.]/g', '')) - post_submit_width - 75 + 'px');		// 75 : 에디터 바의 두께
 	//$('main-canvas').css('width', window.innerWidth - nav_width + 'px');필요없는듯하다.
-	
-	$('#logincover').css('height', $('section.main-frame').css('height'));
-	$('#logincover').css('top', header_width + 'px');
 }
 
 function ChangeTab(data, num){
@@ -58,6 +52,8 @@ function ChangeTab(data, num){
 	if(isTabChanged){
 		//ChangeSlide(data);					// 슬라이드 내용 변화 ( 슬라이드의 종류가 변할때에만 작동 )
 	}
+	
+	
 }
 
 function ChangeTabColor(data){
@@ -110,6 +106,11 @@ function ToggleSlide(data, num){
 			for(var i = opened_slide_num + 1; i <= num; i++){
 				$( "#slide"+i).toggle( "slide", slide_speed );
 			}
+			post_editor_config.editor_selector = "post-editor";
+			opened_editor_class = "post-editor";
+			setTimeout(function() {
+				tinymce.init(post_editor_config);
+			}, slide_speed + 10);
 			opened_slide_num = num;
 		}else{
 			for(var i = opened_slide_num; i >= 1; i--){
@@ -123,6 +124,7 @@ function ToggleSlide(data, num){
 		}
 	}
 	console.log(opened_slide + "  " + opened_slide_num);
+	console.log(opened_editor_class);
 	if(opened_slide_num == 0)
 		opened_slide = "none";
 }
@@ -146,7 +148,6 @@ function ChangeSlide(data){
 				$('#slide2').html(data.slide2);
 				socketDisconnect();
 			});
-			//유저 코드를 보내줘야된다. 이곳에서 로그인한 유저의 유저 코드를 보내줘야된다.
 			socket.emit('init-slide-community');
 			break;
 		case 'recommendation' :
@@ -156,4 +157,65 @@ function ChangeSlide(data){
 
 function PostRoomSearch(){
 	console.log('aa');
+}
+
+function SpotSearch(){
+	console.log('aa');
+}
+
+
+var markers = [];
+var infos =[];
+var spots = [		//장소명//위도//경도//핀 우선순위//썸네일 이미지 주소//상세설명//?
+  ['마리나 베이 샌즈',1.283568, 103.859545, 4, './public/image/1.jpg', '상세설명<br/>조금더 긴 글을 입력해봅시다.', 2],
+  ['마리나 베이 샌즈',2, 100, 4, './public/image/1.jpg', '상세설명<br/>조금더 긴 글을 입력해봅시다.', 2],
+  ['마리나 베이 샌즈',3.283568, 110, 4, './public/image/1.jpg', '상세설명<br/>조금더 긴 글을 입력해봅시다.', 2],
+  ['마리나 베이 샌즈',4, 90, 4, './public/image/1.jpg', '상세설명<br/>조금더 긴 글을 입력해봅시다.', 2]
+];
+
+function setMarkers(map, spots){
+    var shape = {
+      coords: [0, 0, 		// 왼쪽 위
+      0, 75, 						// 왼쪽 아래
+      75, 75, 					// 오른쪽 아래
+      75 , 0],					// 오른쪽 위	// 틀릴 수 있음.
+        type: 'poly'
+    };
+    
+    for (var i = 0; i < spots.length; i++) {
+        var spot = spots[i];
+        
+        var image = {
+            url: spot[4],
+            // This marker is 20 pixels wide by 32 pixels tall.	// 이 설명은 복붙때문에 생긴것. 무시.
+            size: new google.maps.Size(75, 75),
+            // The origin for this image is 0,0.
+            origin: new google.maps.Point(0,0),
+            // The anchor for this image is the base of the flagpole at 0,32.
+            anchor: new google.maps.Point(0, 75),
+            scaledSize: new google.maps.Size(75, 75)
+        };
+        
+        
+        var myLatLng = new google.maps.LatLng(spot[1], spot[2]);
+        var marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            icon: image,
+            shape: shape,
+            title: spot[0],
+            zIndex: spot[3],
+            optimized:false
+        });
+        var infowindow = new google.maps.InfoWindow({
+            content: ''
+        });
+        
+        google.maps.event.addListener(marker,'click', (function(marker,spot,i){ 
+            return function() {
+                
+            };
+        })(marker,spot,i)); 
+    }
+
 }

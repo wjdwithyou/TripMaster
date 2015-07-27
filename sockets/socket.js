@@ -24,11 +24,12 @@ var mysql = require('mysql');
 var pool = mysql.createPool({
 	host	:'localhost',
 	user	:'root',
-	password:'이거맨날바꾸기귀찮으다',
+	password:'2014005041',
 	database:'tripmaster',
 	connectionLimit:20
 });
 
+//참고용 함수@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 function load_spotsearch(pool, socket, fs, ejs, pagenum){
 	pool.getConnection(function(err, conn){
 		if(err){
@@ -217,13 +218,12 @@ var socket = function (server){
 				fs.readFile(__dirname + '/community/community-slide1-writebutton.ejs', 'utf8', function (err, ejsdata){
 					html = html + ejs.render(ejsdata,{/*이곳에 유저코드를 넘겨 줘야된다. 어디에 글이 작성되게 될지.*/});
 				});
-				
 			});
-			
-			
-			
-			
 		});
+		
+		
+		
+		
 	});
 	
 	return io;
