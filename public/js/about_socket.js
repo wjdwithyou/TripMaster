@@ -32,8 +32,11 @@ function socketInit(){
 	socket.on('login', function(data){
 		callback_login( data );
 	});
-	socket.on('spotsearch', function(data){
-		callback_spotsearch(data);
+	socket.on('InitSlideSpotSearch', function(data){
+		callback_InitSlideSpotSearch(data);
+	});
+	socket.on('SpotSearch', function(data){
+		callback_SpotSearch(data);
 	});
 	socket.on('InitSlideCommunity', function(data){
 		callback_InitSlideCommunity(data);

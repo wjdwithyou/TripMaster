@@ -24,7 +24,7 @@ var mysql = require('mysql');
 var pool = mysql.createPool({
 	host	:'localhost',
 	user	:'root',
-	password:'ryghkseoj7!4',
+	password:'이혁호멍충이',
 	database:'tripmaster',
 	connectionLimit:20
 });
@@ -196,13 +196,47 @@ var socket = function (server){
 			});
 		});
 		
-		socket.on('spotsearch', function(data){
+		socket.on('InitSlideSpotSearch', function(data){
 			var html = "";
 			
-			fs.readFile(__dirname + '/spotsearch-slide1-header.ejs', 'utf8', function(err, ejsdata){
+			fs.readFile(__dirname + '/spotsearch/spotsearch-slide1-header.ejs', 'utf8', function(err, ejsdata){
 				html = html + ejs.render(ejsdata, {/**/});
 				
-				socket.emit('spotsearch', {html: html});
+				socket.emit('InitSlideSpotSearch', {html: html});
+			});
+		});
+		
+		socket.on('SpotSearch', function(data){
+			pool.getConnection(function(err, conn){
+				if (err){
+					console.log('err: ', err);
+					conn.release();
+					throw err;
+				}
+				
+				conn.query('select * from spot', function(err, rows){
+					if (err){
+						console.log('err: ', err);
+						conn.release();
+						throw err;
+					}
+					
+					var html = "";
+					
+					fs.readFile(__dirname + '/spotsearch/spotsearch-slide1-spot.ejs', 'utf8', function(err, ejsdata){
+						for (var i = 0; i < rows.length; ++i){
+							html = html + ejs.render(ejsdata,
+							{
+								spot_name: rows[i].name,
+								spot_description: rows[i].description
+							});
+						}
+
+						socket.emit('SpotSearch', {html: html});
+
+						conn.release();
+					});
+				});
 			});
 		});
 		
@@ -222,7 +256,7 @@ var socket = function (server){
 					html1 = html1 + ejs.render(ejsdata, {});
 				
 					fs.readFile(__dirname + '/community/community-slide1-post.ejs', 'utf8', function (err, ejsdata){
-						//conn.query("select * from spot limit ? , 10" , 10*(pagenum - 1), function(err, rows){
+						//conn.query("select * from post limit ? , 10" , 10*(pagenum - 1), function(err, rows){
 						for(var i = 0; i < 10; i++)
 							html1 = html1 + ejs.render(ejsdata,{content:'<p>aaa</p>'});
 						//});

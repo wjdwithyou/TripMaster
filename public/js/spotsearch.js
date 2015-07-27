@@ -1,5 +1,14 @@
-﻿function SpotSearch(){
-	console.log('aa');
+﻿function SpotSearchInit(){
+	socketConnect();
+	socket.emit('InitSlideSpotSearch', {});
+}
+
+function SpotSearch(){
+	socketConnect();
+	
+	var temp = $("#spotsearch-searchbar").val();
+	
+	socket.emit('SpotSearch', temp);
 }
 
 function setMarkers(map, spots){
@@ -47,4 +56,16 @@ function setMarkers(map, spots){
         })(marker,spot,i)); 
     }
 
+}
+
+function callback_InitSlideSpotSearch(data){
+	$('#slide1').html(data.html);
+	
+	socketDisconnect();
+}
+
+function callback_SpotSearch(data){
+	$('#spotsearch-slide1-body').html(data.html);
+	
+	socketDisconnect();
 }

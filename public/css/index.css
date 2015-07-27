@@ -17,14 +17,16 @@
 .postroom-content-post {width: 210px; margin:10px; border-style:solid; border-width:1px; border-color:#e8e8e8; border-radius: 10px; padding:10px;}
 
 /* spotsearch */
-#spotsearch-header {width:100%; height:40px; border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:#e8e8e8;}
-#spotsearch-content {width:270px; overflow-x:hidden; overflow-y:scroll;}
-#spotsearch-content > a {text-decoration:none; line-height:11px;}
+#spotsearch-slide1-header {width:100%; height:40px; border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:#e8e8e8;}
+#spotsearch-slide1-body {width:270px; border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:#e8e8e8; overflow-x:hidden; overflow-y:scroll;}
 
-.spotsearch-content-spot {width: 230px; border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:#e8e8e8; padding:10px;}
-div.spotsearch-content-spot > img {display:inline; float:left; width:50px; height:50px; border-radius:25px; margin-right:10px;}
-.spotsearch-content-spot-title {font-size:15px; margin:0px;display:inline;}
-.spotsearch-content-spot-desc {font-size:12px; margin:0px;display:inline;}
+.spotsearch-content-spot {width:270px; overflow-x:hidden; overflow-y:scroll;}
+.spotsearch-content-spot > a {text-decoration:none; line-height:11px;}
+.spotsearch-inner {width: 230px; border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:#e8e8e8; padding:10px;}
+
+div.spotsearch-inner > img {display:inline; float:left; width:50px; height:50px; border-radius:25px; margin-right:10px;}
+.spotsearch-spot-name {font-size:15px; margin:0px;display:inline;}
+.spotsearch-spot-description {font-size:12px; margin:0px;display:inline;}
 
 /* 구글맵 오류 수정 css */
 #main-content {
