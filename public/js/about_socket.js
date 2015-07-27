@@ -32,4 +32,7 @@ function socketInit(){
 	socket.on('login', function(data){
 		callback_login( data );
 	});
+	socket.on('spotsearch', function(data){
+		callback_spotsearch(data);
+	});
 }

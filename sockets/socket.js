@@ -24,7 +24,7 @@ var mysql = require('mysql');
 var pool = mysql.createPool({
 	host	:'localhost',
 	user	:'root',
-	password:'2014005041',
+	password:'ryghkseoj7!4',
 	database:'tripmaster',
 	connectionLimit:20
 });
@@ -193,6 +193,16 @@ var socket = function (server){
 					socket.emit('updateTagList', {list : reslist});
 				});
 				conn.release();
+			});
+		});
+		
+		socket.on('spotsearch', function(data){
+			var html = "";
+			
+			fs.readFile(__dirname + '/spotsearch-slide1-header.ejs', 'utf8', function(err, ejsdata){
+				html = html + ejs.render(ejsdata, {/**/});
+				
+				socket.emit('spotsearch', {html: html});
 			});
 		});
 		

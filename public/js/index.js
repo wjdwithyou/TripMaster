@@ -54,6 +54,9 @@ function ChangeTab(data, num){
 	}
 	var isTabChanged = (data != opened_slide);
 	ChangeTabColor(data);				// 탭 색 변화
+	
+	SetSlideContent(data);
+	
 	ToggleSlide(data, num);				// 슬라이드 움직임
 	if(isTabChanged){
 		//ChangeSlide(data);					// 슬라이드 내용 변화 ( 슬라이드의 종류가 변할때에만 작동 )
@@ -72,6 +75,20 @@ function ChangeTabColor(data){
 		$("#"+opened_slide+"-button").css('color','#727272');
 		$("#"+data+"-button").css('backgroundColor','#0099dd');
 		$("#"+data+"-button").css('color','#fff');
+	}
+}
+
+function SetSlideContent(data){
+	switch(data){
+	case 'spotsearch':
+		socketConnect();
+		
+		socket.emit('spotsearch', {/**/});
+		break;
+	/*다른 탭은 어떻게 할건지 몰라서 일단 쉽게쉽게간다..*/
+	/*나중에 data로 받고 socket.js에서 나누게 하든지..*/
+	default:
+		break;
 	}
 }
 
@@ -156,4 +173,8 @@ function ChangeSlide(data){
 
 function PostRoomSearch(){
 	console.log('aa');
+}
+
+function callback_spotsearch(data){
+	$('#slide1').html(data.html);
 }
