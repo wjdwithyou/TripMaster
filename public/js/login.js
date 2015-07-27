@@ -27,6 +27,7 @@ function callback_login(data){
 		$("#login-id").val("");
 		$("#login-password").val("");
 	}
+	socketDisconnect();
 }
 
 function logout(){

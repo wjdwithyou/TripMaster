@@ -59,7 +59,7 @@ function ChangeTab(data, num){
 	
 	ToggleSlide(data, num);				// 슬라이드 움직임
 	if(isTabChanged){
-		//ChangeSlide(data);					// 슬라이드 내용 변화 ( 슬라이드의 종류가 변할때에만 작동 )
+		ChangeSlide(data);					// 슬라이드 내용 변화 ( 슬라이드의 종류가 변할때에만 작동 )
 	}
 }
 
@@ -157,22 +157,13 @@ function ChangeSlide(data){
 		case 'spotsearch' :
 			break;
 		case 'community' :
-			socketConnect();
-			socket.on('init-slide-community', function(data){
-				$('#slide1').html(data.slide1);
-				$('#slide2').html(data.slide2);
-				socketDisconnect();
-			});
+			//현재 개발 중인 부분.
+			PostRoomSearch('mine');
 			//유저 코드를 보내줘야된다. 이곳에서 로그인한 유저의 유저 코드를 보내줘야된다.
-			socket.emit('init-slide-community');
 			break;
 		case 'recommendation' :
 			break;
 	}
-}
-
-function PostRoomSearch(){
-	console.log('aa');
 }
 
 function callback_spotsearch(data){

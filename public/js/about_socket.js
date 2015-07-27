@@ -35,4 +35,7 @@ function socketInit(){
 	socket.on('spotsearch', function(data){
 		callback_spotsearch(data);
 	});
+	socket.on('InitSlideCommunity', function(data){
+		callback_InitSlideCommunity(data);
+	});
 }

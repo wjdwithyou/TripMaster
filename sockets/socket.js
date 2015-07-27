@@ -206,34 +206,40 @@ var socket = function (server){
 			});
 		});
 		
-		/* init-slide- 메시지 : 탭 변화 시 작동 */
-		socket.on('init-slide-community', function(data){
+		/* InitSlide메시지 : 탭 변화 시 작동 */
+		socket.on('InitSlideCommunity', function(data){
 			pool.getConnection(function(err, conn){
 				if(err){
 					console.log('err : ', err);
 					conn.release();
 					throw err;
 				}
+				console.log("도착했음.");
+				var html1 = "";
+				var html2 = "";
 				
 				fs.readFile(__dirname + '/community/community-slide1-header.ejs', 'utf8', function (err, ejsdata){
-					html = html + ejs.render(ejsdata,{/*이곳에 유저코드를 넘겨 줘야된다.*/});
-				});
+					html1 = html1 + ejs.render(ejsdata, {});
 				
-				fs.readFile(__dirname + '/community/community-slide1-post.ejs', 'utf8', function (err, ejsdata){
-					//conn.query("select * from spot limit ? , 10" , 10*(pagenum - 1), function(err, rows){
-						html = html + ejs.render(ejsdata,{/**/});
-					//});
-				});
-				
-				fs.readFile(__dirname + '/community/community-slide1-writebutton.ejs', 'utf8', function (err, ejsdata){
-					html = html + ejs.render(ejsdata,{/*이곳에 유저코드를 넘겨 줘야된다. 어디에 글이 작성되게 될지.*/});
+					fs.readFile(__dirname + '/community/community-slide1-post.ejs', 'utf8', function (err, ejsdata){
+						//conn.query("select * from spot limit ? , 10" , 10*(pagenum - 1), function(err, rows){
+						for(var i = 0; i < 10; i++)
+							html1 = html1 + ejs.render(ejsdata,{content:'<p>aaa</p>'});
+						//});
+						
+						fs.readFile(__dirname + '/community/community-slide1-writebutton.ejs', 'utf8', function (err, ejsdata){
+							html1 = html1 + ejs.render(ejsdata,{/*이곳에 유저코드를 넘겨 줘야된다. 어디에 글이 작성되게 될지.*/});
+						
+							fs.readFile(__dirname + '/community/community-slide2.ejs', 'utf8', function (err, ejsdata){
+								html2 = html2 + ejs.render(ejsdata,{/*이곳에 유저코드를 넘겨 줘야된다. 어디에 글이 작성되게 될지.*/});
+								socket.emit('InitSlideCommunity', {slide1:html1, slide2:html2});
+								conn.release();
+							});
+						});
+					});
 				});
 			});
 		});
-		
-		
-		
-		
 	});
 	
 	return io;
