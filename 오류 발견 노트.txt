@@ -1,0 +1,5 @@
+오류 발견
+
+slide 연 상태에서
+
+logout 하면 slide 가 열려있음.
