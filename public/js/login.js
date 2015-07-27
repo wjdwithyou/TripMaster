@@ -15,7 +15,7 @@ function callback_login(data){
 		$("#login-id").val("");
 		$("#login-password").val("");
 		
-		$("#logincover").toggle( "slide", 600);
+		$("#logincover").toggle("slide", 600);
 
 		$("#header-div1").toggle("blind");
 		$("#header-div2").toggle("blind");
@@ -36,8 +36,13 @@ function logout(){
 	
 	$("#login-id").val("");
 	$("#login-password").val("");
+
+	if (opened_slide != 'none'){
+		ToggleSlide(opened_slide, 1);
+		//NavNavOut(opened_slide + "-button");
+	}
 	
-	$("#logincover").toggle( "slide", 600);
+	$("#logincover").toggle("slide", 600);
 	
 	$("#header-div2").toggle("blind");
 	$("#header-div1").toggle("blind");
