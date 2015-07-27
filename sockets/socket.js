@@ -218,10 +218,10 @@ var socket = function (server){
 						//});
 						
 						fs.readFile(__dirname + '/community/community-slide1-writebutton.ejs', 'utf8', function (err, ejsdata){
-							html1 = html1 + ejs.render(ejsdata,{/*이곳에 유저코드를 넘겨 줘야된다. 어디에 글이 작성되게 될지.*/});
+							html1 = html1 + ejs.render(ejsdata,{});
 						
 							fs.readFile(__dirname + '/community/community-slide2.ejs', 'utf8', function (err, ejsdata){
-								html2 = html2 + ejs.render(ejsdata,{/*이곳에 유저코드를 넘겨 줘야된다. 어디에 글이 작성되게 될지.*/});
+								html2 = html2 + ejs.render(ejsdata,{postroom_owner : data});
 								socket.emit('InitSlideCommunity', {slide1:html1, slide2:html2});
 								conn.release();
 							});
@@ -230,6 +230,11 @@ var socket = function (server){
 				});
 			});
 		});
+		
+		socket.on('PostSubmit', function(data){
+			//post 내용 받아옴.
+		});
+		
 	});
 	
 	return io;
