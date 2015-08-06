@@ -33,6 +33,8 @@ function PostSubmit(){
 	var post = tinyMCE.activeEditor.getContent({format : 'raw'});
 	socketConnect();
 	socket.emit('PostSubmit', {writer:user_id, postroom_owner:postroom_owner, content:post});
+}
+function callback_PostSubmit(data){
 	socketDisconnect();
 	ChangeTab('community',1);
 }

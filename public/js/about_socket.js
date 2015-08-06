@@ -41,4 +41,7 @@ function socketInit(){
 	socket.on('InitSlideCommunity', function(data){
 		callback_InitSlideCommunity(data);
 	});
+	socket.on('PostSubmit', function(data){
+		callback_PostSubmit(data);
+	});
 }

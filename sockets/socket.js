@@ -24,7 +24,7 @@ var mysql = require('mysql');
 var pool = mysql.createPool({
 	host	:'localhost',
 	user	:'root',
-	password:'이혁호멍충이',
+	password:'2014005041',
 	database:'tripmaster',
 	connectionLimit:20
 });
@@ -256,10 +256,10 @@ var socket = function (server){
 					html1 = html1 + ejs.render(ejsdata, {});
 				
 					fs.readFile(__dirname + '/community/community-slide1-post.ejs', 'utf8', function (err, ejsdata){
-						//conn.query("select * from post limit ? , 10" , 10*(pagenum - 1), function(err, rows){
-						for(var i = 0; i < 10; i++)
-							html1 = html1 + ejs.render(ejsdata,{content:'<p>aaa</p>'});
-						//});
+						conn.query("select * from user_post where postroom_owner = ?" , data, function(err, rows){
+						for(var i = 0; i < rows.length; i++)
+							html1 = html1 + ejs.render(ejsdata,{content:rows[i].post});
+						});
 						
 						fs.readFile(__dirname + '/community/community-slide1-writebutton.ejs', 'utf8', function (err, ejsdata){
 							html1 = html1 + ejs.render(ejsdata,{});
@@ -277,6 +277,20 @@ var socket = function (server){
 		
 		socket.on('PostSubmit', function(data){
 			//post 내용 받아옴.
+			pool.getConnection(function(err, conn){
+				if(err){
+					console.log('err : ', err);
+					conn.release();
+					throw err;
+				}
+				var query = conn.query('insert into user_post values(?,?,?,?)',[data.postroom_owner, data.writer, "000000000000", data.content]);
+				query.on('error', function(err){
+					console.log('err', err);
+					socket.emit('socketError');
+				});
+				conn.release();
+				socket.emit('PostSubmit');
+			});
 		});
 		
 	});
