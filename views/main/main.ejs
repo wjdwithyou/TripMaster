@@ -58,6 +58,9 @@
 			  ['마리나 베이 샌즈',4, 90, 4, '/image/4.jpg', '상세설명<br/>조금더 긴 글을 입력해봅시다.', 2]
 			];
 			
+			// post.js 에서 사용하는 변수
+			var postroom_nickname = "";
+			
 		</script>
 		<script type="text/javascript" src="/js/login.js"></script>
 		<script type="text/javascript" src="/js/signup.js"></script>
@@ -82,17 +85,17 @@
 		</header>
 		<section class="main-frame">
 			<nav class="navbar">
-				<a class="navbar-nav" href="javascript:ChangeTab('spotsearch',1)">
+				<a class="navbar-nav" href="javascript:ChangeTab('spotsearch')">
 					<div id="spotsearch-button" onMouseOver="NavNavOver(id)" onMouseOut="NavNavOut(id)">
 						<i style="margin-left:10px;" class="fa fa-map-marker fa-2x"></i>
 					</div>
 				</a>
-				<a class="navbar-nav" href="javascript:ChangeTab('community',1)">
+				<a class="navbar-nav" href="javascript:ChangeTab('community')">
 					<div id="community-button" onMouseOver="NavNavOver(id)" onMouseOut="NavNavOut(id)">
 						<i style="margin-left:7px;" class="fa fa-pencil fa-2x"></i>
 					</div>
 				</a>
-				<a class="navbar-nav" href="javascript:ChangeTab('recommendation',1)">
+				<a class="navbar-nav" href="javascript:ChangeTab('recommendation')">
 					<div id="recommendation-button" onMouseOver="NavNavOver(id)" onMouseOut="NavNavOut(id)">
 						<i style="margin-left:7px;" class="fa fa-plane fa-2x"></i>
 					</div>

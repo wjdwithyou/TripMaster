@@ -256,19 +256,38 @@ var socket = function (server){
 					html1 = html1 + ejs.render(ejsdata, {});
 				
 					fs.readFile(__dirname + '/community/community-slide1-post.ejs', 'utf8', function (err, ejsdata){
-						conn.query("select * from user_post where postroom_owner = ?" , data, function(err, rows){
-						for(var i = 0; i < rows.length; i++)
-							html1 = html1 + ejs.render(ejsdata,{content:rows[i].post});
-						});
-						
-						fs.readFile(__dirname + '/community/community-slide1-writebutton.ejs', 'utf8', function (err, ejsdata){
-							html1 = html1 + ejs.render(ejsdata,{});
-						
-							fs.readFile(__dirname + '/community/community-slide2.ejs', 'utf8', function (err, ejsdata){
-								html2 = html2 + ejs.render(ejsdata,{postroom_owner : data});
-								socket.emit('InitSlideCommunity', {slide1:html1, slide2:html2});
-								conn.release();
-							});
+						conn.query("select * from user_info where id = ?" , data.nickname, function(err, rows){
+							if(rows.length == 0){
+								conn.query("select * from user_post where postroom_owner = ?" , data.user_id, function(err, rows){
+								for(var i = 0; i < rows.length; i++)
+									html1 = html1 + ejs.render(ejsdata,{content:rows[i].post});
+								});
+								
+								fs.readFile(__dirname + '/community/community-slide1-writebutton.ejs', 'utf8', function (err, ejsdata){
+									html1 = html1 + ejs.render(ejsdata,{});
+								
+									fs.readFile(__dirname + '/community/community-slide2.ejs', 'utf8', function (err, ejsdata){
+										html2 = html2 + ejs.render(ejsdata,{postroom_owner : data.user_id});
+										socket.emit('InitSlideCommunity', {slide1:html1, slide2:html2, isValid:false, nickname:data.user_id});
+										conn.release();
+									});
+								});
+							}else{
+								conn.query("select * from user_post where postroom_owner = ?" , data.nickname, function(err, rows){
+								for(var i = 0; i < rows.length; i++)
+									html1 = html1 + ejs.render(ejsdata,{content:rows[i].post});
+								});
+								
+								fs.readFile(__dirname + '/community/community-slide1-writebutton.ejs', 'utf8', function (err, ejsdata){
+									html1 = html1 + ejs.render(ejsdata,{});
+								
+									fs.readFile(__dirname + '/community/community-slide2.ejs', 'utf8', function (err, ejsdata){
+										html2 = html2 + ejs.render(ejsdata,{postroom_owner : data.nickname});
+										socket.emit('InitSlideCommunity', {slide1:html1, slide2:html2, isValid:true, nickname:data.nickname});
+										conn.release();
+									});
+								});
+							}
 						});
 					});
 				});

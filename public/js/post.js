@@ -4,23 +4,29 @@
 		case "mine":
 			nickname = user_id;
 			break;
+		case "basic":
+			nickname = postroom_nickname;
+			break;
 		case "search":
 			nickname = $("#postroom-searchbar").val();
 			break;
 	}
 	console.log("aaa");
 	socketConnect();
-	socket.emit('InitSlideCommunity', nickname);
+	socket.emit('InitSlideCommunity', {nickname:nickname, user_id:user_id});
 }
 function callback_InitSlideCommunity(data){
+	postroom_nickname = data.nickname;
 	$('#slide1').html(data.slide1);
 	$('#slide2').html(data.slide2);
+	$("#postroom-searchbar").val(data.nickname);
 	socketDisconnect();
 	resize();
 }
 
 function WritePost(){
-	ChangeTab('community',2);
+	ToggleSlide("#slide2");
+	opened_slide_num++;
 	setTimeout(function() {
 		post_editor_config.editor_selector = "post-editor";
 		opened_editor_class = "post-editor";
@@ -36,5 +42,7 @@ function PostSubmit(){
 }
 function callback_PostSubmit(data){
 	socketDisconnect();
-	ChangeTab('community',1);
+	ToggleSlide("#slide2");
+	opened_slide_num--;
+	PostRoomSearch('basic');
 }

@@ -46,20 +46,35 @@ function resize() {
 	$('#logincover').css('top', header_width + 'px');
 }
 
-function ChangeTab(data, num){
-	if(opened_editor_class != "none"){
-		tinyMCE.execCommand('mceRemoveEditor', false, $("textarea."+opened_editor_class).attr('id'));
-		opened_editor_class = "none";
-		post_editor_config.editor_selector = opened_editor_class;
+function ChangeTab(data){
+	ChangeTabColor(data);
+	if(opened_slide != data){
+		if(opened_editor_class != "none"){
+			tinyMCE.execCommand('mceRemoveEditor', false, $("textarea."+opened_editor_class).attr('id'));
+			opened_editor_class = "none";
+			post_editor_config.editor_selector = opened_editor_class;
+		}
 	}
-	var isTabChanged = (data != opened_slide);
-	ChangeTabColor(data);				// 탭 색 변화
 	
-	ToggleSlide(data, num);				// 슬라이드 움직임
-	if(isTabChanged){
-		ChangeSlide(data);					// 슬라이드 내용 변화 ( 슬라이드의 종류가 변할때에만 작동 )
+	var isTabChanged = (data != opened_slide);
+	if(data == opened_slide){
+		for(var i = opened_slide_num; i >= 1; i--){
+			ToggleSlide("#slide"+i);
+		}
+		opened_slide_num = 0;
+		opened_slide = "none";
+	}else{
+		for(var i = opened_slide_num; i >= 1; i--){
+			ToggleSlide("#slide"+i);
+		}
+		ToggleSlide("#slide1");
+		opened_slide = data;
+		opened_slide_num = 1;
 	}
+	ChangeSlide(data);
 }
+
+
 
 function ChangeTabColor(data){
 	if(opened_slide == 'none'){				//안열려있는 경우에는 열린다.
@@ -89,43 +104,8 @@ function NavNavOut(id){
 
 // 슬라이드를 토글하는 함수이다. data 에는 토글하는 슬라이드의 종류, num 에는 토글할 슬라이드의 번호가 온다.
 // 자동으로 에디터가 켜져있을 경우, 에디터를 지운다.
-function ToggleSlide(data, num){
-	if(opened_slide_num >= num){			//어떤 종류의 슬라이드에서 num 번째 슬라이드를 토글하려고 하는데, 이미 그 이상의 슬라이드가 토글 되어있는 경우
-		if(opened_slide == data){					//종류가 같은경우
-			for(var i = opened_slide_num; i >= num; i--){
-				$( "#slide"+i).toggle( "slide", slide_speed );
-			}
-			opened_slide_num = num - 1;
-		}else{
-			for(var i = opened_slide_num; i >= 1; i--){
-				$( "#slide"+i).toggle( "slide" , slide_speed);
-			}
-			for(var i = 1; i <= num; i++){
-				$( "#slide"+i).toggle( "slide", slide_speed );
-			}
-			opened_slide_num = num;
-			opened_slide = data;
-		}
-	}else{
-		if(opened_slide == data){					//종류가 같은경우
-			for(var i = opened_slide_num + 1; i <= num; i++){
-				$( "#slide"+i).toggle( "slide", slide_speed );
-			}
-			opened_slide_num = num;
-		}else{
-			for(var i = opened_slide_num; i >= 1; i--){
-				$( "#slide"+i).toggle( "slide", slide_speed );
-			}
-			for(var i = 1; i <= num; i++){
-				$( "#slide"+i).toggle( "slide", slide_speed );
-			}
-			opened_slide_num = num;
-			opened_slide = data;
-		}
-	}
-	console.log(opened_slide + "  " + opened_slide_num);
-	if(opened_slide_num == 0)
-		opened_slide = "none";
+function ToggleSlide(data){
+	$(data).toggle( "slide", slide_speed );
 }
 
 /* 에디터 생성
@@ -141,12 +121,12 @@ function ChangeSlide(data){
 		case 'spotsearch':
 			SpotSearchInit();
 			break;
-		case 'community' :
+		case 'community':
 			//현재 개발 중인 부분.
-			PostRoomSearch('mine');
+			PostRoomSearch('basic');
 			//유저 코드를 보내줘야된다. 이곳에서 로그인한 유저의 유저 코드를 보내줘야된다.
 			break;
-		case 'recommendation' :
+		case 'recommendation':
 			break;
 	}
 }

@@ -11,6 +11,7 @@ function callback_login(data){
 	if(data.success){
 		user_id = data.user_id;
 		user_key = data.user_key;
+		postroom_nickname = data.user_id;
 		
 		$("#login-id").val("");
 		$("#login-password").val("");
@@ -38,7 +39,7 @@ function logout(){
 	$("#login-password").val("");
 
 	if (opened_slide != 'none'){
-		ToggleSlide(opened_slide, 1);
+		//ToggleSlide(opened_slide, 1);
 		//NavNavOut(opened_slide + "-button");
 	}
 	
