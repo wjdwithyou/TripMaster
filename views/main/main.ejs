@@ -64,6 +64,7 @@
 		</script>
 		<script type="text/javascript" src="/js/login.js"></script>
 		<script type="text/javascript" src="/js/signup.js"></script>
+		<script type="text/javascript" src="/js/profile.js"></script>
 		<script type="text/javascript" src="/js/spotsearch.js"></script>
 		<script type="text/javascript" src="/js/post.js"></script>
 		<script type="text/javascript" src="/js/index.js"></script>
@@ -76,7 +77,7 @@
 			<p style="display:inline-block; float:left; color:#FFF; margin:5px 0px 0px 5px;"><b>Tripmaster</b></p>
 			<div id="header-div1" style="display:inline-block; float:right;">
 				<input id="login-id" type="text" placeholder="id">
-				<input id="login-password" type="password" placeholder="password">
+				<input id="login-password" type="password" placeholder="password" onkeypress="if(event.keyCode==13){javascript:login();}">
 				<a href="javascript:login();" style="color:#FFF;">login</a>
 				<a href="javascript:signup();" style="color:#FFF;">get started</a>
 			</div>
