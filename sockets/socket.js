@@ -126,9 +126,19 @@ var socket = function (server){
 						socket.emit('login', {success:false, user_id:'', user_key:''});
 					}else {
 						var html = "";
+						var path = "/image/profile/" + data.id;
+						
+						fs.exists(__dirname + '/../public' + path, function(isExists){
+							if (!isExists)
+								path = "/image/default.jpg";
+						});
 
 						fs.readFile(__dirname + '/header/header-div2.ejs', 'utf8', function (err, ejsdata){
-							html = html + ejs.render(ejsdata, {user_id: data.id});
+							html = html + ejs.render(ejsdata,
+							{
+								user_id: data.id,
+								image_path: path
+							});
 							
 							/* 유저 키를 형성한다. */
 							var user_key = "";

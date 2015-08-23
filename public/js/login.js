@@ -20,7 +20,7 @@ function callback_login(data){
 
 		$("#header-div1").toggle("blind");
 		$("#header-div2").toggle("blind");
-		
+
 		$("#header-div2").html(data.html);
 	}else{
 		alert("아이디 혹은 비밀번호를 잘못 입력하셨습니다.");

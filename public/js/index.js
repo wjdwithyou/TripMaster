@@ -1,6 +1,7 @@
 ﻿window.onload = function() {
 	$("#header-div2").hide();
 	$("#signup-background").hide();
+	$("#profile-background").hide();
 	$( "#slide1" ).hide();
 	$( "#slide2" ).hide();
 	/* 추가적인 slide 가 필요해진다면 #slide3 를 넣어준다. */

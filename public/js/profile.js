@@ -1,4 +1,10 @@
 ﻿function OpenProfile(){
-	alert('ㅠㅠ');
-	// 프로필 이미지 때문에 잠깐 보류.. 연구중!
+	$("#profile-background").toggle("blind");
+
+	$("#profile-hidden-user-id").val(user_id);
+}
+
+function CloseProfile(){
+	// impl.
+	$("#profile-background").toggle("blind");
 }

@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="/css/font-awesome.min.css">
 		<link rel="stylesheet" href="/css/index.css">
 		<link rel="stylesheet" href="/css/signup.css">
+		<link rel="stylesheet" href="/css/profile.css">
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 		
 		<script src="/js/jquery-2.1.4.min.js"></script>
@@ -134,7 +135,7 @@
 			<div id="main-content">
 				<div id="map-canvas"></div>
 			</div>
-
+			
 			<div id="fb-temp" class="fb-like" data-share="true" data-width="450" data-show-faces="true"></div>
 			
 			<img id="logincover" src="/image/logincover.jpg" style="position:fixed; left:0px; width:100%;">
@@ -181,6 +182,29 @@
 							</div>
 						</div>
 						<input type = "button" value = "가입하기" id = "signupButton">
+					</div>
+				</div>
+			</div>
+			<div id="profile-background" style="position:fixed; left:0px; top:0px; width:100%; height:100%; overflow:auto; background-color:rgba(0,0,0,0.7);">
+				<div id="profile-frame" style="position:absolute; left:50%; top:50px; margin-left:-250px;">
+					<div id="profile-header">
+						<p>내 정보</p>
+						<a href="javascript:CloseProfile()">취소</a>
+					</div>
+					<div id="profile">
+						<form method='post' action='/upload' enctype='multipart/form-data'>
+							<input type='hidden' name='user' value='' id='profile-hidden-user-id'/>
+							<input type='file' name='file'/>
+							<input type='submit'/>
+						</form>
+						
+						<!--div id="profile-user">
+						</div>
+						<div id="profile-personal">
+						</div>
+						<div id="profile-tag">
+						</div-->
+						<input type="button" value="저장하기" id="saveButton">
 					</div>
 				</div>
 			</div>

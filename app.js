@@ -1,18 +1,19 @@
-var express = require('express');
+﻿var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var multipart = require('connect-multiparty');
 
-//사진 업로드
-//var multer = require('multer');
+var fs2 = require('fs');
 
 var index = require('./routes/index');
 var main = require('./routes/main');
 
 var app = express();
+var multipartMiddleware = multipart();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -34,7 +35,6 @@ app.use(session({
 	rolling: true,
 	saveUninitialized: true
 }));
-//app.use(multer({dest: './uploads'}));
 
 app.get('/*', function(req, res, next){
 	res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
@@ -43,6 +43,33 @@ app.get('/*', function(req, res, next){
 
 app.use('/', index);
 app.use('/main', main);
+
+//////////////////////////////
+// file upload
+
+// public/image/profile 폴더가 있어야 동작함
+// 상기 폴더에 각자의 아이디로 이미지가 저장됨(확장자 없이)
+
+// TODO:
+//	이미지만 올릴 수 있게 필터링 해야 한다.
+
+app.post('/upload', multipartMiddleware, function(req, res){
+	console.log(req);
+	fs2.readFile(req.files.file.path, function(err, data){
+		var fileName = req.files.file.name;
+		
+		if (!fileName){
+			res.end();
+		} else{
+			var Path = __dirname + "/public/image/profile/" + req.body.user;
+			
+			fs2.writeFile(Path, data, function(err){
+				res.redirect('/main');
+			});
+		}
+	});
+});
+//////////////////////////////
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

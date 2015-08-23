@@ -13,7 +13,7 @@ router.get('/googlemap', function(req, res, next){
 router.get('/upload', function(req, res, next){
 	res.render('upload', {title:"upload file example"});
 });
-
+/*
 router.post('/upload', function(req, res, next){
 	console.log('req.body', req.body);
 	console.log('req.files', req.files);
@@ -24,5 +24,6 @@ router.post('/upload', function(req, res, next){
 		res.send('fail');
 	}
 });
+*/
 
 module.exports = router;
