@@ -194,7 +194,7 @@
 					<div id="profile">
 						<form method='post' action='/upload' enctype='multipart/form-data'>
 							<input type='hidden' name='user' value='' id='profile-hidden-user-id'/>
-							<input type='file' name='file'/>
+							<input type='file' name='file' onchange="CheckFileSize(this); CheckFileExt(this)"/>
 							<input type='submit'/>
 						</form>
 						

@@ -50,11 +50,15 @@ app.use('/main', main);
 // public/image/profile 폴더가 있어야 동작함
 // 상기 폴더에 각자의 아이디로 이미지가 저장됨(확장자 없이)
 
-// TODO:
-//	이미지만 올릴 수 있게 필터링 해야 한다.
+// 150824
+// 확장자는 jpg, jpeg, png, bmp, gif로 제한
+// 파일 크기는 4MB로 제한
+
+// TODO
+// 파일 올리고 다시 원래 화면으로 돌아오는거.. 몰라서 일단은 /main으로 redirect해놨음..
 
 app.post('/upload', multipartMiddleware, function(req, res){
-	console.log(req);
+	//console.log(req);
 	fs2.readFile(req.files.file.path, function(err, data){
 		var fileName = req.files.file.name;
 		
