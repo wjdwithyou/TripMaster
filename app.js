@@ -54,25 +54,26 @@ app.use('/main', main);
 // 확장자는 jpg, jpeg, png, bmp, gif로 제한
 // 파일 크기는 4MB로 제한
 
+// 150827
+// 파일 없이 업로드버튼 누르면 default image로 프로필 설정
+
 // TODO
 // 파일 올리고 다시 원래 화면으로 돌아오는거.. 몰라서 일단은 /main으로 redirect해놨음..
 
 app.post('/upload', multipartMiddleware, function(req, res){
-	//console.log(req);
-	fs2.readFile(req.files.file.path, function(err, data){
-		var fileName = req.files.file.name;
-		
-		if (!fileName){
-			res.end();
-		} else{
-			var Path = __dirname + "/public/image/profile/" + req.body.user;
-			
-			fs2.writeFile(Path, data, function(err){
-				res.redirect('/main');
-			});
-		}
+	var fileName = req.files.file.name;
+	var path = __dirname + "/public/image/";
+	var src = (fileName)? req.files.file.path: path+"default.jpg";
+	
+	path += "profile/" + req.body.user;
+	
+	fs2.readFile(src, function(err, data){
+		fs2.writeFile(path, data, function(err){
+			res.redirect('/main');
+		});
 	});
 });
+
 //////////////////////////////
 
 // catch 404 and forward to error handler
