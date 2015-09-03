@@ -4,6 +4,7 @@ slide 연 상태에서
 
 logout 하면 slide 가 열려있음.
 
+post write 열린 상태에서 postroom search 하면 오류가 난다.
 
 
 
@@ -23,3 +24,5 @@ logout 하면 slide 가 열려있음.
 	
 
 	추가) post 2번째 슬라이드 열면 왼쪽 nav부분 이펙트 사라진다.
+
+

@@ -1,103 +1,14 @@
-﻿// io.sockets 혹은 io <- '/' 네임스페이스
-// io.of('네임스페이스') <- 다른 네임스페이스에서의 메시지 처리
-// socket <- 디폴트로 '/' 에 속함. 클라이언트와 소통하기 위한 기본 클래스
-
-// on 방법
-// socket.on()
-
-// emit 방법
-// socket.emit() -> 가장 기본. 현재 서버와 소통하는 클라이언트에게 메이지를 보냄.
-// io.sockets.emit() -> 모든 클라이언트에게 메시지를 보냄.
-// socket.broadcast.emit() -> 현재 서버와 소통하는 클라이언트를 제외하고, 나머지 클라이언트들에게 보냄.
-// io.sockets.sockets[num].emit() -> num 이라는 소켓id 를 지닌 클라이언트에게 메시지를 보냄.
-
-// 방 생성
-// socket.join(방의 이름[, function(err){}]) -> 현재 서버와 소통하는 클라이언트를 방에 집어 넣음.
-// io.sockets.in(방의 이름) -> 현재 방에 있는 클라이언트들 추출.
-// socket.leave(방의 이름[, function(err){}]) -> 클라이언트를 방에서 퇴출.
-// 활용 ->  io.sockets.in(방의 이름).emit() -> 현재 방에 있는 클라이언트들에게 메시지를 보냄.
-
-var fs = require('fs');
+﻿var fs = require('fs');
 var ejs = require('ejs');
 var mysql = require('mysql');
 
 var pool = mysql.createPool({
 	host	:'localhost',
 	user	:'root',
-	password:'이혁호멍충이',
+	password:'2014005041',
 	database:'tripmaster',
 	connectionLimit:20
 });
-
-//참고용 함수@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-function load_spotsearch(pool, socket, fs, ejs, pagenum){
-	pool.getConnection(function(err, conn){
-		if(err){
-			console.log('err : ', err);
-			conn.release();
-			throw err;
-		}
-		
-		conn.query("select * from spot limit ? , 10" , 10*(pagenum - 1), function(err, rows){
-			if(err){
-				console.log('err : ', err);
-				conn.release();
-				throw err;
-			}
-			
-			var html = "";
-			
-			fs.readFile(__dirname + '/contents/spotsearch_spot.ejs', 'utf8', function (err, ejsdata){
-				
-				var rating = new Array();
-				for(var i = 0; i < rows.length; i++)
-				{
-					for(var j = 0; j < 5; j++)
-					{
-						if(j < rows[i].rating)
-							rating[4 - j] = "/image/coloredstar.png";
-						else
-							rating[4 - j] = "/image/emptystar.png";
-					}
-				
-					html = html + ejs.render(ejsdata,
-					{
-						spot_id : 0,
-						spot_name : rows[i].name,
-						spot_rating : rating,
-						spot_description : rows[i].description
-					});
-				}
-			});
-			
-			fs.readFile(__dirname + '/contents/spotsearch_index.ejs', 'utf8', function (err, ejsdata){		
-				conn.query('select count(*) cnt from spot', [], function(err, rows){
-					if(err){
-						console.log('err',err);
-						conn.release();
-						throw err;
-					}
-				
-					var whole_pagenum = Math.ceil(rows[0].cnt / 10);
-					
-					html = html + ejs.render(ejsdata,
-					{
-						current_pagenum : pagenum,
-						whole_pagenum : whole_pagenum
-					});
-					
-					socket.emit('ReSpotsearchSearch',
-					{
-						html : html,
-						current_pagenum : pagenum,
-						whole_pagenum : whole_pagenum
-					});
-					conn.release();
-				});
-			});
-		});
-	});
-}
 
 var socket = function (server){
 	var io = require('socket.io')(server);
@@ -113,205 +24,97 @@ var socket = function (server){
 			console.log('a user disconnected');
 		});
 		
-		socket.on('login', function(data){
+		// 새로 추가할 여행지의 위도 경도를 받아오고, 여행지에 대한 내용들을 default 값들로 설정. 이후 여행지의 id 를 리턴.
+		socket.on('GetNewSpotId', function(data){
 			pool.getConnection(function(err, conn){
-				var query = conn.query('select count(*) from user_info where id=? and passwd=?',[data.id, data.password]);
-				query.on('error', function(err){
-					console.log('err', err);
-					socket.emit('socketError');
-				});
-				query.on('result', function(rows){
-					console.log('rows', rows);
-					if (rows['count(*)'] == 0){
-						socket.emit('login', {success:false, user_id:'', user_key:''});
-					}else {
-						var html = "";
-
-						fs.readFile(__dirname + '/header/header-div2.ejs', 'utf8', function (err, ejsdata){
-							html = html + ejs.render(ejsdata, {user_id: data.id});
-							
-							/* 유저 키를 형성한다. */
-							var user_key = "";
-							for(var i = 0; i < 6; i++){
-								user_key = user_key + (Math.floor(Math.random() * 10000) + 1);
-							}
-							conn.query('update user_info set temp_key = ? where id = ?',[user_key,data.id]);
-							
-							socket.emit('login', {success:true, user_id:data.id, user_key:user_key, html:html});
-						});
-					}
-				});
-				
-				conn.release();
-			});
-		});
-
-		socket.on('SignupRequest',function(data){
-			console.log("받기는 했니?");
-			pool.getConnection(function(err, conn){
-				var query = conn.query('insert into user_info values(?,?,?,?,?,?)',[data.id, data.password, data.name, data.gender, data.birth, "none"]);
-				query.on('error', function(err){
-					console.log('err', err);
-					socket.emit('socketError');
-				});
-				socket.emit('SignupRequest');
-				conn.release();
-			});
-		});
-		
-		socket.on('isValidId', function(id){
-			console.log('message come in');
-			pool.getConnection(function(err, conn){
-				var query = conn.query('select count(*) from user_info where id=?', [id]);
-				query.on('error', function(err){
-					console.log('err', err);
-					socket.emit('socketError');
-				});
-				query.on('result', function(rows){
-					console.log('rows', rows);
-					if (rows['count(*)'] == 0){
-						socket.emit('isValidId', {valid : true});
-					}
-					else socket.emit('isValidId', {valid: false});
-				});
-				conn.release();
-			});
-		});	
-
-		socket.on('updateTagList', function(){
-			pool.getConnection(function(err, conn){
-				var query = conn.query('select name from tag_info', function(err, rows, field){
-					if (err){
-						console.log('err', err);
-						socket.emit('socketError');
-					}
-					var reslist = [];
-					console.log(rows);
-					for (var i in rows){
-						reslist.push(rows[i].name);
-					}
-					socket.emit('updateTagList', {list : reslist});
-				});
-				conn.release();
-			});
-		});
-		
-		socket.on('InitSlideSpotSearch', function(data){
-			var html = "";
-			
-			fs.readFile(__dirname + '/spotsearch/spotsearch-slide1-header.ejs', 'utf8', function(err, ejsdata){
-				html = html + ejs.render(ejsdata, {/**/});
-				
-				socket.emit('InitSlideSpotSearch', {html: html});
-			});
-		});
-		
-		socket.on('SpotSearch', function(data){
-			pool.getConnection(function(err, conn){
-				if (err){
-					console.log('err: ', err);
+				if(err){
+					console.log('err : ', err);
 					conn.release();
 					throw err;
 				}
-				
-				conn.query('select * from spot', function(err, rows){
-					if (err){
-						console.log('err: ', err);
-						conn.release();
-						throw err;
-					}
-					
-					var html = "";
-					
-					fs.readFile(__dirname + '/spotsearch/spotsearch-slide1-spot.ejs', 'utf8', function(err, ejsdata){
-						for (var i = 0; i < rows.length; ++i){
-							html = html + ejs.render(ejsdata,
-							{
-								spot_name: rows[i].name,
-								spot_description: rows[i].description
-							});
+				// 위도 경도 스팟의 이름 스팟의 종류 (디폴트 값은 '')
+				conn.query('insert into spot (latitude, longitude, spotname, spotkind) values(?,?,?,?)',[data.g, data.k, '', '']);
+				conn.query("select id from spot order by id desc limit 1" , [], function(err, rows){
+					// public/spot 폴더 안에 있는 description , tip , profile 폴더에 각각 디폴트 파일을 만듬.
+					// 아무런 내용없는 txt 와 profile 사진(default.jpg) 가 여행지의 id.txt 혹은 id 라는 이름으로 형성됨.
+					fs.writeFile(__dirname + '/../public/spot/description/'+rows[0].id+'.txt','','utf8',function(err){
+					});
+					fs.writeFile(__dirname + '/../public/spot/tip/'+rows[0].id+'.txt','','utf8',function(err){
+					});
+					fs.readFile(__dirname + '/../public/spot/default.jpg', function(err, img_data){
+						fs.writeFile(__dirname + '/../public/spot/profile/'+rows[0].id, img_data, function(err){
+						});
+					});
+					socket.emit('GetNewSpotId',rows[0].id);
+				});
+				conn.release();
+			});
+		});
+		
+		// 여행지 내용에 저장버튼이 눌렸을때, spot.js 에서 보내는 메시지에 대한 콜백함수.
+		socket.on('Save', function(data){
+			// 어떤 내용을 저장하려는 건지 분류.
+			switch(data.kind){
+				case 'basic' :
+					pool.getConnection(function(err, conn){
+						if(err){
+							console.log('err : ', err);
+							conn.release();
+							throw err;
 						}
-
-						socket.emit('SpotSearch', {html: html});
-
+						conn.query('update spot set spotname = ?, spotkind = ? where id = ?',[data.content.name, data.content.kind, data.spotId]);
 						conn.release();
 					});
-				});
-			});
+					break;
+				case 'description' :
+					fs.writeFile(__dirname + '/../public/spot/description/'+data.spotId+'.txt',data.content,'utf8',function(err){
+						console.log('스팟 설명 쓰기 완료');
+					});
+					break;
+				case 'tip' :
+					fs.writeFile(__dirname + '/../public/spot/tip/'+data.spotId+'.txt',data.content,'utf8',function(err){
+						console.log('스팟 팁 쓰기 완료');
+					});
+					break;
+			}
+			socket.emit('Save');
 		});
 		
-		/* InitSlide메시지 : 탭 변화 시 작동 */
-		socket.on('InitSlideCommunity', function(data){
+		// 사이트의 마커들을 찍을때, 어떤 여행지들이 있는지 요청하며 보내는 메시지에 대한 콜백함수.
+		socket.on('GetSpots', function(){
 			pool.getConnection(function(err, conn){
 				if(err){
 					console.log('err : ', err);
 					conn.release();
 					throw err;
 				}
-				console.log("도착했음.");
-				var html1 = "";
-				var html2 = "";
-				
-				fs.readFile(__dirname + '/community/community-slide1-header.ejs', 'utf8', function (err, ejsdata){
-					html1 = html1 + ejs.render(ejsdata, {});
-				
-					fs.readFile(__dirname + '/community/community-slide1-post.ejs', 'utf8', function (err, ejsdata){
-						conn.query("select * from user_info where id = ?" , data.nickname, function(err, rows){
-							if(rows.length == 0){
-								conn.query("select * from user_post where postroom_owner = ?" , data.user_id, function(err, rows){
-								for(var i = 0; i < rows.length; i++)
-									html1 = html1 + ejs.render(ejsdata,{content:rows[i].post});
-								});
-								
-								fs.readFile(__dirname + '/community/community-slide1-writebutton.ejs', 'utf8', function (err, ejsdata){
-									html1 = html1 + ejs.render(ejsdata,{});
-								
-									fs.readFile(__dirname + '/community/community-slide2.ejs', 'utf8', function (err, ejsdata){
-										html2 = html2 + ejs.render(ejsdata,{postroom_owner : data.user_id});
-										socket.emit('InitSlideCommunity', {slide1:html1, slide2:html2, isValid:false, nickname:data.user_id});
-										conn.release();
-									});
-								});
-							}else{
-								conn.query("select * from user_post where postroom_owner = ?" , data.nickname, function(err, rows){
-								for(var i = 0; i < rows.length; i++)
-									html1 = html1 + ejs.render(ejsdata,{content:rows[i].post});
-								});
-								
-								fs.readFile(__dirname + '/community/community-slide1-writebutton.ejs', 'utf8', function (err, ejsdata){
-									html1 = html1 + ejs.render(ejsdata,{});
-								
-									fs.readFile(__dirname + '/community/community-slide2.ejs', 'utf8', function (err, ejsdata){
-										html2 = html2 + ejs.render(ejsdata,{postroom_owner : data.nickname});
-										socket.emit('InitSlideCommunity', {slide1:html1, slide2:html2, isValid:true, nickname:data.nickname});
-										conn.release();
-									});
-								});
-							}
+				// 현재 분류기능은 안만들었기에 spot 테이블 안의 모든 요소를 불러옴.
+				conn.query("select * from spot" , [], function(err, rows){
+					socket.emit('GetSpots', rows);//id 위도 경도 이름 분류
+				});
+				conn.release();
+			});
+		});
+		
+		// 특정 스팟의 내용을 불러올때 발생하는 메시지. data 로 내용을 보내주어야하는 여행지의 id 를 받음.
+		socket.on('GetSpotContent', function(data){
+			pool.getConnection(function(err, conn){
+				if(err){
+					console.log('err : ', err);
+					conn.release();
+					throw err;
+				}
+				conn.query("select * from spot where id = ?" , [data], function(err, rows){
+					fs.readFile(__dirname + '/../public/spot/description/'+data+'.txt', 'utf8', function (err, desc){
+						fs.readFile(__dirname + '/../public/spot/tip/'+data+'.txt', 'utf8', function (err, tip){
+							console.log(rows[0].spotkind);
+							socket.emit('GetSpotContent',{name:rows[0].spotname, kind:rows[0].spotkind, desc:desc, tip:tip});
 						});
 					});
 				});
-			});
-		});
-		
-		socket.on('PostSubmit', function(data){
-			//post 내용 받아옴.
-			pool.getConnection(function(err, conn){
-				if(err){
-					console.log('err : ', err);
-					conn.release();
-					throw err;
-				}
-				var query = conn.query('insert into user_post values(?,?,?,?)',[data.postroom_owner, data.writer, "000000000000", data.content]);
-				query.on('error', function(err){
-					console.log('err', err);
-					socket.emit('socketError');
-				});
 				conn.release();
-				socket.emit('PostSubmit');
 			});
 		});
-		
 	});
 	
 	return io;

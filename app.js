@@ -6,6 +6,10 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
+//new
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
+var fs2 = require('fs');
 //사진 업로드
 //var multer = require('multer');
 
@@ -44,13 +48,40 @@ app.get('/*', function(req, res, next){
 app.use('/', index);
 app.use('/main', main);
 
+//////////////////////////////
+// file upload
+
+// public/spot/profile 폴더가 있어야 동작함
+// public/spot/default.jpg 가 있어야 동작함.
+// 상기 폴더에 각자의 아이디로 이미지가 저장됨(확장자 없이)
+
+// 150903
+// 확장자는 jpg, jpeg, png, bmp, gif로 제한
+// 파일 크기는 4MB로 제한
+
+// TODO
+// 파일 올리고 다시 원래 화면으로 돌아오는거.. 몰라서 일단은 /main으로 redirect해놨음..
+// main 에서 오는 post 메시지에 대한 콜백. profile 사진을 받아서 저장. profile 사진이 지정되어있지 않으면 default.jpg 로 대체함.
+app.post('/main', multipartMiddleware, function(req, res){
+	var fileName = req.files.file.name;
+	var path = __dirname + "/public/spot/";
+	var src = (fileName)? req.files.file.path: path+"default.jpg";
+	
+	path += "profile/" + req.body.openedSpotId;
+	
+	fs2.readFile(src, function(err, data){
+		fs2.writeFile(path, data, function(err){
+			res.redirect('/main');
+		});
+	});
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
-
 // error handlers
 
 // development error handler

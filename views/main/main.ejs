@@ -3,11 +3,8 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Tripmaster</title>
-		
-		
-		<link rel="stylesheet" href="/css/font-awesome.min.css">
+
 		<link rel="stylesheet" href="/css/index.css">
-		<link rel="stylesheet" href="/css/signup.css">
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 		
 		<script src="/js/jquery-2.1.4.min.js"></script>
@@ -21,144 +18,102 @@
 	
 		<script type="text/javascript" src="/js/about_socket.js"></script>
 		<script type="text/javascript">
-			//각종 전역변수를 선언하는 곳입니다.
-			
-			//모든 js 에서 사용하는 변수				// 초기화, 삭제는 login.js 에서 관리된다.
-																	// key 와 code 가 서로 매치할때만 사용가능. 일치 하지 않으면 로그아웃 된다. (해킹 방지)
-			user_id = "";										// 로그인하면 초기화 된다. 로그아웃 시 사라짐.
-			user_key = "";									// 로그인하면 초기화 된다. 로그아웃 시 사라짐. 비밀번호와는 다르다.
-																	// 로그인할 때, 유저별로 랜덤 키를 받아온다.
 			
 			// about_socket.js 에서 사용하는 변수
 			var socket = null;
 			var socketCnt = 0;
 			
-			// index.js 에서 사용하는 변수.
-			var header_width = 40;						// 헤더의 두께 // 제목, 로그인, 유저 닉네임이 뜨는 공간
-			var nav_width = 40;							// 왼쪽 바의 두께 // 탭
+			// tinymce editor 설정입니다. 무시해도 되요. custom_content.css 에서 tinymce 의 스타일을 지정할 수 있습니다.
+			var post_editor_config = {
+				mode : "exact",
+				elements : "none",
+				plugins: ["advlist autolink lists link image", "autoresize"],
+				toolbar: "undo redo link image",
+				menubar: false,
+				content_css : "/css/custom_content.css"
+			};
 			
-			var opened_slide = 'none';				// 현재 열린 슬라이드의 종류
-			var opened_slide_num = 0;				// 한 종류의 슬라이드에서 슬라이드가 추가적으로 더 열리는 경우
-			var slide_speed = 200;						// 슬라이드가 펴지는 속도( 작을 수록 빨라진다. )
-			
-			var postroom_header_width = 40;	// postroom 메뉴의 header 태그의 두께
-			var postroom_write_width = 60;		// postroom write 버튼의 두께
-			var post_submit_width = 60;				// post submit 버튼의 두께
-			
-			var post_editor_config = {mode:"specific_textareas",editor_selector:"none",plugins: ["advlist autolink lists link image",],toolbar: "undo redo link image",menubar: false,
-			content_css : "/css/custom_content.css"};
-																			// 생성될 에디터의 정보
-			var opened_editor_class = "none"			// 생성되어 있는 에디터의 정보. 에디터의 동적 생성을 위해 있는 변수.
-			
-			// spotsearch.js 에서 사용하는 변수			// 마커의 위도 경도 등등 세부 설정.
-			var spots = [		//장소명//위도//경도//핀 우선순위//썸네일 이미지 주소//상세설명//???
-			  ['마리나 베이 샌즈',1.283568, 103.859545, 4, '/image/1.jpg', '상세설명<br/>조금더 긴 글을 입력해봅시다.', 2],
-			  ['마리나 베이 샌즈',2, 100, 4, '/image/2.jpg', '상세설명<br/>조금더 긴 글을 입력해봅시다.', 2],
-			  ['마리나 베이 샌즈',3.283568, 110, 4, '/image/3.jpg', '상세설명<br/>조금더 긴 글을 입력해봅시다.', 2],
-			  ['마리나 베이 샌즈',4, 90, 4, '/image/4.jpg', '상세설명<br/>조금더 긴 글을 입력해봅시다.', 2]
-			];
-			
-			// post.js 에서 사용하는 변수
-			var postroom_nickname = "";
+			// e 를 통해 어떤 id 의 textarea 에 tinymce 를 열것인지 받아오고, tinymce 를 엽니다.
+			function initMCEexact(e){
+				post_editor_config.elements = e;
+				tinymce.init(post_editor_config);
+			}
 			
 		</script>
-		<script type="text/javascript" src="/js/login.js"></script>
-		<script type="text/javascript" src="/js/signup.js"></script>
-		<script type="text/javascript" src="/js/profile.js"></script>
-		<script type="text/javascript" src="/js/spotsearch.js"></script>
-		<script type="text/javascript" src="/js/post.js"></script>
 		<script type="text/javascript" src="/js/index.js"></script>
-		
+		<script type="text/javascript" src="/js/profile.js"></script>
+		<script type="text/javascript" src="/js/spot.js"></script>
 		
 	</head>
 	<!-- ChangeTab 이 제대로 작동하기 위해선 slide 가 될 div 의 id 가 "slide숫자" 꼴이어야한다. -->
-	<body style="padding:0px; margin:0px;">
-		<header style="width:100%; height:40px; background-color:#151515;">
-			<p style="display:inline-block; float:left; color:#FFF; margin:5px 0px 0px 5px;"><b>Tripmaster</b></p>
-			<div id="header-div1" style="display:inline-block; float:right;">
-				<input id="login-id" type="text" placeholder="id">
-				<input id="login-password" type="password" placeholder="password" onkeypress="if(event.keyCode==13){javascript:login();}">
-				<a href="javascript:login();" style="color:#FFF;">login</a>
-				<a href="javascript:signup();" style="color:#FFF;">get started</a>
-			</div>
-			<div id="header-div2" style="display:inline-block; float:right;">
-			</div>
-		</header>
-		<section class="main-frame">
-			<nav class="navbar">
-				<a class="navbar-nav" href="javascript:ChangeTab('spotsearch')">
-					<div id="spotsearch-button" onMouseOver="NavNavOver(id)" onMouseOut="NavNavOut(id)">
-						<i style="margin-left:10px;" class="fa fa-map-marker fa-2x"></i>
+	<body>
+		<div id="main-content">
+			<div id="map-canvas"></div>
+		</div>
+		<p style="position:fixed; margin:0px; top:0px; left:0px;"><b>Tripmaster</b></p>
+		<div id="spot-page" style="position:fixed; margin:0px; top:0px; left:0px; width:100%; height:100%; background-color:rgba(0,0,0,0.5); visibility:hidden;overflow-y:auto;">
+			<div><!--메인 페이지-->
+				<div><!--분류 프레임-->
+					<div><!--세부 내용-->
+						<p><b>기초 내용</b></p>
+						<a id="basic-button" href="javascript:save('basic')" style="float:right;">[저장]</a>
 					</div>
-				</a>
-				<a class="navbar-nav" href="javascript:ChangeTab('community')">
-					<div id="community-button" onMouseOver="NavNavOver(id)" onMouseOut="NavNavOut(id)">
-						<i style="margin-left:7px;" class="fa fa-pencil fa-2x"></i>
+					<div id="basic-name-frame">
+						<input type = 'text' name='spotname' id='spotname' maxlength='15' placeholder = '여행지명 입력란'/>
 					</div>
-				</a>
-				<a class="navbar-nav" href="javascript:ChangeTab('recommendation')">
-					<div id="recommendation-button" onMouseOver="NavNavOver(id)" onMouseOut="NavNavOut(id)">
-						<i style="margin-left:7px;" class="fa fa-plane fa-2x"></i>
+					<div id="basic-kind-frame">
+						<select id='spotkind'>
+							<option value=''>여행지 종류 선택</option>
+							<option value='음식점'>음식점</option>
+							<option value='카페/커피전문점'>카페/커피전문점</option>
+							<option value='베이커리/디저트'>베이커리/디저트</option>
+							<option value='생활/편의'>생활/편의</option>
+							<option value='병원/약국'>병원/약국</option>
+							<option value='엔터테인먼트'>엔터테인먼트</option>
+							<option value='편의점/슈퍼마켓'>편의점/슈퍼마켓</option>
+							<option value='숙박'>숙박</option>
+						</select>
 					</div>
-				</a>
-			</nav>
-			<div id="slide1">
-			</div>
-			<div id="slide2">
-			</div>
-			
-			<div id="main-content">
-				<div id="map-canvas"></div>
-			</div>
-			
-			
-			<img id="logincover" src="/image/logincover.jpg" style="position:fixed; left:0px; width:100%;">
-			
-			
-			<div id = "signup-background" style="position:fixed; left:0px; top:0px; width:100%; height:100%; overflow:auto; background-color:rgba(0,0,0,0.7);">
-				<div id = "signup-frame" style="position:absolute; left:50%; top:50px; margin-left : -250px;">
-					<div id = "signup-header">
-						<p>회원가입</p>
-						<a href = "javascript:signup_cancel()">취소</a>
-					</div>
-					<div id = "signup">
-						<div id = "signup-user">
-							<div>
-								<!--p>아이디</p-->
-								<input type = "text" name="id" id="signup-id" maxlength="15" placeholder = "아이디">
-								<input type = "button" value = "중복확인" id = "signup-isValid">
-							</div>
-							<div>
-								<input type = "password" name="passwd" id="signup-passwd" maxlength="15" placeholder = "비밀번호">
-							</div>
-							<div class = "final">
-								<input type = "password" name="passwd2" id="signup-passwd2" maxlength="15" placeholder = "비밀번호 재확인">
-							</div>
-						</div>
-						<div id = "signup-personal">
-							<div>
-								<input type = "text" name="name" id="signup-name" size="10" placeholder = "이름">
-							</div>
-							<div>
-								<p id = "signup-gender">성별</p>
-								<input type = "button" value = "남성" id = "signup-man">
-								<input type = "button" value = "여성" id = "signup-woman">
-							</div>
-							<div>
-								<input type = "text" name="birth" id="signup-birth" size="8" maxlength="8" placeholder = "생년월일    YYYYMMDD">
-							</div>
-						</div>
-						<div id = "signup-tag">
-							<div>
-								<p>관심분야</p>
-								<input type = "button" value = "관심분야 추가" id = "signup-addtag">
-								<input type = "button" value = "관심분야 제거" id = "signup-deltag">
-							</div>
-						</div>
-						<input type = "button" value = "가입하기" id = "signupButton">
+					<div id="profile">
+						<form method='post' enctype='multipart/form-data'>
+							<input type='hidden' name='openedSpotId' value='' id='profile-hidden-spot-id'/>
+							<input type='file' name='file' onchange="CheckFileSize(this); CheckFileExt(this)"/>
+							<input type='submit'/>
+						</form>
 					</div>
 				</div>
+				<div><!--분류 프레임-->
+					<div><!--세부 내용-->
+						<p><b>여행지 설명</b></p>
+						<a id="description-button" href="javascript:save('description')" style="float:right;">[저장]</a>
+					</div>
+					<div id="description-frame">
+						<textarea id='spot-desc'></textarea>
+					</div>
+				</div>
+				<div><!--분류 프레임-->
+					<div><!--세부 내용-->
+						<p><b>Tip 및 주의사항</b></p>
+						<a id="tip-button" href="javascript:save('tip')" style="float:right;">[저장]</a>
+					</div>
+					<div  id="tip-frame">
+						<textarea id='spot-tip'></textarea>
+					</div>
+				</div>
+				<div><!--분류 프레임-->
+					<div><!--세부 내용-->
+						<p><b>이것을 좋아하는 사람들에게 추천</b></p>
+					</div>
+					<div>
+						<textarea style="width:100%;overflow:visible;resize:none;padding:0px;margin:0px;border-style:none;"placeholder = "입력"></textarea>
+					</div>
+				</div>
+				<a href="javascript:spotpage_close()">
+					<div>
+						<p><b>닫기</b></p>
+					</div>
+				</a>
 			</div>
-		<section>
+		</div>
 	</body>
 </html>

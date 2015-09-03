@@ -20,28 +20,16 @@ function socketDisconnect(){
 }
 
 function socketInit(){
-	socket.on('isValidId', function( data ){
-		callback_isValidId( data );
+	socket.on('GetNewSpotId',function(data){
+		callback_GetNewSpotId(data);
 	});
-	socket.on('updateTagList', function( data ){
-		callback_updateTagList( data );
+	socket.on('Save',function(){
+		socketDisconnect();
 	});
-	socket.on('SignupRequest', function (){
-		callback_SignupRequest();
+	socket.on('GetSpots',function(data){
+		callback_GetSpots(data);
 	});
-	socket.on('login', function(data){
-		callback_login( data );
-	});
-	socket.on('InitSlideSpotSearch', function(data){
-		callback_InitSlideSpotSearch(data);
-	});
-	socket.on('SpotSearch', function(data){
-		callback_SpotSearch(data);
-	});
-	socket.on('InitSlideCommunity', function(data){
-		callback_InitSlideCommunity(data);
-	});
-	socket.on('PostSubmit', function(data){
-		callback_PostSubmit(data);
-	});
+	socket.on('GetSpotContent',function(data){
+		callback_GetSpotContent(data);
+	})
 }
