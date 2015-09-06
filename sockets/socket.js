@@ -82,6 +82,38 @@ var socket = function (server){
 						console.log(data.content);
 						console.log('스팟 태그 쓰기 완료');
 					});
+
+					var tagWithoutSpace = data.content.split(' ');
+					var tagParser;
+					var parsedTag;
+
+					pool.getConnection(function(err, conn){
+						if(err){
+							console.log('err : ', err);
+							conn.release();
+							throw err;
+						}
+						for (var i = 0; i < tagWithoutSpace.length; i++){
+							tagParser = tagWithoutSpace[i].split('#');
+							for (var j = 0; j < tagParser.length; j++){
+								if (tagParser[j] != ''){
+									dupChk = false;
+									parsedTag = tagParser[j];
+									console.log(parsedTag);
+									conn.query('insert ignore into tag_spot (tag, spotId) values(?,?)',[parsedTag, data.spotId]);
+										/*conn.query('select count(*) as dupCnt from tag_spot where (tag=? and spotId=?)', [parsedTag, data.spotId], function(err, rows){
+											console.log(parsedTag + '등록 도전');
+											if (rows[0].dupCnt == 0){
+												console.log(parsedTag + '등록 완료');
+												conn.query('insert into tag_spot (tag, spotId) values(?,?)',[parsedTag, data.spotId]);
+											}
+										});*/
+
+								}
+							}
+						}
+						conn.release();
+					});
 					break;
 			}
 			socket.emit('Save');
