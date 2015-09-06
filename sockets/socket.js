@@ -63,6 +63,7 @@ var socket = function (server){
 							throw err;
 						}
 						conn.query('update spot set spotname = ?, spotkind = ? where id = ?',[data.content.name, data.content.kind, data.spotId]);
+						console.log('스팟 제목 쓰기 완료');
 						conn.release();
 					});
 					break;
@@ -74,6 +75,12 @@ var socket = function (server){
 				case 'tip' :
 					fs.writeFile(__dirname + '/../public/spot/tip/'+data.spotId+'.txt',data.content,'utf8',function(err){
 						console.log('스팟 팁 쓰기 완료');
+					});
+					break;
+				case 'tag' :
+					fs.writeFile(__dirname + '/../public/spot/tag/'+data.spotId+'.txt',data.content,'utf8',function(err){
+						console.log(data.content);
+						console.log('스팟 태그 쓰기 완료');
 					});
 					break;
 			}
@@ -107,8 +114,11 @@ var socket = function (server){
 				conn.query("select * from spot where id = ?" , [data], function(err, rows){
 					fs.readFile(__dirname + '/../public/spot/description/'+data+'.txt', 'utf8', function (err, desc){
 						fs.readFile(__dirname + '/../public/spot/tip/'+data+'.txt', 'utf8', function (err, tip){
-							console.log(rows[0].spotkind);
-							socket.emit('GetSpotContent',{name:rows[0].spotname, kind:rows[0].spotkind, desc:desc, tip:tip});
+							fs.readFile(__dirname + '/../public/spot/tag/'+data+'.txt', 'utf8', function (err, tag){
+								console.log(rows[0].spotkind);
+								console.log(tag);
+								socket.emit('GetSpotContent',{name:rows[0].spotname, kind:rows[0].spotkind, desc:desc, tip:tip, tag:tag});
+							});
 						});
 					});
 				});
