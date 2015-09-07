@@ -5,7 +5,7 @@ var mysql = require('mysql');
 var pool = mysql.createPool({
 	host	:'localhost',
 	user	:'root',
-	password:'2014005041',
+	password:'이혁호멍충이',
 	database:'tripmaster',
 	connectionLimit:20
 });
@@ -22,6 +22,20 @@ var socket = function (server){
 		
 		socket.on('disconnect', function(){
 			console.log('a user disconnected');
+		});
+		
+		socket.on('login', function(data){
+			if (data.nickname == '')
+				socket.emit('login', {success:false, user_nickname:''});
+			else{
+				var html = "";
+				
+				fs.readFile(__dirname + '/header/header-div2.ejs', 'utf8', function(err, ejsdata){
+					html += ejs.render(ejsdata, {user_nickname: data.nickname});
+					
+					socket.emit('login', {success:true, user_nickname:data.nickname, html:html});
+				});
+			}
 		});
 		
 		// 새로 추가할 여행지의 위도 경도를 받아오고, 여행지에 대한 내용들을 default 값들로 설정. 이후 여행지의 id 를 리턴.

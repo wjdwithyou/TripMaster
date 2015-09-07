@@ -20,6 +20,9 @@ function socketDisconnect(){
 }
 
 function socketInit(){
+	socket.on('login', function(data){
+		callback_login(data);
+	});
 	socket.on('GetNewSpotId',function(data){
 		callback_GetNewSpotId(data);
 	});
