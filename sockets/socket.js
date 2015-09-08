@@ -18,7 +18,7 @@ var socket = function (server){
 	});
 	
 	io.sockets.on('connection', function(socket){
-		console.log('a user connected');
+		console.log(socket.request.connection.remoteAddress + ' connected');
 		
 		socket.on('disconnect', function(){
 			console.log('a user disconnected');
@@ -54,6 +54,17 @@ var socket = function (server){
 		// 여행지 내용에 저장버튼이 눌렸을때, spot.js 에서 보내는 메시지에 대한 콜백함수.
 		socket.on('Save', function(data){
 			// 어떤 내용을 저장하려는 건지 분류.
+			pool.getConnection(function(err, conn){
+				if(err){
+					console.log('err : ', err);
+					conn.release();
+					throw err;
+				}
+				
+				conn.query('update spot set lastModifier = ? where id = ?',[socket.request.connection.remoteAddress, data.spotId]);
+				console.log(data.spotId + '스팟의 마지막 수정자 : ' + socket.request.connection.remoteAddress);
+				conn.release();
+			});
 			switch(data.kind){
 				case 'basic' :
 					pool.getConnection(function(err, conn){
