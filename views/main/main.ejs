@@ -18,6 +18,7 @@
 	
 		<script type="text/javascript" src="/js/about_socket.js"></script>
 		<script type="text/javascript">
+			var user_nickname = "";
 			
 			// about_socket.js 에서 사용하는 변수
 			var socket = null;
@@ -40,6 +41,7 @@
 			}
 			
 		</script>
+		<script type="text/javascript" src="/js/login.js"></script>
 		<script type="text/javascript" src="/js/index.js"></script>
 		<script type="text/javascript" src="/js/profile.js"></script>
 		<script type="text/javascript" src="/js/spot.js"></script>
@@ -47,10 +49,19 @@
 	</head>
 	<!-- ChangeTab 이 제대로 작동하기 위해선 slide 가 될 div 의 id 가 "slide숫자" 꼴이어야한다. -->
 	<body>
+		<header style="width:100%; height:40px; background-color:#151515;">
+			<p style="display:inline-block; float:left; color:#FFF; margin:5px 0px 0px 5px;"><b>Tripmaster</b></p>
+			<div id="header-div1" style="display:inline-block; float:right;">
+				<input id="login-nickname" type="text" placeholder="nickname" onkeypress="if(event.keyCode==13){javascript:login();}">
+				<a href="javascript:login();" style="color:#FFF;">login</a>
+			</div>
+			<div id="header-div2" style="display:inline-block; float:right;">
+			</div>
+		</header>
 		<div id="main-content">
 			<div id="map-canvas"></div>
 		</div>
-		<p style="position:fixed; margin:0px; top:0px; left:0px;"><b>Tripmaster</b></p>
+
 		<div id="spot-page" style="position:fixed; margin:0px; top:0px; left:0px; width:100%; height:100%; background-color:rgba(0,0,0,0.5); visibility:hidden;overflow-y:auto;">
 			<div><!--메인 페이지-->
 				<div><!--분류 프레임-->
@@ -74,6 +85,7 @@
 							<option value='숙박'>숙박</option>
 						</select>
 					</div>
+					
 					<div id="profile">
 						<form method='post' enctype='multipart/form-data'>
 							<input type='hidden' name='openedSpotId' value='' id='profile-hidden-spot-id'/>

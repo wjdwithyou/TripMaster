@@ -1,49 +1,34 @@
 ﻿function login(){
-	var login_id = $("#login-id").val();
-	var login_password = $("#login-password").val();
+	var login_nickname = $("#login-nickname").val();
 	
 	socketConnect();
 	
-	socket.emit('login',{id:login_id, password:login_password});
+	socket.emit('login', {nickname:login_nickname});
 }
 
 function callback_login(data){
 	if(data.success){
-		user_id = data.user_id;
-		user_key = data.user_key;
-		postroom_nickname = data.user_id;
+		user_nickname = data.user_nickname;
 		
-		$("#login-id").val("");
-		$("#login-password").val("");
-		
-		$("#logincover").toggle("slide", 600);
+		$("#login-nickname").val("");
 
 		$("#header-div1").toggle("blind");
 		$("#header-div2").toggle("blind");
 		
 		$("#header-div2").html(data.html);
-	}else{
-		alert("아이디 혹은 비밀번호를 잘못 입력하셨습니다.");
+	} else{
+		alert("닉네임을 입력해주세요.");
 		
-		$("#login-id").val("");
-		$("#login-password").val("");
+		$("#login-nickname").val("");
 	}
+	
 	socketDisconnect();
 }
 
 function logout(){
-	user_id = "";
-	user_key = "";
+	user_nickname = "";
 	
-	$("#login-id").val("");
-	$("#login-password").val("");
-
-	if (opened_slide != 'none'){
-		//ToggleSlide(opened_slide, 1);
-		//NavNavOut(opened_slide + "-button");
-	}
-	
-	$("#logincover").toggle("slide", 600);
+	$("#login-nickname").val("");
 	
 	$("#header-div2").toggle("blind");
 	$("#header-div1").toggle("blind");

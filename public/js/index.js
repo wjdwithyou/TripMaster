@@ -3,6 +3,8 @@ var map;
 var spots;
 
 window.onload = function() {
+	$("#header-div2").hide();
+	
 	resize();
 	window.addEventListener('resize', resize);
 	
@@ -62,6 +64,9 @@ function callback_GetSpots(data){
 //화면의 사이즈가 변할때 작동.
 function resize() {
 	$('#main-content').css('height', window.innerHeight + 'px');
+	
+	//$('#logincover').css('height', $('section.main-frame').css('height'));
+	//$('#logincover').css('top', header_width + 'px');
 	
 	if( window.innerWidth > 1000 )
 		$('#spot-page > div').css('width', '1000px');
