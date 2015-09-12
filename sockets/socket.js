@@ -18,7 +18,7 @@ var socket = function (server){
 	});
 	
 	io.sockets.on('connection', function(socket){
-		console.log('a user connected');
+		console.log(socket.request.connection.remoteAddress + ' connected');
 		
 		socket.on('disconnect', function(){
 			console.log('a user disconnected');
@@ -54,6 +54,17 @@ var socket = function (server){
 		// 여행지 내용에 저장버튼이 눌렸을때, spot.js 에서 보내는 메시지에 대한 콜백함수.
 		socket.on('Save', function(data){
 			// 어떤 내용을 저장하려는 건지 분류.
+			pool.getConnection(function(err, conn){
+				if(err){
+					console.log('err : ', err);
+					conn.release();
+					throw err;
+				}
+				
+				conn.query('update spot set lastModifier = ? where id = ?',[socket.request.connection.remoteAddress, data.spotId]);
+				console.log(data.spotId + '스팟의 마지막 수정자 : ' + socket.request.connection.remoteAddress);
+				conn.release();
+			});
 			switch(data.kind){
 				case 'basic' :
 					pool.getConnection(function(err, conn){
@@ -63,6 +74,7 @@ var socket = function (server){
 							throw err;
 						}
 						conn.query('update spot set spotname = ?, spotkind = ? where id = ?',[data.content.name, data.content.kind, data.spotId]);
+						console.log('스팟 제목 쓰기 완료');
 						conn.release();
 					});
 					break;
@@ -74,6 +86,44 @@ var socket = function (server){
 				case 'tip' :
 					fs.writeFile(__dirname + '/../public/spot/tip/'+data.spotId+'.txt',data.content,'utf8',function(err){
 						console.log('스팟 팁 쓰기 완료');
+					});
+					break;
+				case 'tag' :
+					fs.writeFile(__dirname + '/../public/spot/tag/'+data.spotId+'.txt',data.content,'utf8',function(err){
+						console.log(data.content);
+						console.log('스팟 태그 쓰기 완료');
+					});
+
+					var tagWithoutSpace = data.content.split(' ');
+					var tagParser;
+					var parsedTag;
+
+					pool.getConnection(function(err, conn){
+						if(err){
+							console.log('err : ', err);
+							conn.release();
+							throw err;
+						}
+						for (var i = 0; i < tagWithoutSpace.length; i++){
+							tagParser = tagWithoutSpace[i].split('#');
+							for (var j = 0; j < tagParser.length; j++){
+								if (tagParser[j] != ''){
+									dupChk = false;
+									parsedTag = tagParser[j];
+									console.log(parsedTag);
+									conn.query('insert ignore into tag_spot (tag, spotId) values(?,?)',[parsedTag, data.spotId]);
+										/*conn.query('select count(*) as dupCnt from tag_spot where (tag=? and spotId=?)', [parsedTag, data.spotId], function(err, rows){
+											console.log(parsedTag + '등록 도전');
+											if (rows[0].dupCnt == 0){
+												console.log(parsedTag + '등록 완료');
+												conn.query('insert into tag_spot (tag, spotId) values(?,?)',[parsedTag, data.spotId]);
+											}
+										});*/
+
+								}
+							}
+						}
+						conn.release();
 					});
 					break;
 			}
@@ -107,11 +157,41 @@ var socket = function (server){
 				conn.query("select * from spot where id = ?" , [data], function(err, rows){
 					fs.readFile(__dirname + '/../public/spot/description/'+data+'.txt', 'utf8', function (err, desc){
 						fs.readFile(__dirname + '/../public/spot/tip/'+data+'.txt', 'utf8', function (err, tip){
-							console.log(rows[0].spotkind);
-							socket.emit('GetSpotContent',{name:rows[0].spotname, kind:rows[0].spotkind, desc:desc, tip:tip});
+							fs.readFile(__dirname + '/../public/spot/tag/'+data+'.txt', 'utf8', function (err, tag){
+								console.log(rows[0].spotkind);
+								console.log(tag);
+								socket.emit('GetSpotContent',{name:rows[0].spotname, kind:rows[0].spotkind, desc:desc, tip:tip, tag:tag});
+							});
 						});
 					});
 				});
+				conn.release();
+			});
+		});
+		
+		socket.on('GetSpotReviewContent', function(data){
+			pool.getConnection(function(err, conn){
+				if(err){
+					console.log('err : ', err);
+					conn.release();
+					throw err;
+				}
+				conn.query("select * from spotreview where id = ?", [data], function(err, rows){
+					socket.emit('GetSpotReviewContent',rows);
+				});
+				conn.release();
+			});
+		});
+		
+		socket.on('SaveSpotReview', function(data){
+			pool.getConnection(function(err, conn){
+				if(err){
+					console.log('err : ', err);
+					conn.release();
+					throw err;
+				}
+				conn.query("insert into spotreview (id, ip, score, content) values(?,?,?,?)", [data.id,  socket.request.connection.remoteAddress, data.score, data.content]);
+				socket.emit('SaveSpotReview');
 				conn.release();
 			});
 		});

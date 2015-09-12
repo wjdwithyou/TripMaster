@@ -28,7 +28,7 @@
 				mode : "exact",
 				elements : "none",
 				plugins: ["advlist autolink lists link image", "autoresize"],
-				toolbar: "undo redo link image",
+				toolbar: "undo redo | link image | fontselect fontsizeselect | bold italic underline strikethrough | bullist numlist",
 				menubar: false,
 				content_css : "/css/custom_content.css"
 			};
@@ -51,6 +51,38 @@
 			<div id="map-canvas"></div>
 		</div>
 		<p style="position:fixed; margin:0px; top:0px; left:0px;"><b>Tripmaster</b></p>
+		
+		<div id="spot-review" style="position:fixed; margin:0px; top:0px; left:0px; width:100%; height:100%; background-color:rgba(0,0,0,0.5);visibility:hidden;overflow-y:auto;">
+			<div id="spot-review-frame">
+				<div id="spot-review-list">
+				</div>
+				<div>
+					<textarea id="spot-review-content"></textarea>
+					<a href="javascript:spotreview_close()">
+						<div>
+							<p style="margin:0px;">닫기</p>
+						</div>
+					</a>
+					<div>
+						<select id='spot-review-score' style="width:100%">
+							<option value='-1'>점수 안 줌</option>
+							<option value='0'>0</option>
+							<option value='1'>1</option>
+							<option value='2'>2</option>
+							<option value='3'>3</option>
+							<option value='4'>4</option>
+							<option value='5'>5</option>
+						</select>
+						<a href="javascript:spotreview_write()">
+							<div style="width:100%; margin:7px 0px 0px 0px; background-color:white; border-style : solid; border-width : 1px; border-color : rgb(210,210,210); ">
+								<p style="margin:0px;">글쓰기</p>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 		<div id="spot-page" style="position:fixed; margin:0px; top:0px; left:0px; width:100%; height:100%; background-color:rgba(0,0,0,0.5); visibility:hidden;overflow-y:auto;">
 			<div><!--메인 페이지-->
 				<div><!--분류 프레임-->
@@ -103,9 +135,10 @@
 				<div><!--분류 프레임-->
 					<div><!--세부 내용-->
 						<p><b>이것을 좋아하는 사람들에게 추천</b></p>
+						<a id="tag-button" href="javascript:save('tag')" style="float:right;">[저장]</a>
 					</div>
-					<div>
-						<textarea style="width:100%;overflow:visible;resize:none;padding:0px;margin:0px;border-style:none;"placeholder = "입력"></textarea>
+					<div id="tag-frame">
+						<textarea id="spot-tag" style="width:100%;overflow:visible;resize:none;padding:0px;margin:0px;border-style:none;"placeholder = "입력"></textarea>
 					</div>
 				</div>
 				<a href="javascript:spotpage_close()">

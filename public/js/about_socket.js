@@ -31,5 +31,11 @@ function socketInit(){
 	});
 	socket.on('GetSpotContent',function(data){
 		callback_GetSpotContent(data);
-	})
+	});
+	socket.on('GetSpotReviewContent',function(data){
+		callback_GetSpotReviewContent(data);
+	});
+	socket.on('SaveSpotReview',function(){
+		callback_SaveSpotReview();
+	});
 }

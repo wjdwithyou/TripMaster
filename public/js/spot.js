@@ -2,7 +2,7 @@
 // basic : 프로필사진, 여행지 이름, 여행지 종류등
 // description : 여행지 설명
 // tip : 여행지 팁 등.
-var isEdited = {basic:false, description:false, tip:false};
+var isEdited = {basic:false, description:false, tip:false, tag:false};
 // 현재 화면에 열려있는 Spot 의 Id 를 저장.
 var openedSpotId = -1;
 
@@ -68,6 +68,18 @@ function save(e) {
 			isEdited['tip'] = false;
 			isSavable = true;
 			break;
+		case 'tag' :
+			// 위와 비슷.
+			content = $("#spot-tag").val();
+			
+			socketConnect();
+			socket.emit('Save',{kind:e, content:content, spotId:openedSpotId});
+			$("#tag-button").attr("href", "javascript:edit('tag')");
+			$("#tag-button").html("[편집]");
+			$("#spot-tag").attr("readonly", "readonly");
+			isEdited['tag'] = false;
+			isSavable = true;
+			break;
 	}
 	
 	// 저장을 할 수 없는 경우 입력해야될 공간이 있음을 의미.
@@ -108,6 +120,9 @@ function edit(e) {
 			initMCEexact("spot-tip");
 			tinyMCE.get("spot-tip").setContent(content);
 			break;
+		case 'tag' :
+			$("#spot-tag").removeAttr("readonly");
+			break;
 	}
 	//성공시
 	$("#"+e+"-button").attr("href", "javascript:save('"+e+"')");
@@ -144,6 +159,7 @@ function addSpot(g, k){
 	initMCEexact("spot-desc");
 	$("#tip-frame").html("<textarea id='spot-tip'></textarea>");
 	initMCEexact("spot-tip");
+	$("#spot-tag").val('');
 	
 	socketConnect();
 	//위도, 경도를 서버에 넘겨줌. 서버는 db 에 스팟을 추가하고, 위도 경도를 저장함. 그리고 새로 만든 스팟의 아이디를 리턴.
@@ -160,6 +176,7 @@ function callback_GetNewSpotId(data){
 // 특정 id 를 지닌 마커가 클릭되었을때, id 를 받아온다. isEdited 배열의 값을 전부 false (편집중이 아님.) 으로 바꾼다. 또한 혹시 [저장] 이 있을때를 대비해 전부
 // [편집] 으로 바꾸고 a태그의 기능을 edit() 으로 변경한다.
 function openSpot(id){
+	infowindow.close();
 	for (var i in isEdited){
 		isEdited[i] = false;
 		$("#"+i+"-button").attr("href", "javascript:edit('"+i+"')");
@@ -182,7 +199,29 @@ function callback_GetSpotContent(data){
 	$("#description-frame").html(data.desc);
 	tinyMCE.execCommand('mceRemoveEditor', false, "spot-tip");
 	$("#tip-frame").html(data.tip);
+	$("#spot-tag").html(data.tag);
+	resize();
 	$("#spot-page").css('visibility','visible');
+	socketDisconnect();
+}
+
+function openSpotReview(id){
+	infowindow.close();
+	openedSpotId = id;
+	socketConnect();
+	socket.emit('GetSpotReviewContent',id);
+}
+function callback_GetSpotReviewContent(data){
+	$('#spot-review-list').html('');
+	for(var i = 0; i < data.length; i++){
+		var temp = '<div><p>';
+		if(data[i].score != -1)
+			temp = temp + data[i].score +'점 : ';
+		temp = temp + data[i].content + '</p></div>';
+		$('#spot-review-list').append(temp);
+	}
+	resize();
+	$("#spot-review").css('visibility','visible');
 	socketDisconnect();
 }
 
@@ -197,4 +236,21 @@ function spotpage_close(){
 		$("#spot-page").css('visibility','hidden');
 	else
 		alert("편집 중인 공간이 있습니다.");
+}
+
+function spotreview_close(){
+	openedSpotId = -1;
+	$("#spot-review").css('visibility','hidden');
+}
+
+function spotreview_write(){
+	var content = $("#spot-review-content").val();
+	var score = parseInt($("#spot-review-score").val());
+	$("#spot-review-content").val('');
+	socketConnect();
+	socket.emit('SaveSpotReview',{id:openedSpotId, score:score, content:content});
+}
+function callback_SaveSpotReview(){
+	socketDisconnect();
+	spotreview_close();
 }

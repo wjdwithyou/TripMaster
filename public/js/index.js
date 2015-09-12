@@ -46,10 +46,6 @@ window.onload = function() {
 	socketConnect();
 	//서버에 현재 저장되어있는 모든 spot 들에 대한 정보를 요청함.
 	socket.emit('GetSpots');
-	
-	// main.ejs 의 script 태그안에 정의되어있음.
-	initMCEexact("spot-desc");
-	initMCEexact("spot-tip");
 }
 function callback_GetSpots(data){
 	//data = 모든 spot 들에 대한 정보가 들어있음. id, 위도, 경도
@@ -63,17 +59,31 @@ function callback_GetSpots(data){
 function resize() {
 	$('#main-content').css('height', window.innerHeight + 'px');
 	
-	if( window.innerWidth > 1000 )
+	if( window.innerWidth > 1000 ){
 		$('#spot-page > div').css('width', '1000px');
-	else
+		$('#spot-review-frame').css('width', '1000px');
+	}else{
 		$('#spot-page > div').css('width', window.innerWidth+'px');
+		$('#spot-review-frame').css('width', window.innerWidth+'px');
+	}
 	
 	var temp = parseInt(  $('#spot-page > div').css('width').replace('/[^-\d\.]/g', '')  );
+	var spot_review_frame_width = parseInt(  $('#spot-review-frame').css('width').replace('/[^-\d\.]/g', '')  );
 	//spot 을 눌렀을때 뜨는 창의 사이즈를 조절함. 핸드폰에서도 볼 수 있도록 ㅇㅇ;
 	$('#spot-page > div > div').css('width', temp - 40 + 'px');
 	$('#spot-page > div > a:last-child > div').css('width', temp - 40 + 'px');
 	
+	$('#spot-review-list').css('width', spot_review_frame_width + 50 + 'px');
+	$('#spot-review-list').css('height', window.innerHeight - 100 - 4 + 'px'); // -4 는 테두리 두깨 고려한거
+	
+	$('#spot-review-list > div').css('width', spot_review_frame_width - 40  -2 + 'px'); // -2 테두리
+	
+	$('#spot-review-frame > div:last-child').css('height', '100px');
+	
+	$('#spot-review-frame > div:last-child > textarea').css('width',spot_review_frame_width - 40  -2 -160 + 'px');
+	
 	$('#spot-page > div').css('left', window.innerWidth/2 - parseInt(  $('#spot-page > div').css('width').replace('/[^-\d\.]/g', '')  )/2 + 'px');
+	$('#spot-review-frame').css('left', window.innerWidth/2 - spot_review_frame_width/2 + 'px');
 }
 
 //무슨 함수인지 모르겠음. 쓰이지도 않음.
@@ -127,8 +137,12 @@ function setMarkers(spots){
         google.maps.event.addListener(marker,'click', (function(id){ 
             // 이곳에서 함수 객체를 동적으로 만들어서 반환. openSpot(스팟 아이디) 를 반환한다.
 			// openSpot 은 spot.js 에 정의되어있음.
-			return function() {
-                openSpot(id);
+			return function(event) {
+                //openSpot(id);
+				
+				infowindow.setContent("<a href='javascript:openSpot("+id+")'>여행지 설명</a><br><a href='javascript:openSpotReview("+id+")'>여행지 댓글</a>"); // 인포윈도우 안에 클릭한 곳위 좌표값을 넣는다.
+				infowindow.setPosition(event.latLng);             // 인포윈도우의 위치를 클릭한 곳으로 변경한다.
+				infowindow.open(map);
             };
         })(spot.id)); 
     }
