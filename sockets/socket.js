@@ -1,6 +1,7 @@
 ﻿var fs = require('fs');
 var ejs = require('ejs');
 var mysql = require('mysql');
+var underscore = require('underscore');
 
 var pool = mysql.createPool({
 	host	:'localhost',
@@ -193,6 +194,54 @@ var socket = function (server){
 				conn.query("insert into spotreview (id, ip, score, content) values(?,?,?,?)", [data.id,  socket.request.connection.remoteAddress, data.score, data.content]);
 				socket.emit('SaveSpotReview');
 				conn.release();
+			});
+		});
+		
+		socket.on('RecommendSpot', function(data){
+			var wishtags = ['개이득', '되는지', '아아아', '멘탈', '나간다.'];
+			wishtags.sort();
+			var tagsNames;
+			var tagscorewithid = {};
+			pool.getConnection(function(err, conn){
+				if(err){
+					console.log('err : ', err);
+					conn.release();
+					throw err;
+				}
+				conn.query("select * from spot where (latitude between ? and ?) and (longitude between ? and ?)",[data.g - 0.007, data.g + 0.007, data.k - 0.007, data.k + 0.007],function(err, rows){
+					
+					for(var i in rows){
+						rows[i].tagscore = 0;
+						// 밑의 함수는 콜백함수를 실행하는 함수여서, 콜백함수가 실행되지 않아도 nodejs 는 블록 내부의 함수를 전부 실행한것으로 여기고 다음 루프문으로 넘어간다.
+						conn.query("select * from tag_spot where spotId = ?",[rows[i].id],function(err, trows){
+							tagsNames = new Array();
+							if(trows.length > 0){							// 해당 아이디를 지닌 여행지가 가지고있는 태그들의 수가 1개 이상일때만 실행
+								for(var j in trows){
+									tagsNames.push(trows[j].tag);	//배열을 만들어서 그곳에 태그들을 막 넣는다,
+								}
+								tagsNames.sort();						 //배열안에 문자열들을 정렬한다.
+								var sametagsnum = 0;					// 몇개의 태그가 같은가?
+								for(var h in wishtags){					// 사용자가 원하는 태그와 비교해서 그 개수를 구한다.
+									for(var m = 0; tagsNames[m] < wishtags[h] && m < tagsNames.length; m++){;}
+									if( tagsNames[m] == wishtags[h]){sametagsnum++;}
+								}
+								
+								var tagscore = 0;							// 여행지가 태그로인해 얻은 가산점
+								if(wishtags.length > 0){
+									tagscore = sametagsnum / wishtags.length;
+								}
+								tagscorewithid[trows[0].spotId] = tagscore;
+							}
+							
+							// 목표 : 여행지에 태그를 고려해서 환산한 점수를 부여하는것
+						});
+					}
+					// 목표2 : 점수에따라 정렬된 여행지들을 이곳에서 emit 하는것. 하지만 주의. 위에 적어놓은 문제로인해 for(var i in rows) 는 내부에 있는 콜백함수는 한개도 실행되지 않는채
+					// 이곳에 도달하여 emit 함.
+					conn.release();
+					socket.emit('RecommendSpot');
+				});
+				
 			});
 		});
 	});

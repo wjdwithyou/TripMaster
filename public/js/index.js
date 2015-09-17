@@ -38,7 +38,8 @@ window.onload = function() {
 	// event.latLng.G = 위도, K = 경도.
 	// addSpot 은 spot.js 내부에 있음.
 	google.maps.event.addListener(map, 'click', function(event) {
-		infowindow.setContent("<a href='javascript:addSpot("+event.latLng.G+","+event.latLng.K+")'>여행지 추가</a><br><a href='#'>인근 여행지 추천</a>"); // 인포윈도우 안에 클릭한 곳위 좌표값을 넣는다.
+		console.log(event.latLng);
+		infowindow.setContent("<a href='javascript:addSpot("+event.latLng.H+","+event.latLng.L+")'>여행지 추가</a><br><a href='javascript:RecommendSpot("+event.latLng.H+","+event.latLng.L+")'>인근 여행지 추천</a>"); // 인포윈도우 안에 클릭한 곳위 좌표값을 넣는다.
 		infowindow.setPosition(event.latLng);             // 인포윈도우의 위치를 클릭한 곳으로 변경한다.
 		infowindow.open(map);
 	});
