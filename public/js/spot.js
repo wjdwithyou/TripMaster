@@ -254,3 +254,11 @@ function callback_SaveSpotReview(){
 	socketDisconnect();
 	spotreview_close();
 }
+
+function RecommendSpot(g, k){
+	socketConnect();
+	socket.emit('RecommendSpot',{g:g, k:k});
+}
+function callback_RecommendSpot(){
+	socketDisconnect();
+}
