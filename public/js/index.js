@@ -3,6 +3,8 @@ var map;
 var spots;
 
 window.onload = function() {
+	$("#i_navbar").hide();
+	
 	resize();
 	window.addEventListener('resize', resize);
 	
@@ -35,7 +37,7 @@ window.onload = function() {
 	
 	//구글맵이 클릭 되었을때, infowindow 객체의 내용을 설정함.
 	//자세한 내용은 setContent 내부의 html 태그 참조.
-	// event.latLng.G = 위도, K = 경도.
+	// event.latLng.H = 위도, L = 경도.
 	// addSpot 은 spot.js 내부에 있음.
 	google.maps.event.addListener(map, 'click', function(event) {
 		console.log(event.latLng);
@@ -141,7 +143,7 @@ function setMarkers(spots){
 			return function(event) {
                 //openSpot(id);
 				
-				infowindow.setContent("<a href='javascript:openSpot("+id+")'>여행지 설명</a><br><a href='javascript:openSpotReview("+id+")'>여행지 댓글</a>"); // 인포윈도우 안에 클릭한 곳위 좌표값을 넣는다.
+				infowindow.setContent("<a href='javascript:openSpot("+id+")'>여행지 설명</a><br><a href='javascript:openSpotReview("+id+")'>여행지 댓글</a><br><a href='javascript:openNav()'>인근 여행지 추천</a>"); // 인포윈도우 안에 클릭한 곳위 좌표값을 넣는다.
 				infowindow.setPosition(event.latLng);             // 인포윈도우의 위치를 클릭한 곳으로 변경한다.
 				infowindow.open(map);
             };

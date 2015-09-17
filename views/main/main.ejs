@@ -43,10 +43,39 @@
 		<script type="text/javascript" src="/js/index.js"></script>
 		<script type="text/javascript" src="/js/profile.js"></script>
 		<script type="text/javascript" src="/js/spot.js"></script>
-		
+		<script type="text/javascript" src="/js/nav.js"></script>
 	</head>
 	<!-- ChangeTab 이 제대로 작동하기 위해선 slide 가 될 div 의 id 가 "slide숫자" 꼴이어야한다. -->
 	<body>
+	<section class="main-frame">
+		<nav class="navbar" id="i_navbar">
+			<select id='i_spotkind'>
+				<option value=''>여행지 종류 선택</option>
+				<option value='음식점'>음식점</option>
+				<option value='카페/커피전문점'>카페/커피전문점</option>
+				<option value='베이커리/디저트'>베이커리/디저트</option>
+				<option value='생활/편의'>생활/편의</option>
+				<option value='병원/약국'>병원/약국</option>
+				<option value='엔터테인먼트'>엔터테인먼트</option>
+				<option value='편의점/슈퍼마켓'>편의점/슈퍼마켓</option>
+				<option value='숙박'>숙박</option>
+			</select>
+			<br>
+			<select id='i_rectag-weight'>
+				<option value='-1'>추천에 대한 태그의 영향?</option>
+				<option value='0'>0</option>
+				<option value='1'>1</option>
+				<option value='2'>2</option>
+				<option value='3'>3</option>
+				<option value='4'>4</option>
+				<option value='5'>5</option>
+			</select>
+			<hr>
+			<textarea id="i_tag" style="width:100%;overflow:visible;resize:none;padding:0px;margin:0px;border-style:none;"placeholder = "입력"></textarea>
+			<hr>
+			<a href="#">찾기</a>
+			<a href="javascript:closeNav()">취소</a>
+		</nav>
 		<div id="main-content">
 			<div id="map-canvas"></div>
 		</div>
@@ -148,5 +177,6 @@
 				</a>
 			</div>
 		</div>
+	</section>
 	</body>
 </html>
