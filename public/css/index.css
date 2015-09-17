@@ -1,4 +1,9 @@
-﻿#spot-page > div {position:absolute; height:auto; background-color:rgb(240,240,240); border-style : solid;border-width : 1px;border-color : gray;}/*사이즈 관련 중요*/
+﻿section.main-frame {width:100%; margin:0px; padding:0px;}
+.navbar {width:200px; height:100%; margin:0px; padding:0px; background-color:rgb(240,240,240); /*display:inline-block;*/ float:right;}
+
+.navbar a {color:white; font-size:15px; font-weight:bold; text-decoration:none;}
+
+#spot-page > div {position:absolute; height:auto; background-color:rgb(240,240,240); border-style : solid;border-width : 1px;border-color : gray;}/*사이즈 관련 중요*/
 #spot-page > div > div { border-style : solid; border-width : 1px; border-color : rgb(210,210,210); margin : 20px;height : auto;padding : 0px;background-color : white;}/*사이즈 관련 중요*/
 #spot-page > div > div  > div {height : 50px;border-bottom-style : solid;border-bottom-width : 1px;border-bottom-color : rgb(230,230,230);}
 #spot-page > div > div  > div:last-child {height : auto;border-bottom-style:none;}
@@ -36,20 +41,23 @@
 /* 구글맵 오류 수정 css */
 body {
 	height: 100%;
-	width: 100%;
-	margin: 0; padding: 0;
+	/*width: 100%;*/
+	margin: 0;
+	padding: 0;
 }
 
 #map-canvas {
-    height: 100%;
-	width: 100%;
-	margin: 0; padding: 0;
+	height: 100%;
+	/*width: 100%;*/
+	margin: 0;
+	padding: 0;
 }
 
 #main-content {
 	height: 100%;
 	width: 100%;
-	margin: 0; padding: 0;
+	margin: 0;
+	padding: 0;
 }
 
 #map-canvas img[src^='/spot/profile/']{
