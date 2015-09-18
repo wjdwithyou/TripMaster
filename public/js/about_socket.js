@@ -38,7 +38,7 @@ function socketInit(){
 	socket.on('SaveSpotReview',function(){
 		callback_SaveSpotReview();
 	});
-	socket.on('RecommendSpot',function(){
-		callback_RecommendSpot();
+	socket.on('RecommendSpot',function(data){
+		callback_RecommendSpot(data);
 	})
 }

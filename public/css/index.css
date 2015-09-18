@@ -1,7 +1,10 @@
 ﻿section.main-frame {width:100%; margin:0px; padding:0px;}
-.navbar {width:200px; height:100%; margin:0px; padding:0px; background-color:rgb(240,240,240); /*display:inline-block;*/ float:right;}
+.navbar {width:200px;  margin:0px; padding:0px; background-color:rgb(240,240,240); /*display:inline-block;*/ float:right;}
+.navbar div {margin:10px; padding:0px;border-style : solid; border-width : 1px; border-color : rgb(210,210,210);background-color : white; }
+.navbar div:first-child {margin:10px; padding:0px; height:50px;border-style : solid; border-width : 1px; border-color : rgb(210,210,210);background-color : white;}
+.navbar div:last-child {margin:10px; padding:0px; height:50px;border-style : solid; border-width : 1px; border-color : rgb(210,210,210);background-color : white;}
 
-.navbar a {color:white; font-size:15px; font-weight:bold; text-decoration:none;}
+.navbar div a { font-family : "맑은 고딕", "돋움", "굴림"; color : rgb(169,169,169); font-size:15px;  text-decoration:none;}
 
 #spot-page > div {position:absolute; height:auto; background-color:rgb(240,240,240); border-style : solid;border-width : 1px;border-color : gray;}/*사이즈 관련 중요*/
 #spot-page > div > div { border-style : solid; border-width : 1px; border-color : rgb(210,210,210); margin : 20px;height : auto;padding : 0px;background-color : white;}/*사이즈 관련 중요*/
@@ -61,7 +64,13 @@ body {
 }
 
 #map-canvas img[src^='/spot/profile/']{
-    border-radius: 37px;
-	-webkit-border-radius: 37px;
-	-moz-border-radius: 37px;
+    border-top-left-radius: 37px;
+	border-top-right-radius: 37px;
+	border-bottom-right-radius: 37px;
+	-webkit-border-top-left-radius: 37px;
+	-webkit-border-top-right-radius: 37px;
+	-webkit-border-bottom-right-radius: 37px;
+	-moz-border-radius-topleft: 37px;
+	-moz-border-radius-topright: 37px;
+	-moz-border-radius-bottomright: 37px;
 }

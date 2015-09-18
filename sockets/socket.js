@@ -6,7 +6,7 @@ var underscore = require('underscore');
 var pool = mysql.createPool({
 	host	:'localhost',
 	user	:'root',
-	password:'ryghkseoj7!4',
+	password:'2014005041',
 	database:'tripmaster',
 	connectionLimit:20
 });
@@ -34,7 +34,7 @@ var socket = function (server){
 					throw err;
 				}
 				// 위도 경도 스팟의 이름 스팟의 종류 (디폴트 값은 '')
-				conn.query('insert into spot (latitude, longitude, spotname, spotkind) values(?,?,?,?)',[data.g, data.k, '', '']);
+				conn.query('insert into spot (latitude, longitude, spotname, spotkind, score, scorednum) values(?,?,?,?,?,?)',[data.g, data.k, '', '',0,0]);
 				conn.query("select id from spot order by id desc limit 1" , [], function(err, rows){
 					// public/spot 폴더 안에 있는 description , tip , profile 폴더에 각각 디폴트 파일을 만듬.
 					// 아무런 내용없는 txt 와 profile 사진(default.jpg) 가 여행지의 id.txt 혹은 id 라는 이름으로 형성됨.
@@ -194,13 +194,38 @@ var socket = function (server){
 					throw err;
 				}
 				conn.query("insert into spotreview (id, ip, score, content) values(?,?,?,?)", [data.id,  socket.request.connection.remoteAddress, data.score, data.content]);
-				socket.emit('SaveSpotReview');
-				conn.release();
+				conn.query("select * from spot where id = ?", [data.id], function(err, rows){
+					conn.query("update spot set score = ? ,scorednum = ? where id = ?", [rows[0].score+parseInt(data.score),rows[0].scorednum+1,data.id]);
+					socket.emit('SaveSpotReview');
+					conn.release();
+				});
+				
 			});
 		});
 		
 		socket.on('RecommendSpot', function(data){
-			var wishtags = ['개이득', '되는지', '아아아', '멘탈', '나간다.'];
+			
+			
+			var tagWithoutSpace = data.tags.split(' ');
+			var tagParser;
+			var parsedTag;
+			
+			var wishtags = [];
+			
+			for (var i = 0; i < tagWithoutSpace.length; i++){
+				tagParser = tagWithoutSpace[i].split('#');
+				for (var j = 0; j < tagParser.length; j++){
+					if (tagParser[j] != ''){
+						dupChk = false;
+						parsedTag = tagParser[j];
+						console.log(parsedTag);
+						wishtags.push(parsedTag);
+					}
+				}
+			}
+			
+			var degree = parseInt(data.degree);
+			
 			wishtags.sort();
 			var tagsNames;
 			var tagscorewithid = {};
@@ -212,6 +237,9 @@ var socket = function (server){
 				}
 				conn.query("select * from spot where (latitude between ? and ?) and (longitude between ? and ?)",[data.g - 0.007, data.g + 0.007, data.k - 0.007, data.k + 0.007],function(err, rows){
 					var callbackCount = rows.length;
+					if(callbackCount == 0){
+						socket.emit('RecommendSpot');
+					}
 					for(var i in rows){
 						rows[i].tagscore = 0;
 						// 밑의 함수는 콜백함수를 실행하는 함수여서, 콜백함수가 실행되지 않아도 nodejs 는 블록 내부의 함수를 전부 실행한것으로 여기고 다음 루프문으로 넘어간다.
@@ -236,23 +264,19 @@ var socket = function (server){
 							}
 							tagscorewithid[trows[0].spotId] = tagscore;
 								
-								
+							var mostbig_score = 0;
 							if(callbackCount == 0){
 								for(var a in rows){
-									rows[a].tagscore = tagscorewithid[rows[a].id]; // 여기에 이것저것 점수넣는다.
+									rows[a].tagscore = rows[a].score/rows[a].scorednum + tagscorewithid[rows[a].id] * rows[a].score/rows[a].scorednum * degree / 5; // 여기에 이것저것 점수넣는다.
 								}
 								rows = underscore.sortBy(rows, 'tagscore');
 								console.log(rows);
 								conn.release();
-								socket.emit('RecommendSpot');
+								socket.emit('RecommendSpot', rows);
 							}
-							// 목표 : 여행지에 태그를 고려해서 환산한 점수를 부여하는것
 						});
 					}
-					// 목표2 : 점수에따라 정렬된 여행지들을 이곳에서 emit 하는것. 하지만 주의. 위에 적어놓은 문제로인해 for(var i in rows) 는 내부에 있는 콜백함수는 한개도 실행되지 않는채
-					// 이곳에 도달하여 emit 함.
 				});
-				
 			});
 		});
 	});

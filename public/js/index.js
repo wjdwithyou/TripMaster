@@ -4,7 +4,6 @@ var spots;
 
 window.onload = function() {
 	$("#i_navbar").hide();
-	
 	resize();
 	window.addEventListener('resize', resize);
 	
@@ -41,7 +40,7 @@ window.onload = function() {
 	// addSpot 은 spot.js 내부에 있음.
 	google.maps.event.addListener(map, 'click', function(event) {
 		console.log(event.latLng);
-		infowindow.setContent("<a href='javascript:addSpot("+event.latLng.H+","+event.latLng.L+")'>여행지 추가</a><br><a href='javascript:RecommendSpot("+event.latLng.H+","+event.latLng.L+")'>인근 여행지 추천</a>"); // 인포윈도우 안에 클릭한 곳위 좌표값을 넣는다.
+		infowindow.setContent("<a href='javascript:addSpot("+event.latLng.H+","+event.latLng.L+")'>여행지 추가</a><br><a href='javascript:openNav("+event.latLng.H+","+event.latLng.L+")'>인근 여행지 추천</a>"); // 인포윈도우 안에 클릭한 곳위 좌표값을 넣는다.
 		infowindow.setPosition(event.latLng);             // 인포윈도우의 위치를 클릭한 곳으로 변경한다.
 		infowindow.open(map);
 	});
@@ -61,6 +60,8 @@ function callback_GetSpots(data){
 //화면의 사이즈가 변할때 작동.
 function resize() {
 	$('#main-content').css('height', window.innerHeight + 'px');
+	$('#i_navbar').css('height', window.innerHeight + 'px');
+	$('#i_tag').css('height', window.innerHeight - 150 + 'px');
 	
 	if( window.innerWidth > 1000 ){
 		$('#spot-page > div').css('width', '1000px');
@@ -143,7 +144,7 @@ function setMarkers(spots){
 			return function(event) {
                 //openSpot(id);
 				
-				infowindow.setContent("<a href='javascript:openSpot("+id+")'>여행지 설명</a><br><a href='javascript:openSpotReview("+id+")'>여행지 댓글</a><br><a href='javascript:openNav()'>인근 여행지 추천</a>"); // 인포윈도우 안에 클릭한 곳위 좌표값을 넣는다.
+				infowindow.setContent("<a href='javascript:openSpot("+id+")'>여행지 설명</a><br><a href='javascript:openSpotReview("+id+")'>여행지 댓글</a><br><a href='javascript:openNav("+event.latLng.H+","+event.latLng.L+")'>인근 여행지 추천</a>"); // 인포윈도우 안에 클릭한 곳위 좌표값을 넣는다.
 				infowindow.setPosition(event.latLng);             // 인포윈도우의 위치를 클릭한 곳으로 변경한다.
 				infowindow.open(map);
             };

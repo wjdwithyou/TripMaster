@@ -5,6 +5,7 @@
 var isEdited = {basic:false, description:false, tip:false, tag:false};
 // 현재 화면에 열려있는 Spot 의 Id 를 저장.
 var openedSpotId = -1;
+var latLngToRecommend = {};
 
 // 내용을 작성했는지 확인. 아니면 alert. 맞으면 서버에 내용 전송.
 function save(e) {
@@ -255,10 +256,40 @@ function callback_SaveSpotReview(){
 	spotreview_close();
 }
 
-function RecommendSpot(g, k){
-	socketConnect();
-	socket.emit('RecommendSpot',{g:g, k:k});
+function openNav(g, k){
+	latLngToRecommend.g = g;
+	latLngToRecommend.k = k;
+	
+	$("#i_navbar").toggle('clip');
 }
-function callback_RecommendSpot(){
+
+function RecommendSpot(){
+	var tags = $("#i_tag").val();
+	var degree = $("#i_rectag-weight").val();
+	var spotkind = $("#i_spotkind").val();
+	
+	socketConnect();
+	socket.emit('RecommendSpot',{g:latLngToRecommend.g, k:latLngToRecommend.k, tags:tags, degree:degree, spotkind:spotkind});
+	closeNav();
+}
+function callback_RecommendSpot(data){
 	socketDisconnect();
+	var Coordinates = [];
+	for(var i in data){
+		Coordinates.push({lat:data[i].latitude,lng:data[i].longitude});
+	}
+	var flightPath = new google.maps.Polyline({
+		path: Coordinates,
+		strokeColor: "#FF0000",
+		strokeOpacity: 0.8,
+		strokeWeight: 10
+	});
+	flightPath.setMap(map);
+}
+
+function closeNav(){
+	$("#i_navbar").toggle('clip');
+	$("#i_spotkind").val('');
+	$("#i_rectag-weight").val('-1');
+	$("#i_tag").val('');
 }
