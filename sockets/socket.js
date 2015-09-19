@@ -6,7 +6,7 @@ var underscore = require('underscore');
 var pool = mysql.createPool({
 	host	:'localhost',
 	user	:'root',
-	password:'2014005041',
+	password:'이혁호멍충이',
 	database:'tripmaster',
 	connectionLimit:20
 });
@@ -23,6 +23,84 @@ var socket = function (server){
 		
 		socket.on('disconnect', function(){
 			console.log('a user disconnected');
+		});
+		
+		socket.on('login', function(data){
+			pool.getConnection(function(err, conn){
+				var query = conn.query('select count(*) from user_info where id=? and passwd=?', [data.id, data.password]);
+				
+				query.on('error', function(err){
+					console.log('err', err);
+					socket.emit('socketError');
+				});
+				
+				query.on('result', function(rows){
+					console.log('rows', rows);
+					
+					if (rows['count(*)'] == 0)
+						socket.emit('login', {success:false, user_id:''});
+					else{
+						var html = "";
+						
+						fs.readFile(__dirname + '/floating/floating-div2.ejs', 'utf-8', function(err, ejsdata){
+							html = html + ejs.render(ejsdata, {user_id:data.id});
+							
+							socket.emit('login', {success:true, user_id:data.id, html:html});
+						});
+					}
+						
+				});
+			});
+		});
+		
+		socket.on('SignupRequest',function(data){
+			pool.getConnection(function(err, conn){
+				var query = conn.query('insert into user_info values(?,?,?,?,?,?)',[data.id, data.password, data.name, data.gender, data.birth, "none"]);
+				query.on('error', function(err){
+					console.log('err', err);
+					socket.emit('socketError');
+				});
+				socket.emit('SignupRequest');
+				conn.release();
+			});
+		});
+		
+		socket.on('isValidId', function(id){
+			pool.getConnection(function(err, conn){
+				var query = conn.query('select count(*) from user_info where id=?', [id]);
+				query.on('error', function(err){
+					console.log('err', err);
+					socket.emit('socketError');
+				});
+				query.on('result', function(rows){
+					console.log('rows', rows);
+					if (rows['count(*)'] == 0)
+						socket.emit('isValidId', {valid : true});
+					else
+						socket.emit('isValidId', {valid: false});
+				});
+				conn.release();
+			});
+		});	
+
+		socket.on('updateTagList', function(){
+			pool.getConnection(function(err, conn){
+				var query = conn.query('select name from tag_info', function(err, rows, field){
+					if (err){
+						console.log('err', err);
+						socket.emit('socketError');
+					}
+					var reslist = [];
+
+					console.log(rows);
+
+					for (var i in rows)
+						reslist.push(rows[i].name);
+
+					socket.emit('updateTagList', {list : reslist});
+				});
+				conn.release();
+			});
 		});
 		
 		// 새로 추가할 여행지의 위도 경도를 받아오고, 여행지에 대한 내용들을 default 값들로 설정. 이후 여행지의 id 를 리턴.

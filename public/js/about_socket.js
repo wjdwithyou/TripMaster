@@ -20,6 +20,18 @@ function socketDisconnect(){
 }
 
 function socketInit(){
+	socket.on('login', function(data){
+		callback_login(data);
+	});
+	socket.on('isValidId', function(data){
+		callback_isValidId(data);
+	});
+	socket.on('updateTagList', function(data){
+		callback_updateTagList(data);
+	});
+	socket.on('SignupRequest', function(){
+		callback_SignupRequest();
+	});
 	socket.on('GetNewSpotId',function(data){
 		callback_GetNewSpotId(data);
 	});
