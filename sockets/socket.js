@@ -38,14 +38,21 @@ var socket = function (server){
 					console.log('rows', rows);
 					
 					if (rows['count(*)'] == 0)
-						socket.emit('login', {success:false, user_id:''});
+						socket.emit('login', {success:false, user_id:'', user_key:''});
 					else{
 						var html = "";
 						
 						fs.readFile(__dirname + '/floating/floating-div2.ejs', 'utf-8', function(err, ejsdata){
 							html = html + ejs.render(ejsdata, {user_id:data.id});
+
+							var user_key = "";
 							
-							socket.emit('login', {success:true, user_id:data.id, html:html});
+							for(var i = 0; i < 6; ++i)
+								user_key = user_key + (Math.floor(Math.random() * 10000) + 1);
+							
+							conn.query('update user_info set temp_key=? where id=?', [user_key, data.id]);
+							
+							socket.emit('login', {success:true, user_id:data.id, user_key:user_key, html:html});
 						});
 					}
 						

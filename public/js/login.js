@@ -9,8 +9,8 @@
 
 function callback_login(data){
 	if(data.success){
-		console.log(data.html);
 		user_id = data.user_id;
+		user_key = data.user_key;
 		
 		$("#login-id").val('');
 		$("#login-password").val('');
