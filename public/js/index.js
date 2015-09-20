@@ -47,6 +47,10 @@ window.onload = function() {
 		infowindow.open(map);
 	});
 	
+	initMCEexact("spot-desc");
+	tinyMCE.execCommand('mceRemoveEditor', false, "spot-desc");
+	initMCEexact("spot-tip");
+	tinyMCE.execCommand('mceRemoveEditor', false, "spot-tip");
 	socketConnect();
 	//서버에 현재 저장되어있는 모든 spot 들에 대한 정보를 요청함.
 	socket.emit('GetSpots');

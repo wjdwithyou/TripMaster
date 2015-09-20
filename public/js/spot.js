@@ -111,6 +111,7 @@ function edit(e) {
 			break;
 		case 'description' :
 			var content = $("#description-frame").html();
+			console.log(content);
 			$("#description-frame").html("<textarea id='spot-desc'></textarea>");
 			initMCEexact("spot-desc");
 			tinyMCE.get("spot-desc").setContent(content);
