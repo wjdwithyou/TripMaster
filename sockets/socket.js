@@ -117,6 +117,8 @@ var socket = function (server){
 							conn.release();
 							throw err;
 						}
+						conn.query('delete from tag_spot where spotId = ?',[data.spotId]);
+						conn.query('insert into tag_spot (tag, spotId) values(?,?)',['',data.spotId]);
 						for (var i = 0; i < tagWithoutSpace.length; i++){
 							tagParser = tagWithoutSpace[i].split('#');
 							for (var j = 0; j < tagParser.length; j++){
@@ -202,7 +204,7 @@ var socket = function (server){
 					conn.release();
 					throw err;
 				}
-				conn.query("insert into spotreview (id, ip, score, content) values(?,?,?,?)", [data.id,  socket.request.connection.remoteAddress, data.score, data.content]);
+				conn.query("insert into spotreview (id, userid, score, content) values(?,?,?,?)", [data.id,  data.userid, data.score, data.content]);
 				conn.query("select * from spot where id = ?", [data.id], function(err, rows){
 					conn.query("update spot set score = ? ,scorednum = ? where id = ?", [rows[0].score+parseInt(data.score),rows[0].scorednum+1,data.id]);
 					socket.emit('SaveSpotReview');
@@ -232,8 +234,6 @@ var socket = function (server){
 					}
 				}
 			}
-			
-			var degree = parseInt(data.degree);
 			
 			wishtags.sort();
 			var tagsNames;
@@ -277,7 +277,7 @@ var socket = function (server){
 							if(callbackCount == 0){
 								for(var a in rows){
 									if(rows[a].scorednum > 0)
-										rows[a].tagscore = rows[a].score/rows[a].scorednum + tagscorewithid[rows[a].id] * rows[a].score/rows[a].scorednum * degree / 5; // 여기에 이것저것 점수넣는다.
+										rows[a].tagscore = rows[a].score/rows[a].scorednum + tagscorewithid[rows[a].id] * rows[a].score/rows[a].scorednum / 5; // 여기에 이것저것 점수넣는다.
 									else
 										rows[a].tagscore = 0;
 								}

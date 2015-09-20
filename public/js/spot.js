@@ -215,7 +215,7 @@ function openSpotReview(id){
 function callback_GetSpotReviewContent(data){
 	$('#spot-review-list').html('');
 	for(var i = 0; i < data.length; i++){
-		var temp = '<div><p>';
+		var temp = '<div><p>'+data[i].userid+' : ';
 		if(data[i].score != -1)
 			temp = temp + data[i].score +'점 : ';
 		temp = temp + data[i].content + '</p></div>';
@@ -248,8 +248,15 @@ function spotreview_write(){
 	var content = $("#spot-review-content").val();
 	var score = parseInt($("#spot-review-score").val());
 	$("#spot-review-content").val('');
+	var temp_userid;
+	if(user_id == ''){
+		temp_userid = "anonymous";
+	}else{
+		temp_userid = user_id;
+	}
+	
 	socketConnect();
-	socket.emit('SaveSpotReview',{id:openedSpotId, score:score, content:content});
+	socket.emit('SaveSpotReview',{id:openedSpotId, userid:temp_userid, score:score, content:content});
 }
 function callback_SaveSpotReview(){
 	socketDisconnect();
@@ -265,11 +272,10 @@ function openNav(g, k){
 
 function RecommendSpot(){
 	var tags = $("#i_tag").val();
-	var degree = $("#i_rectag-weight").val();
 	var spotkind = $("#i_spotkind").val();
 	
 	socketConnect();
-	socket.emit('RecommendSpot',{g:latLngToRecommend.g, k:latLngToRecommend.k, tags:tags, degree:degree, spotkind:spotkind});
+	socket.emit('RecommendSpot',{g:latLngToRecommend.g, k:latLngToRecommend.k, tags:tags, spotkind:spotkind});
 	closeNav();
 }
 var flightPath;
@@ -299,6 +305,5 @@ function callback_RecommendSpot(data){
 function closeNav(){
 	$("#i_navbar").toggle('clip');
 	$("#i_spotkind").val('');
-	$("#i_rectag-weight").val('-1');
 	$("#i_tag").val('');
 }
