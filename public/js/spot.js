@@ -200,7 +200,7 @@ function callback_GetSpotContent(data){
 	$("#description-frame").html(data.desc);
 	tinyMCE.execCommand('mceRemoveEditor', false, "spot-tip");
 	$("#tip-frame").html(data.tip);
-	$("#spot-tag").html(data.tag);
+	$("#spot-tag").val(data.tag);
 	resize();
 	$("#spot-page").css('visibility','visible');
 	socketDisconnect();
