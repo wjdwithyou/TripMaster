@@ -40,5 +40,17 @@ function socketInit(){
 	});
 	socket.on('RecommendSpot',function(data){
 		callback_RecommendSpot(data);
-	})
+	});
+	socket.on('login', function(data){
+		callback_login(data);
+	});
+	socket.on('isValidId', function(data){
+		callback_isValidId(data);
+	});
+	socket.on('updateTagList', function(data){
+		callback_updateTagList(data);
+	});
+	socket.on('SignupRequest', function(){
+		callback_SignupRequest();
+	});
 }

@@ -3,6 +3,8 @@ var map;
 var spots;
 
 window.onload = function() {
+	$("#floating-div2").hide();
+	$("#signup-background").hide();
 	$("#i_navbar").hide();
 	resize();
 	window.addEventListener('resize', resize);

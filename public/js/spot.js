@@ -272,18 +272,27 @@ function RecommendSpot(){
 	socket.emit('RecommendSpot',{g:latLngToRecommend.g, k:latLngToRecommend.k, tags:tags, degree:degree, spotkind:spotkind});
 	closeNav();
 }
+var flightPath;
+var Coordinates = [];
 function callback_RecommendSpot(data){
 	socketDisconnect();
-	var Coordinates = [];
-	for(var i in data){
+	if(flightPath){
+		flightPath.setMap(null);
+	}
+	Coordinates = [];
+	for(var i = data.length - 1; i >= 0 && i >= data.length - 3; i-- ){
 		Coordinates.push({lat:data[i].latitude,lng:data[i].longitude});
 	}
-	var flightPath = new google.maps.Polyline({
-		path: Coordinates,
-		strokeColor: "#FF0000",
-		strokeOpacity: 0.8,
-		strokeWeight: 10
-	});
+	if(!flightPath){
+		flightPath = new google.maps.Polyline({
+			path: Coordinates,
+			strokeColor: "#FF0000",
+			strokeOpacity: 0.8,
+			strokeWeight: 10
+		});
+	}else{
+		flightPath.setPath(Coordinates);
+	}
 	flightPath.setMap(map);
 }
 

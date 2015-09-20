@@ -2,6 +2,15 @@
 var ejs = require('ejs');
 var mysql = require('mysql');
 var underscore = require('underscore');
+/*var exec = require('child_process').execFile;
+var fun =function(){
+   console.log("fun() start");
+   exec('HelloJithin.exe', function(err, data) {  
+        console.log(err)
+        console.log(data.toString());                       
+    });  
+}
+fun();*/
 
 var pool = mysql.createPool({
 	host	:'localhost',
@@ -267,7 +276,10 @@ var socket = function (server){
 							var mostbig_score = 0;
 							if(callbackCount == 0){
 								for(var a in rows){
-									rows[a].tagscore = rows[a].score/rows[a].scorednum + tagscorewithid[rows[a].id] * rows[a].score/rows[a].scorednum * degree / 5; // 여기에 이것저것 점수넣는다.
+									if(rows[a].scorednum > 0)
+										rows[a].tagscore = rows[a].score/rows[a].scorednum + tagscorewithid[rows[a].id] * rows[a].score/rows[a].scorednum * degree / 5; // 여기에 이것저것 점수넣는다.
+									else
+										rows[a].tagscore = 0;
 								}
 								rows = underscore.sortBy(rows, 'tagscore');
 								console.log(rows);
@@ -277,6 +289,91 @@ var socket = function (server){
 						});
 					}
 				});
+			});
+		});
+		
+		socket.on('login', function(data){
+			pool.getConnection(function(err, conn){
+				var query = conn.query('select count(*) from user_info where id=? and passwd=?', [data.id, data.password]);
+				
+				query.on('error', function(err){
+					console.log('err', err);
+					socket.emit('socketError');
+				});
+				
+				query.on('result', function(rows){
+					console.log('rows', rows);
+					
+					if (rows['count(*)'] == 0)
+						socket.emit('login', {success:false, user_id:'', user_key:''});
+					else{
+						var html = "";
+						
+						fs.readFile(__dirname + '/floating/floating-div2.ejs', 'utf-8', function(err, ejsdata){
+							html = html + ejs.render(ejsdata, {user_id:data.id});
+							
+							var user_key = "";
+							
+							for(var i = 0; i < 6; ++i)
+								user_key = user_key + (Math.floor(Math.random() * 10000) + 1);
+							
+							conn.query('update user_info set temp_key=? where id=?', [user_key, data.id]);
+
+							socket.emit('login', {success:true, user_id:data.id, user_key:user_key, html:html});
+						});
+					}
+						
+				});
+			});
+		});
+		
+		socket.on('SignupRequest',function(data){
+			pool.getConnection(function(err, conn){
+				var query = conn.query('insert into user_info values(?,?,?,?,?,?)',[data.id, data.password, data.name, data.gender, data.birth, "none"]);
+				query.on('error', function(err){
+					console.log('err', err);
+					socket.emit('socketError');
+				});
+				socket.emit('SignupRequest');
+				conn.release();
+			});
+		});
+		
+		socket.on('isValidId', function(id){
+			pool.getConnection(function(err, conn){
+				var query = conn.query('select count(*) from user_info where id=?', [id]);
+				query.on('error', function(err){
+					console.log('err', err);
+					socket.emit('socketError');
+				});
+				query.on('result', function(rows){
+					console.log('rows', rows);
+					if (rows['count(*)'] == 0)
+						socket.emit('isValidId', {valid : true});
+					else
+						socket.emit('isValidId', {valid: false});
+				});
+				conn.release();
+			});
+		});	
+
+		socket.on('updateTagList', function(){
+			pool.getConnection(function(err, conn){
+				var query = conn.query('select tag from tag_spot', function(err, rows, field){
+					if (err){
+						console.log('err', err);
+						socket.emit('socketError');
+					}
+					var reslist = [];
+
+					console.log(rows);
+
+					for (var i in rows)
+						reslist.push(rows[i].tag);
+
+					socket.emit('updateTagList', {list : reslist});
+				});
+				conn.release();
 			});
 		});
 	});
